@@ -641,7 +641,50 @@ function showToast(message) {
   toastTimer = setTimeout(() => toast.classList.remove("show"), 2400);
 }
 
-$("#compose-btn").addEventListener("click", () => {
+// ---------------------------------------------------------
+// 컨택트 모달 (메일쓰기)
+// ---------------------------------------------------------
+const contactOverlay = $("#contact-overlay");
+const contactFrom = $("#contact-from");
+const contactMessage = $("#contact-message");
+
+function openContactModal() {
+  contactOverlay.classList.add("open");
+  contactFrom.value = "";
+  contactMessage.value = "";
+  setTimeout(() => contactFrom.focus(), 60);
+}
+function closeContactModal() {
+  contactOverlay.classList.remove("open");
+}
+
+$("#compose-btn").addEventListener("click", openContactModal);
+$("#contact-close").addEventListener("click", closeContactModal);
+$("#contact-cancel").addEventListener("click", closeContactModal);
+contactOverlay.addEventListener("click", (e) => {
+  if (e.target === contactOverlay) closeContactModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && contactOverlay.classList.contains("open")) closeContactModal();
+});
+
+$("#contact-send").addEventListener("click", () => {
+  const from = contactFrom.value.trim();
+  const message = contactMessage.value.trim();
+  if (!message) {
+    contactMessage.focus();
+    return;
+  }
+  const bodyLines = [];
+  if (from) bodyLines.push(`보내는 사람: ${from}`, "");
+  bodyLines.push(message);
+  const mailtoUrl =
+    "mailto:apome@naver.com" +
+    "?subject=" + encodeURIComponent("포트폴리오 문의드립니다") +
+    "&body=" + encodeURIComponent(bodyLines.join("\n"));
+
+  window.location.href = mailtoUrl;
+  closeContactModal();
   showToast("이메일 앱이 안 열리면 여기로 보내주세요: apome@naver.com");
   navigator.clipboard?.writeText?.("apome@naver.com").catch(() => {});
 });

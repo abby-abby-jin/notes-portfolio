@@ -358,3 +358,71 @@ html,body{
   white-space:nowrap;
 }
 #toast.show{ opacity:1; transform:translate(-50%, 0); }
+
+/* ================= 컨택트 모달 ================= */
+.contact-overlay{
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.45);
+  display:flex; align-items:center; justify-content:center;
+  padding:2rem;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:opacity .2s ease, visibility 0s linear .2s;
+  z-index:500;
+}
+.contact-overlay.open{
+  opacity:1; visibility:visible; pointer-events:auto;
+  transition:opacity .2s ease, visibility 0s linear 0s;
+}
+.contact-modal{
+  background:var(--bg-detail);
+  width:min(480px, 100%);
+  max-height:min(600px, 85vh);
+  border-radius:16px;
+  box-shadow:0 30px 60px rgba(0,0,0,.3);
+  display:flex; flex-direction:column;
+  overflow:hidden;
+  transform:scale(.94);
+  transition:transform .2s cubic-bezier(.32,.72,0,1);
+}
+.contact-overlay.open .contact-modal{ transform:scale(1); }
+.contact-modal-header{
+  position:relative; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  padding:1.2rem 1.4rem;
+  border-bottom:1px solid var(--divider);
+}
+.contact-modal-header h2{ margin:0; font-size:1.1rem; font-weight:700; letter-spacing:.003em; color:var(--text-primary); }
+.contact-close{
+  position:absolute; right:1rem; top:50%; transform:translateY(-50%);
+  width:26px; height:26px; border-radius:50%;
+  background:var(--bg-row-hover); border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--text-secondary); padding:0;
+}
+.contact-close:hover{ filter:brightness(.94); }
+.contact-close svg{ width:14px; height:14px; }
+.contact-field{ flex:none; padding:.9rem 1.4rem; border-bottom:1px solid var(--divider); }
+.contact-field input{
+  width:100%; border:none; outline:none; background:none;
+  font-size:.92rem; font-family:inherit; letter-spacing:.003em; color:var(--text-primary);
+}
+.contact-field input::placeholder{ color:var(--text-secondary); }
+.contact-field-message{ flex:1; min-height:0; border-bottom:none; padding-bottom:.4rem; display:flex; }
+.contact-field-message textarea{
+  width:100%; height:100%; min-height:160px; resize:none; border:none; outline:none; background:none;
+  font-size:.92rem; font-family:inherit; letter-spacing:-.012em; color:var(--text-primary); line-height:1.6;
+}
+.contact-field-message textarea::placeholder{ color:var(--text-secondary); }
+.contact-modal-footer{
+  flex:none; display:flex; justify-content:flex-end; gap:.6rem;
+  padding:1rem 1.4rem;
+  border-top:1px solid var(--divider);
+}
+.contact-btn{
+  padding:.55rem 1.3rem; border-radius:999px; border:none; cursor:pointer;
+  font-size:.88rem; font-weight:600; letter-spacing:.003em; font-family:inherit;
+}
+.contact-btn-cancel{ background:var(--bg-row-hover); color:var(--text-primary); }
+.contact-btn-cancel:hover{ filter:brightness(.96); }
+.contact-btn-send{ background:var(--mail-accent); color:#fff; }
+.contact-btn-send:hover{ filter:brightness(1.06); }
