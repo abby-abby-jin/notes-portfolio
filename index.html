@@ -3,37 +3,45 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>선진 — 메모</title>
+<title>선진</title>
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- ================= 데스크톱 ================= -->
+  <!-- ================= 배경화면 ================= -->
   <div id="desktop">
-    <button id="app-icon">
+    <button id="notes-icon" class="app-icon">
       <svg viewBox="0 0 64 64" class="icon-glyph">
         <rect x="4" y="4" width="56" height="56" rx="13" fill="#fff"/>
         <path d="M4 17 A13 13 0 0 1 17 4 H47 A13 13 0 0 1 60 17 V19 H4 Z" fill="#ffcc02"/>
-        <rect x="12" y="28" width="40" height="3.4" rx="1.7" fill="#d6d6da"/>
-        <rect x="12" y="37" width="40" height="3.4" rx="1.7" fill="#d6d6da"/>
-        <rect x="12" y="46" width="26" height="3.4" rx="1.7" fill="#d6d6da"/>
+        <rect x="12" y="29" width="40" height="2.2" rx="1.1" fill="#d6d6da"/>
+        <rect x="12" y="37.4" width="40" height="2.2" rx="1.1" fill="#d6d6da"/>
+        <rect x="12" y="45.8" width="26" height="2.2" rx="1.1" fill="#d6d6da"/>
       </svg>
       <span>메모</span>
+    </button>
+
+    <button id="mail-icon" class="app-icon">
+      <svg viewBox="0 0 64 64" class="icon-glyph">
+        <rect x="4" y="4" width="56" height="56" rx="13" fill="#03c75a"/>
+        <text x="32" y="42" font-family="-apple-system, 'Apple SD Gothic Neo', sans-serif" font-size="28" font-weight="600" fill="#fff" text-anchor="middle">@</text>
+      </svg>
+      <span>메일</span>
     </button>
   </div>
 
   <!-- ================= 메모 앱 윈도우 ================= -->
-  <div id="window" role="dialog" aria-label="메모">
+  <div id="notes-window" class="app-window" role="dialog" aria-label="메모">
     <div class="titlebar">
       <div class="traffic-lights">
-        <button class="tl-btn tl-close" id="win-close" aria-label="닫기"></button>
-        <button class="tl-btn tl-min" id="win-min" aria-label="최소화"></button>
-        <button class="tl-btn tl-zoom" id="win-zoom" aria-label="전체화면"></button>
+        <button class="tl-btn tl-close" aria-label="닫기"></button>
+        <button class="tl-btn tl-min" aria-label="최소화"></button>
+        <button class="tl-btn tl-zoom" aria-label="전체화면"></button>
       </div>
       <div class="titlebar-label">메모</div>
     </div>
 
-    <div id="app">
+    <div class="app-body">
       <!-- ---- 폴더 ---- -->
       <nav id="folders-pane">
         <div class="folders-header">iCloud</div>
@@ -73,6 +81,62 @@
           <div id="detail-content"></div>
         </div>
       </main>
+    </div>
+  </div>
+
+  <!-- ================= 메일 앱 윈도우 ================= -->
+  <div id="mail-window" class="app-window" role="dialog" aria-label="메일">
+    <div class="titlebar">
+      <div class="traffic-lights">
+        <button class="tl-btn tl-close" aria-label="닫기"></button>
+        <button class="tl-btn tl-min" aria-label="최소화"></button>
+        <button class="tl-btn tl-zoom" aria-label="전체화면"></button>
+      </div>
+      <div class="titlebar-label">메일</div>
+    </div>
+
+    <div class="app-body">
+      <!-- ---- 메일 폴더 ---- -->
+      <nav class="mail-folders">
+        <button class="compose-btn">
+          <svg viewBox="0 0 24 24" class="icon-compose"><path d="M4 20l1.2-4.2L15.6 5.4a1.5 1.5 0 012.1 0l1 1a1.5 1.5 0 010 2.1L8.2 18.8 4 20z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          메일쓰기
+        </button>
+        <ul id="mail-folders-list"></ul>
+      </nav>
+
+      <!-- ---- 메일 목록 / 상세 (네이버 메일처럼 목록이 상세로 전환) ---- -->
+      <section class="mail-main">
+        <header class="mail-list-header" id="mail-list-header">
+          <h1 id="mail-list-title">받은메일함</h1>
+          <div class="search-bar">
+            <svg viewBox="0 0 24 24" class="icon-search"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.3" y1="15.3" x2="20" y2="20"/></svg>
+            <input type="text" id="mail-search-input" placeholder="메일 검색" />
+          </div>
+        </header>
+
+        <ul id="mail-list"></ul>
+
+        <div id="mail-detail-pane">
+          <header class="mail-detail-header">
+            <button id="mail-back-btn">
+              <svg viewBox="0 0 24 24" class="icon-chevron"><path d="M15.5 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              목록
+            </button>
+            <button id="mail-star-btn" aria-label="중요 표시">
+              <svg viewBox="0 0 24 24" class="icon-star"><path d="M12 3.5l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6-4.5-4.1 6-.7z"/></svg>
+            </button>
+          </header>
+          <div class="mail-detail-body">
+            <h2 id="mail-detail-subject"></h2>
+            <div class="mail-meta">
+              <span id="mail-detail-sender"></span>
+              <span id="mail-detail-date"></span>
+            </div>
+            <div id="mail-detail-content"></div>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 
