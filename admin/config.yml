@@ -1,0 +1,90 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "uploads"
+public_folder: "/uploads"
+
+locale: "ko"
+
+collections:
+  - name: "mails"
+    label: "메일 (포트폴리오)"
+    files:
+      - name: "mails"
+        label: "메일함 내용"
+        file: "content/mails.json"
+        fields:
+          - label: "폴더 목록"
+            name: "folders"
+            widget: "list"
+            fields:
+              - { label: "id (영문, 고치지 마세요)", name: "id", widget: "string" }
+              - { label: "폴더 이름", name: "label", widget: "string" }
+
+          - label: "메일 목록"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.subject}} — {{fields.to}}"
+            fields:
+              - { label: "고유 ID (영문/숫자, 한 번 정하면 바꾸지 마세요)", name: "id", widget: "string" }
+              - label: "폴더"
+                name: "folder"
+                widget: "select"
+                options: ["sent", "draft"]
+                default: "sent"
+              - { label: "읽지 않음으로 표시", name: "unread", widget: "boolean", default: false }
+              - { label: "중요 표시 (별표)", name: "starred", widget: "boolean", default: false }
+              - { label: "보낸 사람", name: "sender", widget: "string", default: "선진" }
+              - { label: "받는 사람 (클라이언트/브랜드명)", name: "to", widget: "string", required: false }
+              - { label: "제목 (프로젝트명)", name: "subject", widget: "string" }
+              - { label: "날짜", name: "date", widget: "string" }
+              - { label: "목록에 보일 한 줄 소개", name: "preview", widget: "text" }
+              - label: "본문 (문단 사이에 빈 줄을 한 줄씩 띄워주세요)"
+                name: "body"
+                widget: "text"
+              - label: "첨부 이미지 (여러 장 추가 가능)"
+                name: "images"
+                widget: "list"
+                required: false
+                field: { label: "이미지", name: "image", widget: "image" }
+
+  - name: "notes"
+    label: "메모"
+    files:
+      - name: "notes"
+        label: "메모장 내용"
+        file: "content/notes.json"
+        fields:
+          - label: "폴더 목록"
+            name: "folders"
+            widget: "list"
+            fields:
+              - { label: "id (영문, 고치지 마세요)", name: "id", widget: "string" }
+              - { label: "폴더 이름", name: "label", widget: "string" }
+
+          - label: "메모 목록"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "고유 ID (영문/숫자, 한 번 정하면 바꾸지 마세요)", name: "id", widget: "string" }
+              - label: "폴더"
+                name: "folder"
+                widget: "select"
+                options: ["intro", "writing"]
+                default: "writing"
+              - { label: "제목", name: "title", widget: "string" }
+              - { label: "날짜", name: "date", widget: "string" }
+              - { label: "목록에 보일 미리보기", name: "preview", widget: "string", required: false }
+              - label: "본문 (체크리스트가 아닌 일반 메모일 때만 작성, 문단 사이에 빈 줄)"
+                name: "body"
+                widget: "text"
+                required: false
+              - label: "체크리스트 (체크리스트형 메모일 때만 작성)"
+                name: "checklist"
+                widget: "list"
+                required: false
+                fields:
+                  - { label: "항목 내용", name: "text", widget: "string" }
+                  - { label: "완료 여부", name: "done", widget: "boolean", default: false }

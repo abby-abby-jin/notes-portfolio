@@ -6,6 +6,16 @@
 
 const $ = (sel) => document.querySelector(sel);
 
+// 빈 줄로 구분된 본문 텍스트를 문단(<p>) 목록으로 변환
+function paragraphsToHtml(text) {
+  return (text || "")
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => `<p class="${p.startsWith("[") ? "placeholder" : ""}">${p}</p>`)
+    .join("");
+}
+
 // ===========================================================
 // 공용 앱 윈도우 컨트롤러 (아이콘 ↔ 창, 지니 효과, 드래그, 최대화)
 // ===========================================================
@@ -171,67 +181,10 @@ desktopEl.addEventListener("click", (e) => {
 });
 
 // ===========================================================
-// 메모 — 나의 글을 모아두는 공간
+// 메모 — 나의 글을 모아두는 공간 (content/notes.json에서 불러옴)
 // ===========================================================
-const notes = [
-  {
-    id: "intro",
-    folder: "intro",
-    title: "안녕하세요, 선진입니다 👋",
-    date: "오늘 오전 9:14",
-    preview: "반갑습니다! 이 메모장은 제가 써온 글과 기록들을 모아두는 공간이에요.",
-    body: [
-      "반갑습니다! 이 메모장은 제가 써온 글과 기록들을 모아두는 공간이에요.",
-      "왼쪽 폴더에서 소개 · 글을 골라보시거나, 목록에서 메모를 하나씩 눌러보세요. 방향키(↑/↓)로도 메모 사이를 이동할 수 있어요.",
-      "* 작업 포트폴리오는 배경화면의 '메일' 아이콘에서 확인하실 수 있어요.",
-    ],
-  },
-  {
-    id: "ideas",
-    folder: "writing",
-    title: "글감 아이디어",
-    date: "8월 3일",
-    preview: "쓰고 싶은 글감 체크리스트",
-    checklist: [
-      { text: "[아이디어 1]", done: true },
-      { text: "[아이디어 2]", done: true },
-      { text: "[아이디어 3]", done: false },
-      { text: "[아이디어 4]", done: false },
-    ],
-  },
-  {
-    id: "writing1",
-    folder: "writing",
-    title: "[글 제목을 입력해주세요]",
-    date: "어제 오후 3:40",
-    preview: "짧은 소개나 발췌를 이 자리에 채워주세요.",
-    body: [
-      "[여기에 글의 도입부나 발췌를 적어주세요]",
-      "[본문 내용을 자유롭게 작성해주세요.]",
-    ],
-  },
-  {
-    id: "writing2",
-    folder: "writing",
-    title: "[글 제목을 입력해주세요]",
-    date: "8월 6일",
-    preview: "짧은 소개나 발췌를 이 자리에 채워주세요.",
-    body: [
-      "[여기에 글의 도입부나 발췌를 적어주세요]",
-      "[본문 내용을 자유롭게 작성해주세요.]",
-    ],
-  },
-];
-
-notes.forEach((n) => {
-  if (n.checklist) n.checklist.forEach((c, i) => { c._uid = i; });
-});
-
-const folders = [
-  { id: "all", label: "모든 iCloud" },
-  { id: "intro", label: "소개" },
-  { id: "writing", label: "글" },
-];
+let notes = [];
+let folders = [];
 
 const listEl = $("#notes-list");
 const detailPane = $("#detail-pane");
@@ -373,15 +326,13 @@ function openNote(id) {
   $("#detail-title").textContent = note.title;
 
   const content = $("#detail-content");
-  if (note.checklist) {
+  if (note.checklist && note.checklist.length) {
     content.innerHTML = `<ul class="checklist"></ul>`;
     const ul = content.querySelector(".checklist");
     ul.innerHTML = checklistMarkup(note);
     bindChecklist(note, ul);
   } else {
-    content.innerHTML = note.body
-      .map((p) => `<p class="${p.startsWith("[") ? "placeholder" : ""}">${p}</p>`)
-      .join("");
+    content.innerHTML = paragraphsToHtml(note.body);
   }
 
   detailPane.classList.add("open");
@@ -415,430 +366,19 @@ $("#back-btn").addEventListener("click", () => {
 
 searchInput.addEventListener("input", renderList);
 
-renderFolders();
-renderList();
-
 const desktopQuery = window.matchMedia("(min-width: 681px)");
 function ensureDesktopSelection() {
   if (desktopQuery.matches && !activeNoteId) {
     openNote(notes[0].id);
   }
 }
-ensureDesktopSelection();
 desktopQuery.addEventListener("change", ensureDesktopSelection);
 
 // ===========================================================
-// 메일 — 작업 포트폴리오 (네이버 메일 스타일)
+// 메일 — 작업 포트폴리오 (content/mails.json에서 불러옴)
 // ===========================================================
-const mails = [
-  {
-    id: "intro",
-    folder: "sent",
-    unread: false,
-    starred: true,
-    sender: "선진",
-    subject: "안녕하세요, 선진입니다 👋",
-    date: "2025",
-    preview: "반갑습니다! 이 메일함은 제가 작업해온 프로젝트들을 정리해둔 공간이에요.",
-    body: [
-      "반갑습니다! 이 메일함은 제가 작업해온 프로젝트들을 정리해둔 공간이에요.",
-      "문장으로 탑을 설계하는 카피라이터 신선진입니다. (주)스튜디오종에서 카피라이터로 일하며 빙그레, 롯데칠성음료, LG전자, LG U+, 대상, 아웃백, 카카오페이지 등 다양한 브랜드의 캠페인을 기획하고 카피라이팅해왔어요.",
-      "왼쪽 폴더에서 보낸메일함 · 보낼메일함을 오가며 프로젝트를 확인해보세요. 별표가 붙은 메일은 수상작이에요.",
-      "* 날짜는 정확한 집행 시점이 아닌 대략적인 시기로 표기했어요.",
-    ],
-  },
-  {
-    id: "p20",
-    folder: "sent",
-    unread: false,
-    starred: true,
-    sender: "선진",
-    to: "빙그레",
-    subject: "빙그레우스 더 마시스 짐",
-    date: "2020",
-    preview: "'세계관'이라는 단어를 유행시킨 대표주자, 빙그레 SNS 캠페인 (메인 카피라이터, 기여도 85%)",
-    body: [
-      "클라이언트 — 빙그레",
-      "'세계관'이라는 단어를 유행시킨 대표주자 빙그레우스 더-마시스 SNS 캠페인입니다. (메인 카피라이터, 기여도 85%)",
-      "ISSUE — 브랜드 캐릭터 필요",
-      "SOLUTION — 1. 브랜드 자체를 의인화한 캐릭터 생성 2. 세계관을 설립해 소비자들이 오랜 기간 팔로업 할 수 있는 스토리 구축",
-      "ROLE — 3년간 메인 카피라이터로서 옴니버스형 스토리보드를 주 3회 간격으로 업로드했습니다. 제품 선택부터 콘텐츠 레퍼런스 서칭을 진행하며 타 부서와의 커뮤니케이션 스킬과 디자인 실무자를 위한 효율적인 업무 방식을 체득했습니다. 큰 화제가 되었던 캠페인이었던 만큼 소비자들의 실시간 반응을 확인하며 직접 댓글과 DM 답장을 빙그레우스처럼 보내주는 컨셉적 인터렉션까지 익힐 수 있었습니다.",
-      "성과 — 캠페인 전 90K → 후 140K (식품업계 공식 SNS 1위 달성), 5개월간 팔로워 55% 급증, 인게이지먼트 기존 대비 2배 증가",
-      "AWARD — 2020 대한민국 광고대상",
-    ],
-  },
-  {
-    id: "p19",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "빙그레",
-    subject: "빙그레 메이커를 위하여",
-    date: "2021",
-    preview: "브랜드 창립 53주년을 기념한 브랜디드 캠페인 (서브 카피라이터, 기여도 20%)",
-    body: [
-      "클라이언트 — 빙그레",
-      "브랜드 창립 53주년을 기념한 브랜디드 캠페인입니다. (서브 카피라이터, 기여도 20%)",
-      "ISSUE — 브랜드 네임 자산화 미흡",
-      "SOLUTION — 빙그레우스를 활용하여 '웃음'이라는 가치를 전하려는 사람들의 도전을 숭고하게 드높이기",
-      "ROLE — 책 캠페인으로 광고주 최종컨펌이 났지만 빙그레우스를 활용한 뮤지컬 캠페인을 재제안했으며 첫 카피와 마지막 카피 및 말장난이 섞인 대사를 작성했습니다. 가사가 완성된 후 작곡가 및 편집팀과 커뮤니케이션하여 제작 일정 등을 조율하며 애니메이션 캠페인의 이해도와 커뮤니케이션 스킬을 쌓을 수 있었던 캠페인입니다.",
-      "성과 — 업로드 3주 만에 댓글 7K 좋아요 25K, 조회수 10M 돌파, 전년 대비 매출액 6.7%/영업이익 14.33% 증가",
-    ],
-  },
-  {
-    id: "p18",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "대상 청정원",
-    subject: "전 인생 통으로 잇다: 잊지 않기 위해 잇다",
-    date: "2024",
-    preview: "장 담그기 문화의 유네스코 인류무형문화유산 등재를 기념한 다큐멘터리 캠페인 (PM, 기여도 100%)",
-    body: [
-      "클라이언트 — 대상 청정원",
-      "장 담그기 문화가 세계 유네스코 인류무형문화유산으로 등재된 것을 기념, 순창의 고추장 장인들과 인터뷰를 통해 청정원의 순창 고추장 제품을 알리기 위한 다큐멘터리 캠페인입니다. (PM, 기여도 100%)",
-      "ISSUE — 제품 이미지 노후화",
-      "SOLUTION — 제품이 가진 '전통'이라는 헤리티지를 앞세워 순창 지역의 역사, 장인들의 노고와 정성을 스토리화",
-      "ROLE — 다큐멘터리의 기승전결 플롯을 구성했습니다. 장인들의 리얼리티한 이야기를 담고자 현장 인터뷰를 진행했고 '잇다'라는 다큐멘터리 테마 아래 스크립트 및 엔딩 메시지를 도출했습니다. 이후 번역가와 커뮤니케이션하며 영자막을 정리했고, 모든 바리에이션 영상 구성과 자막을 기획 및 제작했습니다.",
-    ],
-  },
-  {
-    id: "p17",
-    folder: "sent",
-    unread: false,
-    starred: true,
-    sender: "선진",
-    to: "대상 미원",
-    subject: "감칠맛 내는 조연, 미원",
-    date: "2021",
-    preview: "조미료 미원을 의인화한 로맨스 드라마 타이즈 캠페인 (서브 카피라이터)",
-    body: [
-      "클라이언트 — 대상 미원",
-      "조미료 미원을 의인화한 로맨스 드라마 타이즈 캠페인입니다. (서브 카피라이터)",
-      "ISSUE — 브랜드를 소비할 만한 재미 부재",
-      "SOLUTION — 1. 미원의 자산을 토대로 한 스토리텔링 2. 서브병의 대유행을 미원의 대유행으로 치환",
-      "ROLE — '조연'이라는 크리에이티브 테마 아래 에피소드를 구성했습니다. 마지막 에피소드인 짜장면 편의 대사를 작성하고 워싱했으며, 미원이 주방의 선반에 오래 있다는 인사이트를 반영해 선반 안에서 소비자의 행복을 바라는 메시지를 던지며 마무리 지었습니다. 실제작 되진 않았지만 '서브병'이라는 워딩을 활용해 미원의 새로운 병을 굿즈로 제안했습니다.",
-      "AWARD — 2021 서울영상광고제 대상",
-    ],
-  },
-  {
-    id: "p16",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "ABLE C&C 미샤",
-    subject: "밋샤옵니다 미샤",
-    date: "2025",
-    preview: "브랜드 창립 25주년, 텔레토비와의 컬래버를 알리는 세계관 캠페인 (서브 카피라이터, 기여도 20%)",
-    body: [
-      "클라이언트 — ABLE C&C 미샤",
-      "브랜드 창립 25주년을 맞아 텔레토비와의 컬래버를 알리는 세계관 캠페인입니다. (서브 카피라이터, 기여도 20%)",
-      "ISSUE — 모델을 적극 활용한 파격적인 제품 홍보 필요",
-      "SOLUTION — 맑은 눈의 광인 이미지로 밈(meme)이 됐던 텔레토비를 활용해 신도 컨셉 도출",
-      "ROLE — 종교적 특색을 드러내지 않으면서 신과 신도의 상황을 나타내는 대사 워싱과, 제품명을 활용한 마치 주문 같은 노래 가사를 작성했습니다.",
-      "BEHIND — 메인 안무 제작에 참여했습니다. (제품별 USP에 맞는 동작으로 구성, 인형탈 쓰고 촬영 후 안무팀에 전달)",
-    ],
-  },
-  {
-    id: "p15",
-    folder: "sent",
-    unread: false,
-    starred: true,
-    sender: "선진",
-    to: "롯데칠성음료 새로",
-    subject: "제로슈거 새로, 부드럽게 넘어가버렸다",
-    date: "2023",
-    preview: "소주 '새로'의 캐릭터 '새로구미'를 활용한 애니메이션 캠페인 (메인 카피라이터, 기여도 30%)",
-    body: [
-      "클라이언트 — 롯데칠성음료 새로",
-      "소주 '새로'의 캐릭터 '새로구미'를 활용한 애니메이션 캠페인입니다. (메인 카피라이터, 기여도 30%)",
-      "ISSUE — 제품 스펙 '제로슈거'에 대한 강조도 낮음",
-      "SOLUTION — 스펙을 캐릭터의 입으로 옮겨 제품의 매력을 유혹적 서사로 치환",
-      "ROLE — '소비자를 홀리는 남구미의 플러팅'이라는 크리에이티브 테마 아래 키카피를 제안하였고, 여유롭고 매혹적인 캐릭터 성격에 걸맞은 음유시인 톤으로 제품의 매력을 카피라이팅했습니다.",
-      "AWARD — 2023 유튜브웍스 어워드",
-    ],
-  },
-  {
-    id: "p14",
-    folder: "sent",
-    unread: false,
-    starred: true,
-    sender: "선진",
-    to: "롯데칠성음료 새로",
-    subject: "새로구미 버츄얼러브",
-    date: "2024",
-    preview: "3D 버추얼 캐릭터를 활용한 SNS 캠페인 (PM, 기여도 90%)",
-    body: [
-      "클라이언트 — 롯데칠성음료 새로",
-      "3D 버추얼 캐릭터를 활용한 SNS 캠페인입니다. (PM, 기여도 90%)",
-      "ISSUE — 소비자들의 콘텐츠 참여도 낮음, 릴스 중심 소비 환경에 맞춰 변화 필요",
-      "SOLUTION — 대한민국에서 가장 핫한 연애프로그램 포맷 차용",
-      "ROLE — 캠페인의 기획 단계에서 제작 단계까지 PM 역할을 맡았습니다. 타 버추얼 캐릭터들의 자료조사, 월별 메인 에피소드 스토리보드, 캐릭터별 모션 지시, 성우 선정, 편집팀 및 사운드 피드백 등 기획~제작의 전 과정에 투입됐습니다.",
-      "성과 — 소비자 인터랙션 총 2.5M, 이전 캠페인 대비 인터랙션 1,109% 증가, X 10K 트윗 생성, 총 콘텐츠 10건 통합 인게이지먼트 59K",
-      "AWARD — 2024 대한민국 광고대상",
-    ],
-  },
-  {
-    id: "p13",
-    folder: "sent",
-    unread: false,
-    starred: true,
-    sender: "선진",
-    to: "빙그레",
-    subject: "어느 날, 슈퍼콘이 돋았다",
-    date: "2022",
-    preview: "캐릭터 IP를 활용해 슈퍼콘 캐릭터 입간판을 출연시킨 영상 캠페인 (메인 카피라이터, 기여도 20%)",
-    body: [
-      "클라이언트 — 빙그레",
-      "캐릭터 IP를 활용하여 슈퍼콘 캐릭터 입간판을 제작해 출연시킨 영상 캠페인입니다. (메인 카피라이터, 기여도 20%)",
-      "ISSUE — 메인 타깃인 10대와의 정서적 접점 부족",
-      "SOLUTION — 청춘 성장 서사에 녹여낸 제품",
-      "ROLE — '슈퍼콘이 머리에 돋은 소녀'의 청춘 성장물이라는 크리에이티브 테마 아래 대사 워싱 및 가사를 작성했습니다. 본편 이후 메이킹 및 뮤직비디오 영상 기획 과정을 메인으로 담당했습니다.",
-      "성과 — 제품 매출 118% 증가(온에어 전후 20일 비교), 전년 대비 커뮤니티 언급량 34.25% 증가, 조회수 5.4M/좋아요 6K/댓글 1.1K",
-      "AWARD — 2022 대한민국 광고대상 브랜디드 콘텐츠 부문 동상",
-    ],
-  },
-  {
-    id: "p12",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "카카오페이지",
-    subject: "악녀는 마리오네트 가상 캐스팅",
-    date: "2023",
-    preview: "빅모델을 활용해 인기 웹소설을 드라마 예고편처럼 재구성한 영상 캠페인 (서브 카피라이터)",
-    body: [
-      "클라이언트 — 카카오페이지",
-      "빅모델을 활용하여 인기 웹소설을 드라마 예고편처럼 재구성한 영상 캠페인입니다. (서브 카피라이터)",
-      "ISSUE — 인기 IP를 활용한 플랫폼 붐업 필요",
-      "SOLUTION — IP의 팬덤들이 가장 과몰입하는 가상 캐스팅 문화 활용",
-      "ROLE — '공식이 더 진심인 가상 캐스팅'이라는 크리에이티브 테마 아래에서 원작 웹소설/웹툰의 대사와 장면을 정리하여 실제 드라마 예고편처럼 구성하였습니다. 메인 영상과 캐릭터별 영상, 포스터 내에 들어갈 대사를 선정하고 워싱했습니다.",
-    ],
-  },
-  {
-    id: "p11",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "한국광고총연합회",
-    subject: "오덕의 광고윤리강령",
-    date: "2023",
-    preview: "제 51회 광고의 날을 기념하여 기획된 영상 캠페인 (메인 카피라이터, 기여도 100%)",
-    body: [
-      "클라이언트 — 한국광고총연합회",
-      "제 51회 광고의 날을 기념하여 기획된 영상 캠페인입니다. (메인 카피라이터, 기여도 100%)",
-      "ISSUE — 광고윤리강령의 방대한 분량과 높은 이해 장벽",
-      "SOLUTION — 키치한 워딩으로 쉽고 간략하게 구성",
-      "ROLE — 영상 전체를 기획하고 카피라이팅했습니다. '오덕'이라는 본래의 좋은 뜻을 살리면서, 인간이 지녀야 할 다섯 가지 덕목인 '인의예지신'을 광고인이 지녀야 할 다섯 가지 덕목으로 풀이하여 모든 카피를 작성했습니다. 레터링을 활용한 지면 포스터의 테마를 제안했고, 해당 아이디어가 확장되면서 광고의 날 행사 당시 굿즈로 활용되었습니다.",
-    ],
-  },
-  {
-    id: "p10",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "이마트 토이킹덤",
-    subject: "토이킹덤 할아버지의 인생실전(傳)",
-    date: "2021",
-    preview: "브랜드 산하 세 가지 브랜드를 가족 계정처럼 운영하는 SNS 캠페인 (PM, 기여도 90%)",
-    body: [
-      "클라이언트 — 이마트 토이킹덤",
-      "브랜드 산하의 세 가지 브랜드를 가족 계정처럼 운영하는 컨셉의 SNS 캠페인입니다. (PM, 기여도 90%)",
-      "ISSUE — 트렌드 큐레이션 역량에도 대중은 '장난감 가게'로 인식",
-      "SOLUTION — 주장 대신 화자를 설계 → 사회 현상을 인형극으로 번역해 '시대에 맞는 이야기를 들려주는 장난감 가게' 이미지로 전환",
-      "ROLE — 전체 콘텐츠의 75%를 단독 기획 및 작성했습니다. 제품 선정과 스토리보드, 디자이너와의 메인 커뮤니케이션, PM으로서 카피라이터 팀원 멘토링까지 맡았습니다. 계정의 화자가 할아버지라는 점을 반영하여 멘션과 소비자 댓글 모두 할아버지 컨셉으로 관리했습니다.",
-      "성과 — 매달 평균 2K 팔로워 증가, X 리트윗 16K/좋아요 10K (광고 없이 자발적 바이럴 확산)",
-    ],
-  },
-  {
-    id: "p9",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "현대모비스",
-    subject: "DOA2 (Dance Of Auto)",
-    date: "2023",
-    preview: "자율주행 기술을 자동차들의 댄스 배틀로 풀어낸 애니메이션 캠페인 (메인 카피라이터, 기여도 70%)",
-    body: [
-      "클라이언트 — 현대모비스",
-      "자율주행 기술을 자동차들의 댄스 배틀로 풀어낸 애니메이션 캠페인입니다. (메인 카피라이터, 기여도 70%)",
-      "ISSUE — 어려운 자율주행 기술 용어의 높은 이해 장벽",
-      "SOLUTION — 엔터테인먼트 콘텐츠를 통해 기술에 대한 진입 장벽 완화",
-      "ROLE — 7분가량의 장편 애니메이션 메인 카피라이터로서 이야기의 굵직한 플롯이 정해진 뒤 세부 스토리보드와 대사를 작성했습니다. 외부 녹음실과 메인 감독님과의 키 커뮤니케이션을 책임지며 음악 방향성, 성우 스케줄링(박명수 외 5명), 피드백 정리 등을 맡았습니다.",
-    ],
-  },
-  {
-    id: "p8",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "홈플러스 더 클럽",
-    subject: "소비패턴",
-    date: "2021",
-    preview: "대용량 제품을 패턴화한 이미지와 소비자들의 이야기를 풀어낸 SNS 캠페인 (서브 카피라이터, 기여도 30%)",
-    body: [
-      "클라이언트 — 홈플러스 더 클럽",
-      "홈플러스 소속 브랜드이자 창고형 마트인 홈플러스 더 클럽의 홍보를 위한 SNS 캠페인입니다. 대용량 제품을 패턴화 한 이미지와 소비자들의 이야기를 풀어낸 캠페인입니다. (서브 카피라이터, 기여도 30%)",
-      "ROLE — 후발주자로 캠페인에 투입되어 기존의 메인 카피라이터와 제품을 나눠 작성했습니다. 장르를 불문하고 시, 소설, 밈 활용 등을 다채롭게 작성하며 다양한 카피 응용과 더불어 실시간 반응을 확인함으로써 소비자들의 인사이트를 배울 수 있었던 캠페인입니다.",
-    ],
-  },
-  {
-    id: "p7",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "코오롱FnC",
-    subject: "패션접음",
-    date: "2022",
-    preview: "다양한 화자가 옷을 개면서 하루를 정리하는 제품 이미지와 에세이가 연재되는 캠페인 (메인 카피라이터, 기여도 80%)",
-    body: [
-      "클라이언트 — 코오롱FnC",
-      "코오롱 그룹 전사의 디지털 커뮤니케이션을 위한 SNS 캠페인입니다. 다양한 화자가 옷을 개면서 하루를 정리하는 제품 이미지와 에세이가 연재되는 크리에이티브입니다. (메인 카피라이터, 기여도 80%)",
-      "ISSUE — 다양한 제품군을 아우를 수 있는 채널 필요",
-      "SOLUTION — 다양한 화자가 이야기 할 수 있는 채널 개설",
-      "ROLE — 캠페인 기간 동안 전체 콘텐츠 카피의 90%를 작성했습니다. 매주 2회 수령 받은 제품의 특징 또는 광고주의 니즈와 연계시켜 제품에 걸맞은 스토리텔링 및 에세이 형식의 카피라이팅을 진행했습니다.",
-    ],
-  },
-  {
-    id: "p6",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "LG전자",
-    subject: "버추얼 캐릭터 김래아",
-    date: "2021",
-    preview: "버추얼 캐릭터 김래아를 활용한 SNS 캠페인 (메인 카피라이터, 기여도 90%)",
-    body: [
-      "클라이언트 — LG전자",
-      "버추얼 캐릭터 김래아를 활용한 SNS 캠페인입니다. (메인 카피라이터, 기여도 90%)",
-      "ISSUE — 버추얼 휴먼의 정체성과 서사를 구축할 콘텐츠 필요",
-      "SOLUTION — 1. '목소리를 찾아가는 음악가'라는 성장 서사 제안 2. 기록형 콘텐츠를 통해 캐릭터의 개성 축적 3. 실사와 버추얼을 결합한 스토리로 현실감 강화",
-      "ROLE — '버추얼 휴먼 음악가의 목소리 찾기 여정'이라는 테마 아래 콘텐츠 기획과 제작 전반에 참여했습니다. 캐릭터의 성격과 세계관을 구축하는 스토리텔링을 담당했으며, 실사 촬영과 합성 과정의 PPM을 관리하고 번역가와 협업해 영문 멘션을 정리했습니다. 현장음 녹음과 촬영 실무까지 참여하며 콘텐츠의 완성도를 높이는 데 기여했습니다.",
-    ],
-  },
-  {
-    id: "p5",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "아웃백",
-    subject: "COMFORT.TABLE : 다-정한 다정함",
-    date: "2022",
-    preview: "브랜드 정체성 재정립을 위한 리브랜딩 캠페인 (메인 카피라이터, 기여도 90%)",
-    body: [
-      "클라이언트 — 아웃백",
-      "브랜드 정체성 재정립을 위한 리브랜딩 캠페인입니다. (메인 카피라이터, 기여도 90%)",
-      "ISSUE — 패밀리 레스토랑이라는 이미지 타파 필요",
-      "SOLUTION — '편안한 캐주얼 다이닝 레스토랑' 정체성으로 리패키징",
-      "ROLE — COMFORT TABLE이라는 주제 아래 '다-정한 다정함'이라는 크리에이티브 테마와 영상 전체를 아우르는 매니페스토형 카피라이팅을 진행했습니다. 제품 캠페인으로는 제품명 '토마호크'를 위트있게 표현하는 그림과 카피를 제안하며 브랜딩 캠페인의 전반적인 아이디어의 카피라이팅을 폭넓게 익힐 수 있었습니다.",
-    ],
-  },
-  {
-    id: "p4",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "대상 청정원",
-    subject: "청정맵기",
-    date: "2021",
-    preview: "순창 고추장 제품의 전통성을 알리기 위해 기획한 브랜디드 캠페인 (메인 카피라이터, 기여도 100%)",
-    body: [
-      "클라이언트 — 대상 청정원",
-      "장 담그기 문화가 세계 유네스코 인류무형문화유산으로 등재된 것을 기념, 순창 고추장 제품의 전통성을 알리기 위해 기획한 브랜디드 캠페인입니다. (메인 카피라이터, 기여도 100%)",
-      "ISSUE — 전통 장류 고추장에 대한 이미지 노후화",
-      "SOLUTION — 1. 약점으로 정면돌파: 고추장의 건강함·발효·정성을 현대의 양념소스와 대비 2. '청정맵기'라는 새로운 매운맛의 기준 제안",
-      "ROLE — '장독대의 신, 철륭신'을 모티프로 스토리, 비주얼, 카피라이팅을 전개한 크리에이티브입니다. 샤머니즘이라는 파격적인 컨셉에 가신(家神)인 철륭신을 결합해 한국의 전통성을 현대적으로 재해석했습니다. 현대 소스의 자극적인 매운맛과 대비되는 고추장 고유의 건강한 매운맛을 '청정맵기'라는 언어 자산으로 정의하며 차별화된 브랜드 포지셔닝을 제안했습니다.",
-    ],
-  },
-  {
-    id: "p3",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "Supercell (브롤스타즈)",
-    subject: "부랄을 찾아서",
-    date: "2022",
-    preview: "'브롤스타즈는 초등학생 게임'이라는 이미지 탈피를 위해 기획된 디지털 캠페인 (메인 카피라이터, 기여도 100%)",
-    body: [
-      "클라이언트 — Supercell",
-      "'브롤스타즈는 초등학생 게임'이라는 이미지를 탈피하기 위해 기획된 디지털 캠페인입니다. (메인 카피라이터, 기여도 100%)",
-      "ISSUE — '어린이 게임'이라는 인식으로 핵심 타깃인 청소년층 이탈",
-      "SOLUTION — 1. 예술영화 감성으로 브랜드 이미지를 성숙하게 재해석 2. 10대 남성 타깃을 고려한 날것의 워딩으로 주목도 확보",
-      "ROLE — 타이틀, 키카피, 대사, 키 연출(주인공들이 망원경을 통해 바라보는 시선을 주요 프레임으로 끌고가는 비주얼) 등을 기획하여 전반적인 제안서 업무에 기여했습니다.",
-    ],
-  },
-  {
-    id: "p2",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "LG U+",
-    subject: "파도는 무너지지 않는다",
-    date: "2022",
-    preview: "브랜드의 '무너' 캐릭터를 주인공으로 설정한 유플러스 오리지널 시리즈 기획안 (서브 카피라이터)",
-    body: [
-      "클라이언트 — LG U+",
-      "브랜드의 '무너' 캐릭터를 주인공으로 설정한 유플러스 오리지널 시리즈 기획안입니다. (서브 카피라이터)",
-      "ISSUE — 캐릭터 '무너' 이슈라이징 필요",
-      "SOLUTION — 당시 과한 어그로를 끄는 인플루언서들의 생태계를 반영한 캐릭터 중심의 드라마 스토리텔링",
-      "ROLE — 캐릭터 시장이 레드오션이었던 시점, '무너'라는 캐릭터가 인플루언서가 되기 위해 선을 넘는 스토리 플롯 아래에서 에피소드를 구체화하는 작업을 진행했습니다. 실제 드라마 대본의 구성을 만들고, 대사 워싱, 제목 작업 등을 맡아 장편 애니메이션을 기획했습니다.",
-    ],
-  },
-  {
-    id: "p1",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "LG U+샵",
-    subject: "유샵보살",
-    date: "2020",
-    preview: "공식 온라인 스토어 '유플러스샵'의 생소함을 낮추기 위해 기획된 SNS 캠페인 (메인 카피라이터, 기여도 100%)",
-    body: [
-      "클라이언트 — LG U+샵",
-      "공식 온라인 스토어 '유플러스샵'의 생소함을 낮추기 위해 기획된 SNS 캠페인입니다. (메인 카피라이터, 기여도 100%)",
-      "ISSUE — 온라인샵의 진입장벽",
-      "SOLUTION — 소비자들이 흥미를 갖고 스스로 분석하고 비교할 수 있는 테마 '궁합' 소재 활용",
-      "ROLE — 매장에서 직접 점원에게 들어도 어려운 기기에 대한 해설을, 온라인샵에서 셀프로 검색하고 비교하기 어려운 소비자의 관점에서 고민하여 '설명 자체를 흥미롭게 만들면 되지 않을까?'에서 시작한 크리에이티브입니다. '기기와의 궁합을 봐주는 점집'이라는 콘셉트 아래 기기에 대한 설명과 특장점을 쉽고 유쾌하게 풀어냈습니다.",
-    ],
-  },
-  {
-    id: "contact",
-    folder: "sent",
-    unread: false,
-    starred: false,
-    sender: "선진",
-    to: "담당자님",
-    subject: "연락처 안내드립니다",
-    date: "2025",
-    preview: "이메일과 연락 가능한 채널을 정리했습니다.",
-    body: [
-      "이메일 — [이메일 주소를 입력해주세요]",
-      "인스타그램 — [계정을 입력해주세요]",
-      "편하신 방법으로 연락 주시면 빠르게 답변드리겠습니다. 봐주셔서 감사합니다 :)",
-    ],
-  },
-];
-
-const mailFolders = [
-  { id: "sent", label: "보낸메일함" },
-  { id: "draft", label: "보낼메일함" },
-];
-
+let mails = [];
+let mailFolders = [];
 const mailListEl = $("#mail-list");
 const mailSearchInput = $("#mail-search-input");
 const mailMainEl = $(".mail-main");
@@ -944,9 +484,16 @@ function openMail(id) {
   $("#mail-detail-sender").textContent = mail.to ? `${mail.sender} → ${mail.to}` : mail.sender;
   $("#mail-detail-date").textContent = mail.date;
 
-  $("#mail-detail-content").innerHTML = mail.body
-    .map((p) => `<p class="${p.startsWith("[") ? "placeholder" : ""}">${p}</p>`)
-    .join("");
+  const images = mail.images || [];
+  const imagesHtml = images.length
+    ? `<div class="mail-images">${images
+        .map((src) => `<button type="button" class="mail-image-thumb" style="background-image:url('${src}')" data-src="${src}" aria-label="첨부 이미지 크게 보기"></button>`)
+        .join("")}</div>`
+    : "";
+  $("#mail-detail-content").innerHTML = paragraphsToHtml(mail.body) + imagesHtml;
+  $("#mail-detail-content")
+    .querySelectorAll(".mail-image-thumb")
+    .forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
 
   $("#mail-star-btn").classList.toggle("active", !!mail.starred);
 
@@ -1003,5 +550,57 @@ $("#contact-copy").addEventListener("click", () => {
   navigator.clipboard?.writeText?.("apome@naver.com").catch(() => {});
 });
 
-renderMailFolders();
-renderMailList();
+// ---------------------------------------------------------
+// 첨부 이미지 라이트박스
+// ---------------------------------------------------------
+const lightbox = $("#image-lightbox");
+const lightboxImg = $("#lightbox-img");
+
+function openLightbox(src) {
+  lightboxImg.src = src;
+  lightbox.classList.add("open");
+}
+function closeLightbox() {
+  lightbox.classList.remove("open");
+  lightboxImg.src = "";
+}
+$("#lightbox-close").addEventListener("click", closeLightbox);
+lightbox.addEventListener("click", (e) => {
+  if (e.target === lightbox) closeLightbox();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && lightbox.classList.contains("open")) closeLightbox();
+});
+
+// ---------------------------------------------------------
+// 콘텐츠 불러오기 (content/notes.json, content/mails.json)
+// CMS(관리자 페이지)에서 수정한 내용이 이 파일들에 반영됩니다.
+// ---------------------------------------------------------
+async function loadContent() {
+  const [notesData, mailsData] = await Promise.all([
+    fetch("content/notes.json").then((r) => r.json()),
+    fetch("content/mails.json").then((r) => r.json()),
+  ]);
+
+  folders = [{ id: "all", label: "모든 iCloud" }, ...(notesData.folders || [])];
+  notes = notesData.items || [];
+  notes.forEach((n, i) => {
+    if (!n.id) n.id = `note-${i}`;
+    if (n.checklist) n.checklist.forEach((c, ci) => { c._uid = ci; });
+  });
+
+  mailFolders = mailsData.folders || [];
+  mails = mailsData.items || [];
+  mails.forEach((m, i) => {
+    if (!m.id) m.id = `mail-${i}`;
+  });
+
+  renderFolders();
+  renderList();
+  ensureDesktopSelection();
+
+  renderMailFolders();
+  renderMailList();
+}
+
+loadContent();
