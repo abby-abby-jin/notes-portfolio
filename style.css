@@ -341,3 +341,20 @@ html,body{
   .mail-list-header{ flex-wrap:wrap; }
   .mail-list-header .search-bar{ max-width:none; width:100%; order:1; }
 }
+
+/* ================= 토스트 ================= */
+#toast{
+  position:fixed;
+  left:50%; bottom:2.4rem;
+  transform:translate(-50%, 12px);
+  background:#1c1c1e; color:#fff;
+  padding:.7rem 1.1rem;
+  border-radius:10px;
+  font-size:.88rem; font-weight:500; letter-spacing:.003em;
+  box-shadow:0 10px 24px rgba(0,0,0,.25);
+  opacity:0; pointer-events:none;
+  transition:opacity .22s ease, transform .22s ease;
+  z-index:100;
+  white-space:nowrap;
+}
+#toast.show{ opacity:1; transform:translate(-50%, 0); }

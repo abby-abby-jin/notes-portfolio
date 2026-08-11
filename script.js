@@ -631,5 +631,20 @@ $("#mail-star-btn").addEventListener("click", () => {
 
 mailSearchInput.addEventListener("input", renderMailList);
 
+// 메일 클라이언트가 연결되어 있지 않은 방문자를 위해, 주소를 클립보드에도 함께 복사
+let toastTimer = null;
+function showToast(message) {
+  const toast = $("#toast");
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2400);
+}
+
+$("#compose-btn").addEventListener("click", () => {
+  showToast("이메일 앱이 안 열리면 여기로 보내주세요: apome@naver.com");
+  navigator.clipboard?.writeText?.("apome@naver.com").catch(() => {});
+});
+
 renderMailFolders();
 renderMailList();
