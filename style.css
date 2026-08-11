@@ -384,6 +384,7 @@ html,body{
   transform:scale(.94);
   transition:transform .2s cubic-bezier(.32,.72,0,1);
 }
+.contact-modal-simple{ width:min(400px, 100%); }
 .contact-overlay.open .contact-modal{ transform:scale(1); }
 .contact-modal-header{
   position:relative; flex:none;
@@ -401,28 +402,15 @@ html,body{
 }
 .contact-close:hover{ filter:brightness(.94); }
 .contact-close svg{ width:14px; height:14px; }
-.contact-field{ flex:none; padding:.9rem 1.4rem; border-bottom:1px solid var(--divider); }
-.contact-field input{
-  width:100%; border:none; outline:none; background:none;
-  font-size:.92rem; font-family:inherit; letter-spacing:.003em; color:var(--text-primary);
+.contact-email-body{
+  flex:none; display:flex; flex-direction:column; align-items:center; gap:1rem;
+  padding:2.4rem 1.6rem 2.2rem; text-align:center;
 }
-.contact-field input::placeholder{ color:var(--text-secondary); }
-.contact-field-message{ flex:1; min-height:0; border-bottom:none; padding-bottom:.4rem; display:flex; }
-.contact-field-message textarea{
-  width:100%; height:100%; min-height:160px; resize:none; border:none; outline:none; background:none;
-  font-size:.92rem; font-family:inherit; letter-spacing:-.012em; color:var(--text-primary); line-height:1.6;
-}
-.contact-field-message textarea::placeholder{ color:var(--text-secondary); }
-.contact-modal-footer{
-  flex:none; display:flex; justify-content:flex-end; gap:.6rem;
-  padding:1rem 1.4rem;
-  border-top:1px solid var(--divider);
-}
+.contact-email-label{ margin:0; font-size:.9rem; color:var(--text-secondary); }
+.contact-email-address{ margin:0; font-size:1.25rem; font-weight:700; letter-spacing:.003em; color:var(--text-primary); user-select:text; }
 .contact-btn{
-  padding:.55rem 1.3rem; border-radius:999px; border:none; cursor:pointer;
+  padding:.6rem 1.4rem; border-radius:999px; border:none; cursor:pointer;
   font-size:.88rem; font-weight:600; letter-spacing:.003em; font-family:inherit;
 }
-.contact-btn-cancel{ background:var(--bg-row-hover); color:var(--text-primary); }
-.contact-btn-cancel:hover{ filter:brightness(.96); }
 .contact-btn-send{ background:var(--mail-accent); color:#fff; }
 .contact-btn-send:hover{ filter:brightness(1.06); }

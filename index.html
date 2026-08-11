@@ -98,8 +98,8 @@
       <!-- ---- 메일 폴더 ---- -->
       <nav class="mail-folders">
         <button type="button" id="compose-btn" class="compose-btn">
-          <svg viewBox="0 0 24 24" class="icon-compose"><path d="M4 20l1.2-4.2L15.6 5.4a1.5 1.5 0 012.1 0l1 1a1.5 1.5 0 010 2.1L8.2 18.8 4 20z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
-          메일쓰기
+          <svg viewBox="0 0 24 24" class="icon-compose"><path d="M3 6.5A1.5 1.5 0 014.5 5h15A1.5 1.5 0 0121 6.5v11a1.5 1.5 0 01-1.5 1.5h-15A1.5 1.5 0 013 17.5v-11z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4 6.5l8 6.5 8-6.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          이메일 주소
         </button>
         <ul id="mail-folders-list"></ul>
       </nav>
@@ -143,23 +143,18 @@
 
   <!-- ================= 컨택트 모달 ================= -->
   <div id="contact-overlay" class="contact-overlay">
-    <div class="contact-modal">
+    <div class="contact-modal contact-modal-simple">
       <header class="contact-modal-header">
-        <h2>Contact</h2>
+        <h2>Email</h2>
         <button type="button" id="contact-close" class="contact-close" aria-label="닫기">
           <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </header>
-      <div class="contact-field">
-        <input type="email" id="contact-from" placeholder="From: (보내는 사람 이메일 주소를 입력해주세요)..." />
+      <div class="contact-email-body">
+        <p class="contact-email-label">이메일로 편하게 연락 주세요</p>
+        <p class="contact-email-address">apome@naver.com</p>
+        <button type="button" id="contact-copy" class="contact-btn contact-btn-send">이메일 주소 복사</button>
       </div>
-      <div class="contact-field contact-field-message">
-        <textarea id="contact-message" placeholder="메시지를 입력해주세요..."></textarea>
-      </div>
-      <footer class="contact-modal-footer">
-        <button type="button" id="contact-cancel" class="contact-btn contact-btn-cancel">Cancel</button>
-        <button type="button" id="contact-send" class="contact-btn contact-btn-send">Send</button>
-      </footer>
     </div>
   </div>
 
