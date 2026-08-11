@@ -54,6 +54,7 @@ html,body{
 #notes-icon{ top:50%; left:calc(50% - 60px); transform:translate(-50%,-50%); }
 #mail-icon{ top:50%; left:calc(50% + 60px); transform:translate(-50%,-50%); }
 .icon-glyph{ width:58px; height:58px; }
+.icon-glyph-shadow{ filter:drop-shadow(0 3px 7px rgba(0,0,0,.25)); }
 .app-icon span{
   color:#3a3a3c; font-size:.8rem; font-weight:500;
   letter-spacing:.01em;
