@@ -8,48 +8,72 @@
 </head>
 <body>
 
-  <div id="app">
-    <!-- ================= 메모 목록 ================= -->
-    <aside id="list-pane" class="active">
-      <header class="list-header">
-        <h1>메모</h1>
-      </header>
+  <!-- ================= 데스크톱 ================= -->
+  <div id="desktop">
+    <button id="app-icon">
+      <svg viewBox="0 0 64 64" class="icon-glyph">
+        <rect x="4" y="4" width="56" height="56" rx="13" fill="#fff"/>
+        <path d="M4 17 A13 13 0 0 1 17 4 H47 A13 13 0 0 1 60 17 V19 H4 Z" fill="#ffcc02"/>
+        <rect x="12" y="28" width="40" height="3.4" rx="1.7" fill="#d6d6da"/>
+        <rect x="12" y="37" width="40" height="3.4" rx="1.7" fill="#d6d6da"/>
+        <rect x="12" y="46" width="26" height="3.4" rx="1.7" fill="#d6d6da"/>
+      </svg>
+      <span>메모</span>
+    </button>
+  </div>
 
-      <div class="search-bar">
-        <svg viewBox="0 0 24 24" class="icon-search"><path d="M10 3a7 7 0 105.29 12.71l4.5 4.5a1 1 0 001.42-1.42l-4.5-4.5A7 7 0 0010 3zm-5 7a5 5 0 1110 0 5 5 0 01-10 0z"/></svg>
-        <input type="text" id="search-input" placeholder="검색" />
+  <!-- ================= 메모 앱 윈도우 ================= -->
+  <div id="window" role="dialog" aria-label="메모">
+    <div class="titlebar">
+      <div class="traffic-lights">
+        <button class="tl-btn tl-close" id="win-close" aria-label="닫기"></button>
+        <button class="tl-btn tl-min" id="win-min" aria-label="최소화"></button>
+        <button class="tl-btn tl-zoom" id="win-zoom" aria-label="전체화면"></button>
       </div>
+      <div class="titlebar-label">메모</div>
+    </div>
 
-      <div class="folder-label">
-        <svg viewBox="0 0 24 24" class="icon-folder"><path d="M3 6a2 2 0 012-2h4.5l2 2H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V6z"/></svg>
-        <span>모든 메모</span>
-      </div>
+    <div id="app">
+      <!-- ---- 폴더 ---- -->
+      <nav id="folders-pane">
+        <div class="folders-header">iCloud</div>
+        <ul id="folders-list"></ul>
+      </nav>
 
-      <ul id="notes-list"></ul>
+      <!-- ---- 메모 목록 ---- -->
+      <aside id="list-pane">
+        <header class="list-header">
+          <h1 id="list-title">모든 iCloud</h1>
+          <p id="list-subtitle"></p>
+        </header>
 
-      <footer class="list-footer">
-        <span id="note-count"></span>
-      </footer>
-    </aside>
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24" class="icon-search"><path d="M10 3a7 7 0 105.29 12.71l4.5 4.5a1 1 0 001.42-1.42l-4.5-4.5A7 7 0 0010 3zm-5 7a5 5 0 1110 0 5 5 0 01-10 0z"/></svg>
+          <input type="text" id="search-input" placeholder="검색" />
+        </div>
 
-    <!-- ================= 메모 상세 ================= -->
-    <main id="detail-pane">
-      <header class="detail-header">
-        <button id="back-btn">
-          <svg viewBox="0 0 24 24" class="icon-chevron"><path d="M15.5 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          메모
-        </button>
-        <button id="share-btn" aria-label="공유">
-          <svg viewBox="0 0 24 24" class="icon-share"><path d="M12 3v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
-        </button>
-      </header>
+        <ul id="notes-list"></ul>
+      </aside>
 
-      <div class="detail-body">
-        <p class="detail-date" id="detail-date"></p>
-        <h2 id="detail-title"></h2>
-        <div id="detail-content"></div>
-      </div>
-    </main>
+      <!-- ---- 메모 상세 ---- -->
+      <main id="detail-pane">
+        <header class="detail-header">
+          <button id="back-btn">
+            <svg viewBox="0 0 24 24" class="icon-chevron"><path d="M15.5 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            메모
+          </button>
+          <button id="share-btn" aria-label="공유">
+            <svg viewBox="0 0 24 24" class="icon-share"><path d="M12 3v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+          </button>
+        </header>
+
+        <div class="detail-body">
+          <p class="detail-date" id="detail-date"></p>
+          <h2 id="detail-title"></h2>
+          <div id="detail-content"></div>
+        </div>
+      </main>
+    </div>
   </div>
 
   <script src="script.js"></script>
