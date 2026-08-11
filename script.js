@@ -251,6 +251,14 @@ $("#win-zoom").addEventListener("click", () => {
   windowEl.classList.toggle("maximized");
 });
 
+// 바탕화면(윈도우 바깥) 클릭 시 메모창 닫기
+const desktopEl = $("#desktop");
+desktopEl.addEventListener("click", (e) => {
+  if (e.target === desktopEl && windowEl.classList.contains("open")) {
+    closeWindow();
+  }
+});
+
 // ---------------------------------------------------------
 // 초기 렌더
 // ---------------------------------------------------------
