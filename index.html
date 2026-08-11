@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>선진 — 메모</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div id="app">
+    <!-- ================= 메모 목록 ================= -->
+    <aside id="list-pane" class="active">
+      <header class="list-header">
+        <h1>메모</h1>
+      </header>
+
+      <div class="search-bar">
+        <svg viewBox="0 0 24 24" class="icon-search"><path d="M10 3a7 7 0 105.29 12.71l4.5 4.5a1 1 0 001.42-1.42l-4.5-4.5A7 7 0 0010 3zm-5 7a5 5 0 1110 0 5 5 0 01-10 0z"/></svg>
+        <input type="text" id="search-input" placeholder="검색" />
+      </div>
+
+      <div class="folder-label">
+        <svg viewBox="0 0 24 24" class="icon-folder"><path d="M3 6a2 2 0 012-2h4.5l2 2H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V6z"/></svg>
+        <span>모든 메모</span>
+      </div>
+
+      <ul id="notes-list"></ul>
+
+      <footer class="list-footer">
+        <span id="note-count"></span>
+      </footer>
+    </aside>
+
+    <!-- ================= 메모 상세 ================= -->
+    <main id="detail-pane">
+      <header class="detail-header">
+        <button id="back-btn">
+          <svg viewBox="0 0 24 24" class="icon-chevron"><path d="M15.5 4l-8 8 8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          메모
+        </button>
+        <button id="share-btn" aria-label="공유">
+          <svg viewBox="0 0 24 24" class="icon-share"><path d="M12 3v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M8 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="5" y="11" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        </button>
+      </header>
+
+      <div class="detail-body">
+        <p class="detail-date" id="detail-date"></p>
+        <h2 id="detail-title"></h2>
+        <div id="detail-content"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
