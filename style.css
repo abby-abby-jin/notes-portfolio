@@ -261,7 +261,7 @@ html,body{
   display:flex; align-items:center; justify-content:center; gap:.4rem;
   background:var(--mail-accent); color:#fff; border:none; border-radius:8px;
   padding:.6rem 0; font-size:.86rem; font-weight:600; cursor:pointer;
-  letter-spacing:.003em;
+  letter-spacing:.003em; text-decoration:none;
 }
 .compose-btn:hover{ filter:brightness(1.06); }
 .icon-compose{ width:14px; height:14px; }

@@ -433,7 +433,7 @@ desktopQuery.addEventListener("change", ensureDesktopSelection);
 const mails = [
   {
     id: "intro",
-    folder: "inbox",
+    folder: "sent",
     unread: false,
     starred: true,
     sender: "선진",
@@ -442,16 +442,17 @@ const mails = [
     preview: "반갑습니다! 이 메일함은 제가 작업해온 프로젝트들을 정리해둔 공간이에요.",
     body: [
       "반갑습니다! 이 메일함은 제가 작업해온 프로젝트들을 정리해둔 공간이에요.",
-      "왼쪽 폴더에서 받은메일함 · 보낸메일함을 오가며 프로젝트와 연락처를 확인해보세요.",
+      "왼쪽 폴더에서 보낸메일함 · 임시보관함을 오가며 프로젝트와 연락처를 확인해보세요.",
       "* 아직 실제 프로젝트 내용은 채워지지 않은 프로토타입 단계입니다.",
     ],
   },
   {
     id: "project1",
-    folder: "inbox",
-    unread: true,
+    folder: "sent",
+    unread: false,
     starred: false,
-    sender: "[발신자를 입력해주세요]",
+    sender: "선진",
+    to: "[받는 브랜드/담당자를 입력해주세요]",
     subject: "[프로젝트명을 입력해주세요]",
     date: "어제 오후 3:40",
     preview: "프로젝트 개요, 역할, 기간을 이 자리에 채워주세요.",
@@ -464,10 +465,11 @@ const mails = [
   },
   {
     id: "project2",
-    folder: "inbox",
-    unread: true,
+    folder: "sent",
+    unread: false,
     starred: false,
-    sender: "[발신자를 입력해주세요]",
+    sender: "선진",
+    to: "[받는 브랜드/담당자를 입력해주세요]",
     subject: "[프로젝트명을 입력해주세요]",
     date: "8월 6일",
     preview: "프로젝트 개요, 역할, 기간을 이 자리에 채워주세요.",
@@ -483,7 +485,7 @@ const mails = [
     folder: "sent",
     unread: false,
     starred: false,
-    sender: "나",
+    sender: "선진",
     to: "담당자님",
     subject: "연락처 안내드립니다",
     date: "7월 28일",
@@ -497,7 +499,6 @@ const mails = [
 ];
 
 const mailFolders = [
-  { id: "inbox", label: "받은메일함" },
   { id: "sent", label: "보낸메일함" },
   { id: "draft", label: "임시보관함" },
 ];
@@ -506,7 +507,7 @@ const mailListEl = $("#mail-list");
 const mailSearchInput = $("#mail-search-input");
 const mailMainEl = $(".mail-main");
 
-let activeMailFolder = "inbox";
+let activeMailFolder = "sent";
 let activeMailId = null;
 
 function mailFolderCount(id) {
@@ -550,14 +551,15 @@ function visibleMails() {
       !q ||
       m.subject.toLowerCase().includes(q) ||
       (m.preview || "").toLowerCase().includes(q) ||
-      m.sender.toLowerCase().includes(q);
+      m.sender.toLowerCase().includes(q) ||
+      (m.to || "").toLowerCase().includes(q);
     return inFolder && matchesQuery;
   });
 }
 
 function renderMailList() {
   const filtered = visibleMails();
-  const folderLabel = mailFolders.find((f) => f.id === activeMailFolder)?.label || "받은메일함";
+  const folderLabel = mailFolders.find((f) => f.id === activeMailFolder)?.label || "보낸메일함";
   $("#mail-list-title").textContent = folderLabel;
 
   mailListEl.innerHTML = filtered
@@ -568,7 +570,7 @@ function renderMailList() {
         <button class="mail-star" aria-label="중요 표시" data-id="${m.id}">
           <svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6-4.5-4.1 6-.7z"/></svg>
         </button>
-        <span class="mail-sender">${m.sender}</span>
+        <span class="mail-sender">${m.to || m.sender}</span>
         <span class="mail-subject-wrap">
           <span class="mail-subject">${m.subject}</span>
           <span class="mail-snippet">${m.preview}</span>
