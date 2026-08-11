@@ -1,29 +1,31 @@
 :root{
-  --bg-folders: #e8e8ed;
-  --bg-list: #f2f2f7;
+  --bg-folders: #ffffff;
+  --bg-list: #ffffff;
   --bg-detail: #ffffff;
-  --bg-row-hover: #e2e2e8;
-  --bg-row-active: #cfd3da;
+  --bg-row-hover: #f2f2f4;
+  --bg-row-active: #fdecb0;
   --text-primary: #1c1c1e;
   --text-secondary: #8e8e93;
-  --divider: #d1d1d6;
+  --divider: #e5e5ea;
   --yellow: #ffcc02;
-  --search-bg: #e3e3e8;
+  --search-bg: #eeeef0;
   --accent: #ff9f0a;
-  --titlebar-bg: #e6e6ea;
+  --titlebar-bg: #f7f7f8;
+  --pill: rgba(0,0,0,.045);
 }
 @media (prefers-color-scheme: dark){
   :root{
-    --bg-folders: #19191b;
+    --bg-folders: #1c1c1e;
     --bg-list: #1c1c1e;
     --bg-detail: #000000;
     --bg-row-hover: #2c2c2e;
-    --bg-row-active: #3a3a3c;
+    --bg-row-active: rgba(255,204,2,.22);
     --text-primary: #f2f2f7;
     --text-secondary: #8e8e93;
     --divider: #38383a;
     --search-bg: #2c2c2e;
     --titlebar-bg: #2c2c2e;
+    --pill: rgba(255,255,255,.08);
   }
 }
 
@@ -39,18 +41,19 @@ html,body{
 #desktop{
   position:fixed; inset:0;
   background:#ffffff;
-  display:flex;
-  align-items:flex-start;
-  justify-content:flex-start;
-  padding:2.4rem;
+  overflow:hidden;
 }
 #app-icon{
-  background:none; border:none; cursor:pointer;
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  background:none; border:none; cursor:grab;
   display:flex; flex-direction:column; align-items:center; gap:.45rem;
   width:88px; padding:.6rem .5rem; border-radius:12px;
+  touch-action:none;
 }
 #app-icon:hover{ background:rgba(0,0,0,.045); }
-#app-icon:active{ transform:scale(.96); }
+#app-icon:active{ cursor:grabbing; }
 .icon-glyph{ width:58px; height:58px; filter:drop-shadow(0 3px 8px rgba(0,0,0,.14)); }
 #app-icon span{
   color:#3a3a3c; font-size:.8rem; font-weight:500;
@@ -148,11 +151,11 @@ html,body{
   font-size:.92rem;
 }
 .folder-row:hover{ background:var(--bg-row-hover); }
-.folder-row.active{ background:#3d7bfd; color:#fff; }
-.folder-row.active .folder-count{ color:rgba(255,255,255,.8); }
-.folder-row.active .icon-folder-sm{ fill:#fff; }
+.folder-row.active{ background:var(--pill); color:var(--accent); }
+.folder-row.active .folder-count{ color:var(--accent); opacity:.85; }
+.folder-row.active .icon-folder-sm{ fill:var(--accent); }
 .icon-folder-sm{ width:17px; height:17px; fill:var(--yellow); flex:none; }
-.folder-row .folder-name{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.folder-row .folder-name{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; letter-spacing:-.01em; }
 .folder-count{ font-size:.85rem; color:var(--text-secondary); }
 
 /* ================= 메모 목록 ================= */
@@ -224,7 +227,6 @@ html,body{
   cursor:pointer;
   border-radius:6px;
 }
-.checklist li:hover{ background:var(--bg-row-hover); }
 .check-dot{
   width:19px; height:19px; flex:none;
   border-radius:50%;

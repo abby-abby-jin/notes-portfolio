@@ -69,6 +69,10 @@ const notes = [
   },
 ];
 
+notes.forEach((n) => {
+  if (n.checklist) n.checklist.forEach((c, i) => { c._uid = i; });
+});
+
 const folders = [
   { id: "all", label: "모든 iCloud" },
   { id: "intro", label: "소개" },
@@ -158,13 +162,51 @@ function renderList() {
   });
 }
 
-function renderChecklist(note) {
-  return `<ul class="checklist">${note.checklist
+function checklistMarkup(note) {
+  const sorted = [...note.checklist].sort((a, b) => (a.done === b.done ? 0 : a.done ? 1 : -1));
+  return sorted
     .map(
-      (c, i) =>
-        `<li class="${c.done ? "done" : ""}" data-index="${i}"><span class="check-dot"></span><span>${c.text}</span></li>`
+      (c) =>
+        `<li class="${c.done ? "done" : ""}" data-uid="${c._uid}"><span class="check-dot"></span><span>${c.text}</span></li>`
     )
-    .join("")}</ul>`;
+    .join("");
+}
+
+function bindChecklist(note, ul) {
+  ul.querySelectorAll("li").forEach((li) => {
+    li.addEventListener("click", () => toggleChecklistItem(note, ul, li));
+  });
+}
+
+// 체크 시 취소선을 긋고, 눌린 항목이 자연스럽게 아래로 이동하도록 FLIP 애니메이션 적용
+function toggleChecklistItem(note, ul, li) {
+  const uid = Number(li.dataset.uid);
+  const item = note.checklist.find((c) => c._uid === uid);
+  if (!item) return;
+
+  const firstRects = new Map();
+  Array.from(ul.children).forEach((el) => firstRects.set(el.dataset.uid, el.getBoundingClientRect()));
+
+  item.done = !item.done;
+  ul.innerHTML = checklistMarkup(note);
+  bindChecklist(note, ul);
+
+  Array.from(ul.children).forEach((el) => {
+    const first = firstRects.get(el.dataset.uid);
+    if (!first) return;
+    const dy = first.top - el.getBoundingClientRect().top;
+    if (!dy) return;
+    el.style.transition = "none";
+    el.style.transform = `translateY(${dy}px)`;
+    requestAnimationFrame(() => {
+      el.style.transition = "transform .32s cubic-bezier(.32,.72,0,1)";
+      el.style.transform = "";
+    });
+    el.addEventListener("transitionend", () => { el.style.transition = ""; }, { once: true });
+  });
+
+  const row = listEl.querySelector(`.note-row[data-id="${note.id}"] .row-preview`);
+  if (row) row.textContent = formatPreview(note);
 }
 
 function openNote(id) {
@@ -181,17 +223,10 @@ function openNote(id) {
 
   const content = $("#detail-content");
   if (note.checklist) {
-    content.innerHTML = renderChecklist(note);
-    content.querySelectorAll(".checklist li").forEach((li) => {
-      li.addEventListener("click", () => {
-        const i = Number(li.dataset.index);
-        note.checklist[i].done = !note.checklist[i].done;
-        li.classList.toggle("done", note.checklist[i].done);
-        // 목록의 "N/M개 완료" 미리보기도 함께 갱신
-        const row = listEl.querySelector(`.note-row[data-id="${id}"] .row-preview`);
-        if (row) row.textContent = formatPreview(note);
-      });
-    });
+    content.innerHTML = `<ul class="checklist"></ul>`;
+    const ul = content.querySelector(".checklist");
+    ul.innerHTML = checklistMarkup(note);
+    bindChecklist(note, ul);
   } else {
     content.innerHTML = note.body
       .map((p) => `<p class="${p.startsWith("[") ? "placeholder" : ""}">${p}</p>`)
@@ -274,7 +309,6 @@ function closeWindow() {
   windowEl.classList.remove("open", "maximized");
 }
 
-appIconEl.addEventListener("click", openWindow);
 $("#win-close").addEventListener("click", closeWindow);
 $("#win-min").addEventListener("click", closeWindow);
 
@@ -352,6 +386,46 @@ window.addEventListener("mouseup", () => {
   if (!dragState) return;
   dragState = null;
   windowEl.classList.remove("dragging");
+});
+
+// ---------------------------------------------------------
+// 바탕화면 아이콘 드래그 이동 (드래그가 아니면 클릭으로 간주해 창 열기)
+// ---------------------------------------------------------
+let iconDrag = null;
+let iconWasDragged = false;
+
+appIconEl.addEventListener("mousedown", (e) => {
+  iconWasDragged = false;
+  const rect = appIconEl.getBoundingClientRect();
+  iconDrag = { startX: e.clientX, startY: e.clientY, startLeft: rect.left, startTop: rect.top };
+  e.preventDefault();
+});
+
+window.addEventListener("mousemove", (e) => {
+  if (!iconDrag) return;
+  const dx = e.clientX - iconDrag.startX;
+  const dy = e.clientY - iconDrag.startY;
+  if (Math.abs(dx) > 4 || Math.abs(dy) > 4) iconWasDragged = true;
+  if (!iconWasDragged) return;
+  const w = appIconEl.offsetWidth;
+  const h = appIconEl.offsetHeight;
+  let newLeft = Math.max(0, Math.min(iconDrag.startLeft + dx, window.innerWidth - w));
+  let newTop = Math.max(0, Math.min(iconDrag.startTop + dy, window.innerHeight - h));
+  appIconEl.style.left = `${newLeft}px`;
+  appIconEl.style.top = `${newTop}px`;
+  appIconEl.style.transform = "none";
+});
+
+window.addEventListener("mouseup", () => {
+  iconDrag = null;
+});
+
+appIconEl.addEventListener("click", (e) => {
+  if (iconWasDragged) {
+    e.preventDefault();
+    return;
+  }
+  openWindow();
 });
 
 // ---------------------------------------------------------
