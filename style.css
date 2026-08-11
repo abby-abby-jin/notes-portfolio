@@ -30,7 +30,7 @@
 *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
 html,body{
   margin:0; height:100%;
-  font-family:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-family:"Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Malgun Gothic", sans-serif;
   letter-spacing:.003em;
   overflow:hidden;
 }
@@ -60,24 +60,34 @@ html,body{
 /* ================= 윈도우 ================= */
 #window{
   position:fixed;
-  top:50%; left:50%;
+  inset:0;
+  margin:auto;
   width:min(1120px, 94vw);
   height:min(700px, 88vh);
-  transform:translate(-50%,-50%) scale(.96);
   background:var(--bg-detail);
   border-radius:11px;
   box-shadow:0 30px 70px rgba(0,0,0,.45), 0 0 0 .5px rgba(0,0,0,.2);
   overflow:hidden;
-  display:none;
+  display:flex;
   flex-direction:column;
   opacity:0;
-  transition:opacity .22s ease, transform .22s cubic-bezier(.2,.9,.3,1);
+  visibility:hidden;
+  pointer-events:none;
+  transform:scale(.04);
+  transform-origin:50% 50%;
+  transition:opacity .28s cubic-bezier(.32,.72,0,1), transform .38s cubic-bezier(.32,.72,0,1), visibility 0s linear .38s;
   z-index:10;
 }
-#window.open{ display:flex; opacity:1; transform:translate(-50%,-50%) scale(1); }
+#window.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:scale(1);
+  transition:opacity .28s cubic-bezier(.32,.72,0,1), transform .38s cubic-bezier(.32,.72,0,1), visibility 0s linear 0s;
+}
+#window.dragging{ transition:none; }
 #window.maximized{
-  top:0; left:0; width:100vw; height:100vh;
-  transform:none;
+  inset:0; margin:0; width:100vw; height:100vh;
   border-radius:0;
 }
 
@@ -88,8 +98,10 @@ html,body{
   border-bottom:1px solid var(--divider);
   display:flex; align-items:center;
   padding:0 12px;
-  -webkit-app-region:drag;
+  cursor:grab;
 }
+.titlebar:active{ cursor:grabbing; }
+#window.maximized .titlebar{ cursor:default; }
 .traffic-lights{ display:flex; gap:8px; }
 .tl-btn{
   width:12px; height:12px; border-radius:50%;
@@ -124,8 +136,7 @@ html,body{
   font-size:.76rem;
   color:var(--text-secondary);
   font-weight:600;
-  text-transform:uppercase;
-  letter-spacing:.05em;
+  letter-spacing:.01em;
 }
 #folders-list{ list-style:none; margin:0; padding:0; }
 .folder-row{
@@ -236,8 +247,7 @@ html,body{
   #folders-pane{ display:none; }
 }
 @media (max-width:680px){
-  #window{ width:100vw; height:100vh; top:0; left:0; transform:none; border-radius:0; }
-  #window.open{ transform:none; }
+  #window{ width:100vw; height:100vh; border-radius:0; }
   #list-pane{ width:100%; }
   #app{ position:relative; overflow:hidden; }
   #list-pane, #detail-pane{ position:absolute; top:0; left:0; width:100%; transition:transform .32s cubic-bezier(.32,.72,0,1); }

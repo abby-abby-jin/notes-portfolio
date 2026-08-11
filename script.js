@@ -232,23 +232,80 @@ $("#back-btn").addEventListener("click", () => {
 searchInput.addEventListener("input", renderList);
 
 // ---------------------------------------------------------
-// 데스크톱 ↔ 윈도우
+// 데스크톱 ↔ 윈도우 (아이콘 위치에서 열리고 닫히는 "지니 효과")
 // ---------------------------------------------------------
 const windowEl = $("#window");
+const appIconEl = $("#app-icon");
+const titlebarEl = $(".titlebar");
+
+function iconCenter() {
+  const r = appIconEl.getBoundingClientRect();
+  return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+}
+
+function setGenieOrigin(rect) {
+  const icon = iconCenter();
+  windowEl.style.transformOrigin = `${icon.x - rect.left}px ${icon.y - rect.top}px`;
+}
+
+// 창이 닫혀있는(축소된) 상태에서도 실제 자리(중앙 정렬 또는 드래그된 위치)를 계산
+function restingRect() {
+  const cs = getComputedStyle(windowEl);
+  const width = parseFloat(cs.width);
+  const height = parseFloat(cs.height);
+  let left, top;
+  if (windowEl.style.left) {
+    left = parseFloat(windowEl.style.left);
+    top = parseFloat(windowEl.style.top);
+  } else {
+    left = (window.innerWidth - width) / 2;
+    top = (window.innerHeight - height) / 2;
+  }
+  return { left, top };
+}
 
 function openWindow() {
+  setGenieOrigin(restingRect());
   windowEl.classList.add("open");
   windowEl.classList.remove("maximized");
 }
 function closeWindow() {
+  setGenieOrigin(windowEl.getBoundingClientRect());
   windowEl.classList.remove("open", "maximized");
 }
 
-$("#app-icon").addEventListener("click", openWindow);
+appIconEl.addEventListener("click", openWindow);
 $("#win-close").addEventListener("click", closeWindow);
 $("#win-min").addEventListener("click", closeWindow);
+
+let preZoomRect = null;
 $("#win-zoom").addEventListener("click", () => {
-  windowEl.classList.toggle("maximized");
+  const willMaximize = !windowEl.classList.contains("maximized");
+  if (willMaximize) {
+    preZoomRect = {
+      left: windowEl.style.left,
+      top: windowEl.style.top,
+      right: windowEl.style.right,
+      bottom: windowEl.style.bottom,
+      margin: windowEl.style.margin,
+    };
+    windowEl.style.left = "";
+    windowEl.style.top = "";
+    windowEl.style.right = "";
+    windowEl.style.bottom = "";
+    windowEl.style.margin = "";
+    windowEl.classList.add("maximized");
+  } else {
+    windowEl.classList.remove("maximized");
+    if (preZoomRect) {
+      windowEl.style.left = preZoomRect.left;
+      windowEl.style.top = preZoomRect.top;
+      windowEl.style.right = preZoomRect.right;
+      windowEl.style.bottom = preZoomRect.bottom;
+      windowEl.style.margin = preZoomRect.margin;
+      preZoomRect = null;
+    }
+  }
 });
 
 // 바탕화면(윈도우 바깥) 클릭 시 메모창 닫기
@@ -257,6 +314,44 @@ desktopEl.addEventListener("click", (e) => {
   if (e.target === desktopEl && windowEl.classList.contains("open")) {
     closeWindow();
   }
+});
+
+// ---------------------------------------------------------
+// 타이틀바 드래그로 창 이동
+// ---------------------------------------------------------
+let dragState = null;
+
+titlebarEl.addEventListener("mousedown", (e) => {
+  if (e.target.closest(".traffic-lights")) return;
+  if (windowEl.classList.contains("maximized")) return;
+  const rect = windowEl.getBoundingClientRect();
+  dragState = { startX: e.clientX, startY: e.clientY, startLeft: rect.left, startTop: rect.top };
+  windowEl.style.left = `${rect.left}px`;
+  windowEl.style.top = `${rect.top}px`;
+  windowEl.style.right = "auto";
+  windowEl.style.bottom = "auto";
+  windowEl.style.margin = "0";
+  windowEl.classList.add("dragging");
+  e.preventDefault();
+});
+
+window.addEventListener("mousemove", (e) => {
+  if (!dragState) return;
+  const dx = e.clientX - dragState.startX;
+  const dy = e.clientY - dragState.startY;
+  const w = windowEl.offsetWidth;
+  let newLeft = dragState.startLeft + dx;
+  let newTop = dragState.startTop + dy;
+  newTop = Math.max(0, Math.min(newTop, window.innerHeight - 40));
+  newLeft = Math.max(120 - w, Math.min(newLeft, window.innerWidth - 120));
+  windowEl.style.left = `${newLeft}px`;
+  windowEl.style.top = `${newTop}px`;
+});
+
+window.addEventListener("mouseup", () => {
+  if (!dragState) return;
+  dragState = null;
+  windowEl.classList.remove("dragging");
 });
 
 // ---------------------------------------------------------
