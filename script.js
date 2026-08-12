@@ -482,7 +482,7 @@ function embedHtml(embed) {
     return `<div class="video-embed-wrap"><iframe src="https://www.youtube.com/embed/${id}" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
   }
   if (embed.type === "instagram") {
-    return `<blockquote class="instagram-media" data-instgrm-permalink="${embed.url}" data-instgrm-version="14"></blockquote>`;
+    return `<blockquote class="instagram-media" data-instgrm-permalink="${embed.url}" data-instgrm-captioned data-instgrm-version="14"></blockquote>`;
   }
   return "";
 }
