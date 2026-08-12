@@ -319,7 +319,7 @@ html,body{
 
 .mail-detail-body{ padding:1.2rem 1.8rem 3rem; max-width:900px; width:100%; margin:0 auto; }
 #mail-detail-subject{ font-size:1.4rem; font-weight:700; letter-spacing:0; margin:0 0 .7rem; }
-.mail-meta{ display:flex; flex-direction:column; gap:.2rem; padding-bottom:1rem; margin-bottom:1.1rem; border-bottom:1px solid var(--divider); font-size:.85rem; color:var(--text-secondary); }
+.mail-meta{ display:flex; flex-direction:column; gap:.2rem; padding-bottom:1rem; margin-bottom:3.35rem; border-bottom:1px solid var(--divider); font-size:.85rem; color:var(--text-secondary); }
 #mail-detail-content{ font-size:1rem; line-height:1.5; letter-spacing:0; color:var(--text-primary); }
 #mail-detail-content p{ margin:0 0 2rem; white-space:pre-wrap; }
 #mail-detail-content .placeholder{ color:var(--text-secondary); font-style:italic; }
@@ -451,7 +451,8 @@ html,body{
 .mail-posts{
   display:grid; grid-template-columns:repeat(3, 1fr);
   gap:1rem;
-  margin-bottom:2rem;
+  padding-top:2.25rem;
+  margin-bottom:5rem;
   width:100%;
 }
 @media (max-width:700px){
