@@ -317,11 +317,11 @@ html,body{
 .icon-star{ width:20px; height:20px; fill:none; stroke:var(--text-secondary); stroke-width:1.5; }
 #mail-star-btn.active .icon-star{ fill:#000; stroke:#000; }
 
-.mail-detail-body{ padding:1.2rem 1.8rem 3rem; max-width:680px; width:100%; margin:0 auto; }
+.mail-detail-body{ padding:1.2rem 1.8rem 3rem; max-width:900px; width:100%; margin:0 auto; }
 #mail-detail-subject{ font-size:1.4rem; font-weight:700; letter-spacing:0; margin:0 0 .7rem; }
 .mail-meta{ display:flex; flex-direction:column; gap:.2rem; padding-bottom:1rem; margin-bottom:1.1rem; border-bottom:1px solid var(--divider); font-size:.85rem; color:var(--text-secondary); }
 #mail-detail-content{ font-size:1rem; line-height:1.5; letter-spacing:0; color:var(--text-primary); }
-#mail-detail-content p{ margin:0 0 .8em; white-space:pre-wrap; }
+#mail-detail-content p{ margin:0 0 2rem; white-space:pre-wrap; }
 #mail-detail-content .placeholder{ color:var(--text-secondary); font-style:italic; }
 #mail-detail-content .mail-label{
   display:block;
@@ -451,11 +451,11 @@ html,body{
 .mail-posts{
   display:grid; grid-template-columns:repeat(3, 1fr);
   gap:1rem;
-  margin-bottom:1.4rem;
-  width:calc(100% + 200px); margin-left:-100px;
+  margin-bottom:2rem;
+  width:100%;
 }
-@media (max-width:900px){
-  .mail-posts{ grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); width:100%; margin-left:0; }
+@media (max-width:700px){
+  .mail-posts{ grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); }
 }
 .mail-post-card{
   background:var(--surface, transparent);
