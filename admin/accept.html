@@ -3,23 +3,31 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>초대 수락 중...</title>
+<title>비밀번호 설정</title>
 <style>
-  body{ font-family:-apple-system, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; color:#444; }
+  body{
+    font-family:-apple-system, "Apple SD Gothic Neo", sans-serif;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    height:100vh; margin:0; gap:1.2rem; color:#333; text-align:center; padding:2rem;
+  }
+  button{
+    padding:.8rem 1.6rem; border-radius:8px; border:none;
+    background:#1c1c1e; color:#fff; font-size:1rem; cursor:pointer;
+  }
+  a{ color:#03c75a; }
 </style>
 </head>
 <body>
-<p>잠시만 기다려주세요…</p>
+<p>아래 버튼을 눌러 비밀번호 설정 창을 열어주세요.<br />창이 바로 안 뜨면 몇 초 기다렸다가 다시 눌러주세요.</p>
+<button id="open-btn">비밀번호 설정 창 열기</button>
+<p><a href="./">이미 완료했다면 여기를 눌러 로그인하기</a></p>
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
   if (window.netlifyIdentity) {
-    netlifyIdentity.on("init", (user) => {
-      if (!user) netlifyIdentity.open();
-    });
-    netlifyIdentity.on("login", () => {
-      location.href = "./";
-    });
     netlifyIdentity.init();
+    document.getElementById("open-btn").addEventListener("click", () => {
+      netlifyIdentity.open();
+    });
   }
 </script>
 </body>
