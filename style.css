@@ -439,6 +439,26 @@ html,body{
 }
 .mail-embeds .instagram-media{ margin:0 !important; }
 
+/* ================= SNS 게시물 카드 ================= */
+.mail-posts{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+  gap:1rem; margin-bottom:1.4rem;
+}
+.mail-post-card{
+  background:var(--surface, transparent);
+  border:1px solid var(--divider); border-radius:12px;
+  overflow:hidden;
+}
+.mail-post-image{
+  width:100%; aspect-ratio:1/1;
+  background-size:cover; background-position:center; background-color:var(--bg-row-hover);
+}
+.mail-post-body{ padding:.9rem 1rem 1rem; }
+.mail-post-handle{ font-size:.78rem; color:var(--text-secondary); margin:0 0 .5rem; letter-spacing:.02em; }
+.mail-post-caption{ font-size:.92rem; line-height:1.55; color:var(--text-primary); margin:0 0 .6rem; white-space:pre-wrap; }
+.mail-post-link{ font-size:.78rem; color:var(--text-secondary); text-decoration:none; }
+.mail-post-link:hover{ color:var(--mail-accent); }
+
 /* ================= 첨부 이미지 ================= */
 .mail-images{
   display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));

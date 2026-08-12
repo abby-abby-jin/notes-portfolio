@@ -501,6 +501,20 @@ function loadInstagramEmbedScript() {
   document.body.appendChild(script);
 }
 
+function postCardHtml(post) {
+  const link = post.url
+    ? `<a class="mail-post-link" href="${post.url}" target="_blank" rel="noopener">원본 게시물 보기 →</a>`
+    : "";
+  return `<div class="mail-post-card">
+    <div class="mail-post-image" style="background-image:url('${post.image}')"></div>
+    <div class="mail-post-body">
+      <p class="mail-post-handle">${post.handle || ""}</p>
+      <p class="mail-post-caption">${post.caption || ""}</p>
+      ${link}
+    </div>
+  </div>`;
+}
+
 function openMail(id) {
   const mail = mails.find((m) => m.id === id);
   if (!mail) return;
@@ -528,7 +542,12 @@ function openMail(id) {
     ? `<div class="mail-embeds">${embeds.map(embedHtml).join("")}</div>`
     : "";
 
-  $("#mail-detail-content").innerHTML = embedsHtml + paragraphsToHtml(mail.body) + imagesHtml;
+  const posts = mail.posts || [];
+  const postsHtml = posts.length
+    ? `<div class="mail-posts">${posts.map(postCardHtml).join("")}</div>`
+    : "";
+
+  $("#mail-detail-content").innerHTML = embedsHtml + postsHtml + paragraphsToHtml(mail.body) + imagesHtml;
   $("#mail-detail-content")
     .querySelectorAll(".mail-image-thumb")
     .forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
