@@ -441,8 +441,12 @@ html,body{
 
 /* ================= SNS 게시물 카드 ================= */
 .mail-posts{
-  display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));
   gap:1rem; margin-bottom:1.4rem;
+  width:calc(100% + 200px); margin-left:-100px;
+}
+@media (max-width:900px){
+  .mail-posts{ width:100%; margin-left:0; }
 }
 .mail-post-card{
   background:var(--surface, transparent);
