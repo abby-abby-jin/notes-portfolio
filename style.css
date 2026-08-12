@@ -318,6 +318,14 @@ html,body{
 #mail-detail-content{ font-size:1rem; line-height:1.65; letter-spacing:-.02em; color:var(--text-primary); }
 #mail-detail-content p{ margin:0 0 1.1em; white-space:pre-wrap; }
 #mail-detail-content .placeholder{ color:var(--text-secondary); font-style:italic; }
+#mail-detail-content .mail-label{
+  display:block;
+  color:var(--mail-accent);
+  font-size:.78rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  margin-bottom:.3em;
+}
 
 /* ================= 반응형 ================= */
 @media (max-width:900px){
@@ -418,7 +426,7 @@ html,body{
 /* ================= 임베드 (유튜브/인스타그램) ================= */
 .mail-embeds{
   display:flex; flex-wrap:wrap; gap:1rem;
-  margin-top:.8rem;
+  margin-bottom:1.4rem;
 }
 .video-embed-wrap{
   position:relative; width:100%; max-width:640px;

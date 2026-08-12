@@ -528,7 +528,7 @@ function openMail(id) {
     ? `<div class="mail-embeds">${embeds.map(embedHtml).join("")}</div>`
     : "";
 
-  $("#mail-detail-content").innerHTML = paragraphsToHtml(mail.body) + embedsHtml + imagesHtml;
+  $("#mail-detail-content").innerHTML = embedsHtml + paragraphsToHtml(mail.body) + imagesHtml;
   $("#mail-detail-content")
     .querySelectorAll(".mail-image-thumb")
     .forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
