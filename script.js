@@ -180,6 +180,31 @@ desktopEl.addEventListener("click", (e) => {
   });
 });
 
+// 배경 아스키 별 파티클 (마우스를 움직이면 반짝이는 별이 남았다가 사라짐)
+const starChars = ["·", "·", "·", "+", "*", "✦"];
+let lastStarAt = 0;
+desktopEl.addEventListener("mousemove", (e) => {
+  const now = Date.now();
+  if (now - lastStarAt < 45) return;
+  lastStarAt = now;
+  const rect = desktopEl.getBoundingClientRect();
+  const star = document.createElement("span");
+  star.className = "desktop-star";
+  star.textContent = starChars[Math.floor(Math.random() * starChars.length)];
+  star.style.left = `${e.clientX - rect.left}px`;
+  star.style.top = `${e.clientY - rect.top}px`;
+  star.style.fontSize = `${8 + Math.random() * 10}px`;
+  desktopEl.appendChild(star);
+  requestAnimationFrame(() => {
+    star.style.opacity = String(0.4 + Math.random() * 0.5);
+  });
+  setTimeout(() => {
+    star.style.opacity = "0";
+    star.style.transform = `translateY(${-10 - Math.random() * 10}px)`;
+  }, 250);
+  setTimeout(() => star.remove(), 1400);
+});
+
 // ===========================================================
 // 메모 — 나의 글을 모아두는 공간 (content/notes.json에서 불러옴)
 // ===========================================================
