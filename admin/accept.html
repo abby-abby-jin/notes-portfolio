@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>초대 수락 중...</title>
+<style>
+  body{ font-family:-apple-system, sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0; color:#444; }
+</style>
+</head>
+<body>
+<p>잠시만 기다려주세요…</p>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<script>
+  if (window.netlifyIdentity) {
+    netlifyIdentity.on("init", (user) => {
+      if (!user) netlifyIdentity.open();
+    });
+    netlifyIdentity.on("login", () => {
+      location.href = "./";
+    });
+    netlifyIdentity.init();
+  }
+</script>
+</body>
+</html>
