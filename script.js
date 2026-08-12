@@ -572,7 +572,14 @@ function openMail(id) {
     ? `<div class="mail-posts">${posts.map(postCardHtml).join("")}</div>`
     : "";
 
-  $("#mail-detail-content").innerHTML = embedsHtml + postsHtml + paragraphsToHtml(mail.body) + imagesHtml;
+  const bodyHtml = mail.body.includes("[[POSTS]]")
+    ? mail.body
+        .split("[[POSTS]]")
+        .map((part) => paragraphsToHtml(part))
+        .join(embedsHtml + postsHtml)
+    : embedsHtml + postsHtml + paragraphsToHtml(mail.body);
+
+  $("#mail-detail-content").innerHTML = bodyHtml + imagesHtml;
   $("#mail-detail-content")
     .querySelectorAll(".mail-image-thumb")
     .forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
