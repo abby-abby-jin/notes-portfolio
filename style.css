@@ -54,10 +54,10 @@ html,body{
 #notes-icon{ top:50%; left:calc(50% + 60px); transform:translate(-50%,-50%); }
 .ascii-icon{
   margin:0;
-  font-family:"SF Mono", "Menlo", "Courier New", monospace;
-  font-size:15px; line-height:1.15; letter-spacing:0;
-  color:#f2f2f7; white-space:pre;
-  text-shadow:0 0 4px rgba(255,255,255,.55), 0 0 10px rgba(255,255,255,.25);
+  font-family:"Press Start 2P", "SF Mono", "Menlo", monospace;
+  font-size:34px; line-height:1;
+  color:#f2f2f7;
+  text-shadow:0 0 5px rgba(255,255,255,.6), 0 0 14px rgba(255,255,255,.3);
 }
 .app-icon span{
   color:#d1d1d6; font-size:.8rem; font-weight:500;
