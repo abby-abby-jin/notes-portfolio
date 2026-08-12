@@ -485,8 +485,9 @@ function openMail(id) {
   $("#mail-detail-date").textContent = mail.date;
 
   const images = mail.images || [];
+  const galleryClass = mail.gallery === "sns" ? " sns-grid" : "";
   const imagesHtml = images.length
-    ? `<div class="mail-images">${images
+    ? `<div class="mail-images${galleryClass}">${images
         .map((src) => `<button type="button" class="mail-image-thumb" style="background-image:url('${src}')" data-src="${src}" aria-label="첨부 이미지 크게 보기"></button>`)
         .join("")}</div>`
     : "";

@@ -429,6 +429,14 @@ html,body{
 }
 .mail-image-thumb:hover{ transform:scale(1.02); }
 
+.mail-images.sns-grid{
+  grid-template-columns:repeat(3, 1fr);
+  gap:2px;
+}
+.mail-images.sns-grid .mail-image-thumb{
+  aspect-ratio:1/1; border-radius:0; border:none;
+}
+
 .image-lightbox{
   position:fixed; inset:0;
   background:rgba(0,0,0,.85);
