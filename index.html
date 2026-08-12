@@ -5,14 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>선진</title>
 <link rel="stylesheet" href="style.css" />
-<script>
-  // Netlify Identity 초대/비밀번호 재설정 메일 링크가 메인 화면으로 오면
-  // 비밀번호 설정 창이 뜨지 않으므로, 전용 처리 페이지로 자동 이동시킴
-  // (관리자 페이지 자체의 라우터가 토큰 형식을 바꿔버려 admin/으로 바로 보내면 실패함)
-  if (/invite_token|recovery_token|confirmation_token/.test(location.hash)) {
-    location.href = "admin/accept.html" + location.hash;
-  }
-</script>
 </head>
 <body>
 

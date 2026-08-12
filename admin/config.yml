@@ -1,7 +1,9 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: abby-abby-jin/notes-portfolio
   branch: main
-  site_domain: starlit-begonia-1d805d.netlify.app
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
 
 media_folder: "uploads"
 public_folder: "/uploads"
