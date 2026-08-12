@@ -470,6 +470,37 @@ function renderMailList() {
   });
 }
 
+function youtubeIdFromUrl(url) {
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/);
+  return m ? m[1] : null;
+}
+
+function embedHtml(embed) {
+  if (embed.type === "youtube") {
+    const id = youtubeIdFromUrl(embed.url);
+    if (!id) return "";
+    return `<div class="video-embed-wrap"><iframe src="https://www.youtube.com/embed/${id}" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+  }
+  if (embed.type === "instagram") {
+    return `<blockquote class="instagram-media" data-instgrm-permalink="${embed.url}" data-instgrm-version="14"></blockquote>`;
+  }
+  return "";
+}
+
+function loadInstagramEmbedScript() {
+  if (window.instgrm) {
+    window.instgrm.Embeds.process();
+    return;
+  }
+  if (document.getElementById("instagram-embed-script")) return;
+  const script = document.createElement("script");
+  script.id = "instagram-embed-script";
+  script.async = true;
+  script.src = "https://www.instagram.com/embed.js";
+  script.onload = () => window.instgrm && window.instgrm.Embeds.process();
+  document.body.appendChild(script);
+}
+
 function openMail(id) {
   const mail = mails.find((m) => m.id === id);
   if (!mail) return;
@@ -491,10 +522,20 @@ function openMail(id) {
         .map((src) => `<button type="button" class="mail-image-thumb" style="background-image:url('${src}')" data-src="${src}" aria-label="첨부 이미지 크게 보기"></button>`)
         .join("")}</div>`
     : "";
-  $("#mail-detail-content").innerHTML = paragraphsToHtml(mail.body) + imagesHtml;
+
+  const embeds = mail.embeds || [];
+  const embedsHtml = embeds.length
+    ? `<div class="mail-embeds">${embeds.map(embedHtml).join("")}</div>`
+    : "";
+
+  $("#mail-detail-content").innerHTML = paragraphsToHtml(mail.body) + embedsHtml + imagesHtml;
   $("#mail-detail-content")
     .querySelectorAll(".mail-image-thumb")
     .forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
+
+  if (embeds.some((e) => e.type === "instagram")) {
+    loadInstagramEmbedScript();
+  }
 
   $("#mail-star-btn").classList.toggle("active", !!mail.starred);
 
