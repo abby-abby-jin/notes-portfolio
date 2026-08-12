@@ -469,7 +469,12 @@ html,body{
 }
 .mail-post-body{ padding:.9rem 1rem 1rem; }
 .mail-post-handle{ font-size:.78rem; color:var(--text-secondary); margin:0 0 .5rem; letter-spacing:.02em; }
-.mail-post-caption{ font-size:.92rem; line-height:1.55; color:var(--text-primary); margin:0 0 .6rem; white-space:pre-wrap; }
+.mail-post-caption{
+  font-size:.92rem; line-height:1.55; color:var(--text-primary); margin:0 0 .6rem;
+  white-space:pre-wrap;
+  display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:4;
+  overflow:hidden;
+}
 .mail-post-link{ font-size:.78rem; color:var(--text-secondary); text-decoration:underline; }
 .mail-post-link:hover{ color:var(--text-primary); }
 
