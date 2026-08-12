@@ -1,6 +1,7 @@
 backend:
   name: git-gateway
   branch: main
+  site_domain: starlit-begonia-1d805d.netlify.app
 
 media_folder: "uploads"
 public_folder: "/uploads"
