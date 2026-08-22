@@ -1,7 +1,13 @@
 {
   "folders": [
-    { "id": "intro", "label": "소개" },
-    { "id": "writing", "label": "글" }
+    {
+      "id": "intro",
+      "label": "소개"
+    },
+    {
+      "id": "writing",
+      "label": "글"
+    }
   ],
   "items": [
     {
@@ -13,16 +19,37 @@
       "body": "반갑습니다! 이 메모장은 제가 써온 글과 기록들을 모아두는 공간이에요.\n\n왼쪽 폴더에서 소개 · 글을 골라보시거나, 목록에서 메모를 하나씩 눌러보세요. 방향키(↑/↓)로도 메모 사이를 이동할 수 있어요.\n\n* 작업 포트폴리오는 배경화면의 '메일' 아이콘에서 확인하실 수 있어요."
     },
     {
+      "id": "lepersona",
+      "folder": "writing",
+      "title": "이 문장에서 향이 난다",
+      "date": "8월 19일",
+      "preview": "향수 브랜드 LEPERSONA를 위해 쓴 설명 카피",
+      "embed": "https://lepersona-en.com/Shop_Perfume/?idx=10",
+      "body": "향수 브랜드 LEPERSONA를 위해 쓴 제품 설명 카피예요. 아래에서 실제 페이지를 바로 확인할 수 있어요."
+    },
+    {
       "id": "ideas",
       "folder": "writing",
       "title": "글감 아이디어",
       "date": "8월 3일",
       "preview": "쓰고 싶은 글감 체크리스트",
       "checklist": [
-        { "text": "[아이디어 1]", "done": true },
-        { "text": "[아이디어 2]", "done": true },
-        { "text": "[아이디어 3]", "done": false },
-        { "text": "[아이디어 4]", "done": false }
+        {
+          "text": "[아이디어 1]",
+          "done": true
+        },
+        {
+          "text": "[아이디어 2]",
+          "done": true
+        },
+        {
+          "text": "[아이디어 3]",
+          "done": false
+        },
+        {
+          "text": "[아이디어 4]",
+          "done": false
+        }
       ]
     },
     {

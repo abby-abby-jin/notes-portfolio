@@ -225,6 +225,12 @@ html,body{
 #detail-content{ font-size:1rem; line-height:1.65; letter-spacing:0; color:var(--text-primary); user-select:text; font-weight:400; }
 #detail-content p{ margin:0 0 1.1em; white-space:pre-wrap; }
 #detail-content .placeholder{ color:var(--text-secondary); font-style:italic; }
+.site-embed-wrap{
+  width:100%; height:70vh; min-height:420px;
+  border:1px solid var(--divider); margin:0 0 1.2em;
+  overflow:hidden;
+}
+.site-embed-wrap iframe{ width:100%; height:100%; border:0; }
 
 .checklist{ list-style:none; margin:0 0 1.2em; padding:0; }
 .checklist li{
@@ -298,8 +304,7 @@ html,body{
 .mail-row.starred .mail-star svg{ fill:#000; stroke:#000; }
 .mail-sender{ flex:none; width:130px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.9rem; color:var(--text-primary); }
 .mail-subject-wrap{ flex:1; min-width:0; display:flex; gap:.5em; overflow:hidden; }
-.mail-subject{ font-size:.9rem; color:var(--text-primary); white-space:nowrap; flex:none; }
-.mail-snippet{ font-size:.9rem; color:var(--text-secondary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mail-subject{ font-size:.9rem; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .mail-date{ flex:none; font-size:.8rem; color:var(--text-secondary); width:88px; text-align:right; white-space:nowrap; }
 .mail-row.unread .mail-sender, .mail-row.unread .mail-subject{ font-weight:700; }
 
@@ -350,7 +355,6 @@ html,body{
   .detail-header{ justify-content:space-between; }
   .mail-folders{ display:none; }
   .mail-sender{ width:84px; }
-  .mail-snippet{ display:none; }
   .mail-date{ width:60px; font-size:.68rem; overflow:hidden; text-overflow:ellipsis; }
   .mail-list-header{ flex-wrap:wrap; }
   .mail-list-header .search-bar{ max-width:none; width:100%; order:1; }

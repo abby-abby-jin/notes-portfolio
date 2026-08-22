@@ -180,8 +180,9 @@ desktopEl.addEventListener("click", (e) => {
   });
 });
 
-// 배경 아스키 별 파티클 (마우스를 움직이면 반짝이는 별이 남았다가 사라짐)
-const starChars = ["·", "·", "·", "+", "*", "✦"];
+// 배경 문장 트레일 (마우스를 움직이면 문장이 한 글자씩 남았다가 사라짐)
+const trailSentence = "안녕하세요. 선진의 홈페이지입니다. 제 영어이름은 Ember입니다. 애니메이션 엘리멘탈의 불 원소 캐릭터 걔 맞아요. ";
+let trailIndex = 0;
 let lastStarAt = 0;
 desktopEl.addEventListener("mousemove", (e) => {
   const now = Date.now();
@@ -190,10 +191,11 @@ desktopEl.addEventListener("mousemove", (e) => {
   const rect = desktopEl.getBoundingClientRect();
   const star = document.createElement("span");
   star.className = "desktop-star";
-  star.textContent = starChars[Math.floor(Math.random() * starChars.length)];
+  star.textContent = trailSentence[trailIndex % trailSentence.length];
+  trailIndex++;
   star.style.left = `${e.clientX - rect.left}px`;
   star.style.top = `${e.clientY - rect.top}px`;
-  star.style.fontSize = `${8 + Math.random() * 10}px`;
+  star.style.fontSize = `${11 + Math.random() * 3}px`;
   desktopEl.appendChild(star);
   requestAnimationFrame(() => {
     star.style.opacity = String(0.4 + Math.random() * 0.5);
@@ -267,7 +269,7 @@ function formatPreview(note) {
 
 function renderList() {
   const filtered = visibleNotes();
-  const folderLabel = folders.find((f) => f.id === activeFolder)?.label || "모든 iCloud";
+  const folderLabel = folders.find((f) => f.id === activeFolder)?.label || "모든 메모";
   $("#list-title").textContent = folderLabel;
   $("#list-subtitle").textContent = `${filtered.length}개의 메모`;
 
@@ -357,7 +359,10 @@ function openNote(id) {
     ul.innerHTML = checklistMarkup(note);
     bindChecklist(note, ul);
   } else {
-    content.innerHTML = paragraphsToHtml(note.body);
+    const embedHtml = note.embed
+      ? `<div class="site-embed-wrap"><iframe src="${note.embed}" title="${note.title}" loading="lazy"></iframe></div>`
+      : "";
+    content.innerHTML = embedHtml + paragraphsToHtml(note.body);
   }
 
   detailPane.classList.add("open");
@@ -474,7 +479,6 @@ function renderMailList() {
         <span class="mail-sender">${m.to || m.sender}</span>
         <span class="mail-subject-wrap">
           <span class="mail-subject">${m.subject}</span>
-          <span class="mail-snippet">${m.preview}</span>
         </span>
         <span class="mail-date">${m.date}</span>
       </li>`
@@ -675,7 +679,7 @@ async function loadContent() {
     fetch("content/mails.json").then((r) => r.json()),
   ]);
 
-  folders = [{ id: "all", label: "모든 iCloud" }, ...(notesData.folders || [])];
+  folders = [{ id: "all", label: "모든 메모" }, ...(notesData.folders || [])];
   notes = notesData.items || [];
   notes.forEach((n, i) => {
     if (!n.id) n.id = `note-${i}`;
