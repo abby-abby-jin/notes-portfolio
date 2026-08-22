@@ -362,7 +362,7 @@ function openNote(id) {
     const embedHtml = note.embed
       ? `<div class="site-embed-wrap"><iframe src="${note.embed}" title="${note.title}" loading="lazy"></iframe></div>`
       : "";
-    content.innerHTML = embedHtml + paragraphsToHtml(note.body);
+    content.innerHTML = paragraphsToHtml(note.body) + embedHtml;
   }
 
   detailPane.classList.add("open");
