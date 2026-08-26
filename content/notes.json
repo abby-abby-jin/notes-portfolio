@@ -25,7 +25,8 @@
       "date": "8월 19일",
       "preview": "향수 브랜드 '르 페르소나'를 위해 작성한 제품 설명",
       "embed": "https://lepersona-en.com/Shop_Perfume",
-      "body": "향수 브랜드 '르 페르소나'의 향수 설명글을 작성했습니다.\n제품을 누르면 텍스트를 읽어보실 수 있습니다."
+      "body": "향수 브랜드 '르 페르소나'의 향수 설명글을 작성했습니다.\n제품을 누르면 텍스트를 읽어보실 수 있습니다.",
+      "hideTitle": true
     },
     {
       "id": "ideas",
@@ -74,7 +75,8 @@
           "meta": "배현정 / sompress",
           "text": "너의 이름은 흑꼬리도요 (도요새는 이상하다. 역시 좋다는 말이다)"
         }
-      ]
+      ],
+      "hideTitle": true
     },
     {
       "id": "writing1",

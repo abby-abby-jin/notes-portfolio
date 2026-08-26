@@ -366,7 +366,8 @@ function openNote(id) {
   });
 
   $("#detail-date").textContent = note.date;
-  $("#detail-title").textContent = note.title;
+  $("#detail-title").textContent = note.hideTitle ? "" : note.title;
+  $("#detail-title").style.display = note.hideTitle ? "none" : "";
 
   const content = $("#detail-content");
   if (note.checklist && note.checklist.length) {
