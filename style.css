@@ -256,6 +256,17 @@ html,body{
 }
 .checklist li.done span{ color:var(--text-secondary); text-decoration:line-through; }
 
+.note-group{ margin:0 0 2em; }
+.note-group-label{ font-weight:700; font-size:1.02rem; margin:0 0 .6em; }
+.note-group-items{ list-style:none; margin:0; padding:0; }
+.note-group-item{
+  display:flex; flex-direction:row; align-items:baseline; gap:.5em;
+  padding:.5em 0; border-bottom:1px solid var(--divider);
+}
+.note-group-items li:last-child{ border-bottom:none; }
+.note-group-meta{ font-size:.78rem; color:var(--text-secondary); flex:none; white-space:nowrap; }
+.note-group-text{ font-size:.94rem; color:var(--text-primary); flex:1; }
+
 /* ================= 메일 ================= */
 .mail-folders, .mail-main{
   font-family:"SF Mono", "Menlo", "Courier New", monospace;

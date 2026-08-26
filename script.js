@@ -181,7 +181,7 @@ desktopEl.addEventListener("click", (e) => {
 });
 
 // 배경 문장 트레일 (마우스를 움직이면 문장이 한 글자씩 남았다가 사라짐)
-const trailSentence = "안녕하세요. 선진의 홈페이지입니다. 제 영어이름은 Ember입니다. 애니메이션 엘리멘탈의 불 원소 캐릭터 걔 맞아요. ";
+const trailSentence = "안녕하세요. 선진의 홈페이지입니다. 방문해주셔서 반가워요. Hello, welcome to Sunjin's website. It's nice to have you here. こんにちは。ソンジンのホームページへようこそ。ご訪問いただき、うれしいです。 你好，这里是善珍的网站。欢迎访问，很高兴见到你。 ";
 let trailIndex = 0;
 let lastStarAt = 0;
 desktopEl.addEventListener("mousemove", (e) => {
@@ -264,7 +264,33 @@ function formatPreview(note) {
     const doneCount = note.checklist.filter((c) => c.done).length;
     return `${doneCount}/${note.checklist.length}개 완료`;
   }
+  if (note.groups) {
+    const count = note.groups.reduce((sum, g) => sum + g.items.length, 0);
+    return `${note.groups.length}개 카테고리 · ${count}개 문장`;
+  }
   return note.preview;
+}
+
+function groupsMarkup(note) {
+  return note.groups
+    .map(
+      (g) => `
+      <div class="note-group">
+        <div class="note-group-label">${g.label}</div>
+        <ul class="note-group-items">
+          ${g.items
+            .map(
+              (it) => `
+            <li class="note-group-item">
+              <span class="note-group-meta">${it.meta || ""}</span>
+              <span class="note-group-text">${it.text}</span>
+            </li>`
+            )
+            .join("")}
+        </ul>
+      </div>`
+    )
+    .join("");
 }
 
 function renderList() {
@@ -358,6 +384,8 @@ function openNote(id) {
     const ul = content.querySelector(".checklist");
     ul.innerHTML = checklistMarkup(note);
     bindChecklist(note, ul);
+  } else if (note.groups && note.groups.length) {
+    content.innerHTML = groupsMarkup(note);
   } else {
     const embedHtml = note.embed
       ? `<div class="site-embed-wrap"><iframe src="${note.embed}" title="${note.title}" loading="lazy"></iframe></div>`

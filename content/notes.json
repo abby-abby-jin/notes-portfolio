@@ -30,25 +30,22 @@
     {
       "id": "ideas",
       "folder": "writing",
-      "title": "글감 아이디어",
+      "title": "내가 훔치고 싶은 문장들",
       "date": "8월 3일",
-      "preview": "쓰고 싶은 글감 체크리스트",
-      "checklist": [
+      "preview": "마음에 남은 문장들을 카테고리별로 모아두는 공간",
+      "groups": [
         {
-          "text": "[아이디어 1]",
-          "done": true
+          "label": "[카테고리 1]",
+          "items": [
+            { "meta": "[출처 · 날짜]", "text": "[문장을 적어주세요]" },
+            { "meta": "[출처 · 날짜]", "text": "[문장을 적어주세요]" }
+          ]
         },
         {
-          "text": "[아이디어 2]",
-          "done": true
-        },
-        {
-          "text": "[아이디어 3]",
-          "done": false
-        },
-        {
-          "text": "[아이디어 4]",
-          "done": false
+          "label": "[카테고리 2]",
+          "items": [
+            { "meta": "[출처 · 날짜]", "text": "[문장을 적어주세요]" }
+          ]
         }
       ]
     },
