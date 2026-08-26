@@ -258,7 +258,7 @@ html,body{
 
 .note-entries{ list-style:none; margin:0; padding:0; }
 .note-entry{
-  padding:1em 0; border-bottom:1px solid var(--divider);
+  padding:1.8em 0; border-bottom:1px solid var(--divider);
 }
 .note-entries li:last-child{ border-bottom:none; }
 .note-entry-title{ font-weight:700; font-size:1.02rem; margin:0 0 .3em; }
@@ -331,7 +331,10 @@ html,body{
 .icon-star{ width:20px; height:20px; fill:none; stroke:var(--text-secondary); stroke-width:1.5; }
 #mail-star-btn.active .icon-star{ fill:#000; stroke:#000; }
 
-.mail-detail-body{ padding:1.2rem 1.8rem 3rem; max-width:900px; width:100%; margin:0 auto; }
+.mail-detail-body{
+  padding:1.2rem 1.8rem 3rem; max-width:900px; width:100%; margin:0 auto;
+  font-family:"Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
+}
 #mail-detail-subject{ font-size:1.4rem; font-weight:700; letter-spacing:0; margin:0 0 .7rem; }
 .mail-meta{ display:flex; flex-direction:column; gap:.2rem; padding-bottom:1rem; margin-bottom:3.35rem; border-bottom:1px solid var(--divider); font-size:.85rem; color:var(--text-secondary); }
 #mail-detail-content{ font-size:1rem; line-height:1.5; letter-spacing:0; color:var(--text-primary); }
