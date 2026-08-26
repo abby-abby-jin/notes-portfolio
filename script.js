@@ -264,33 +264,23 @@ function formatPreview(note) {
     const doneCount = note.checklist.filter((c) => c.done).length;
     return `${doneCount}/${note.checklist.length}개 완료`;
   }
-  if (note.groups) {
-    const count = note.groups.reduce((sum, g) => sum + g.items.length, 0);
-    return `${note.groups.length}개 카테고리 · ${count}개 문장`;
+  if (note.entries) {
+    return `${note.entries.length}개 문장`;
   }
   return note.preview;
 }
 
-function groupsMarkup(note) {
-  return note.groups
+function entriesMarkup(note) {
+  return `<ul class="note-entries">${note.entries
     .map(
-      (g) => `
-      <div class="note-group">
-        <div class="note-group-label">${g.label}</div>
-        <ul class="note-group-items">
-          ${g.items
-            .map(
-              (it) => `
-            <li class="note-group-item">
-              <span class="note-group-meta">${it.meta || ""}</span>
-              <span class="note-group-text">${it.text}</span>
-            </li>`
-            )
-            .join("")}
-        </ul>
-      </div>`
+      (it) => `
+      <li class="note-entry">
+        <div class="note-entry-title">${it.title}</div>
+        <div class="note-entry-meta">${it.meta || ""}</div>
+        <div class="note-entry-text">${it.text}</div>
+      </li>`
     )
-    .join("");
+    .join("")}</ul>`;
 }
 
 function renderList() {
@@ -384,8 +374,8 @@ function openNote(id) {
     const ul = content.querySelector(".checklist");
     ul.innerHTML = checklistMarkup(note);
     bindChecklist(note, ul);
-  } else if (note.groups && note.groups.length) {
-    content.innerHTML = groupsMarkup(note);
+  } else if (note.entries && note.entries.length) {
+    content.innerHTML = entriesMarkup(note);
   } else {
     const embedHtml = note.embed
       ? `<div class="site-embed-wrap"><iframe src="${note.embed}" title="${note.title}" loading="lazy"></iframe></div>`

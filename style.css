@@ -256,16 +256,14 @@ html,body{
 }
 .checklist li.done span{ color:var(--text-secondary); text-decoration:line-through; }
 
-.note-group{ margin:0 0 2em; }
-.note-group-label{ font-weight:700; font-size:1.02rem; margin:0 0 .6em; }
-.note-group-items{ list-style:none; margin:0; padding:0; }
-.note-group-item{
-  display:flex; flex-direction:row; align-items:baseline; gap:.5em;
-  padding:.5em 0; border-bottom:1px solid var(--divider);
+.note-entries{ list-style:none; margin:0; padding:0; }
+.note-entry{
+  padding:1em 0; border-bottom:1px solid var(--divider);
 }
-.note-group-items li:last-child{ border-bottom:none; }
-.note-group-meta{ font-size:.78rem; color:var(--text-secondary); flex:none; white-space:nowrap; }
-.note-group-text{ font-size:.94rem; color:var(--text-primary); flex:1; white-space:pre-wrap; }
+.note-entries li:last-child{ border-bottom:none; }
+.note-entry-title{ font-weight:700; font-size:1.02rem; margin:0 0 .3em; }
+.note-entry-meta{ font-size:.78rem; color:var(--text-secondary); margin:0 0 .4em; }
+.note-entry-text{ font-size:.94rem; color:var(--text-primary); white-space:pre-wrap; line-height:1.6; }
 
 /* ================= 메일 ================= */
 .mail-folders, .mail-main{
