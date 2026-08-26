@@ -265,7 +265,7 @@ html,body{
 }
 .note-group-items li:last-child{ border-bottom:none; }
 .note-group-meta{ font-size:.78rem; color:var(--text-secondary); flex:none; white-space:nowrap; }
-.note-group-text{ font-size:.94rem; color:var(--text-primary); flex:1; }
+.note-group-text{ font-size:.94rem; color:var(--text-primary); flex:1; white-space:pre-wrap; }
 
 /* ================= 메일 ================= */
 .mail-folders, .mail-main{
