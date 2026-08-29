@@ -1,11 +1,772 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>선진 — 관리자</title>
+<title>선진 — admin</title>
+<style>
+  :root{
+    --bg:#000; --panel:#0a0a0a; --line:#333; --text:#f2f2f2; --muted:#999; --accent:#4da6ff;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"SF Mono","Menlo","Courier New",monospace;
+    font-size:14px; line-height:1.5;
+  }
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:.8rem 1.2rem; border-bottom:1px solid var(--line);
+    position:sticky; top:0; background:var(--bg); z-index:10;
+  }
+  header h1{ font-size:1rem; margin:0; }
+  header .status{ font-size:.8rem; color:var(--muted); }
+  button{
+    font-family:inherit; font-size:.85rem; background:#000; color:var(--text);
+    border:1px solid var(--line); padding:.4rem .8rem; cursor:pointer;
+  }
+  button:hover{ background:#1a1a1a; }
+  button.primary{ border-color:var(--accent); color:var(--accent); }
+  button.danger{ border-color:#ff5c5c; color:#ff5c5c; }
+  input, textarea, select{
+    font-family:inherit; font-size:.85rem; background:#0a0a0a; color:var(--text);
+    border:1px solid var(--line); padding:.5rem; width:100%;
+  }
+  textarea{ resize:vertical; }
+  label{ display:block; font-size:.75rem; color:var(--muted); margin:.9rem 0 .3rem; }
+  .row{ display:flex; gap:.8rem; }
+  .row > div{ flex:1; }
+  main{ display:none; }
+  main.active{ display:block; }
+
+  /* ---- login ---- */
+  #login{ max-width:480px; margin:4rem auto; padding:0 1.2rem; }
+  #login p{ color:var(--muted); font-size:.85rem; line-height:1.7; }
+  #login a{ color:var(--accent); }
+
+  /* ---- layout ---- */
+  .tabs{ display:flex; gap:0; border-bottom:1px solid var(--line); }
+  .tabs button{ border:none; border-bottom:2px solid transparent; padding:.7rem 1.2rem; }
+  .tabs button.active{ border-bottom-color:var(--accent); color:var(--accent); }
+  .workspace{ display:flex; height:calc(100vh - 96px); }
+  .sidebar{ width:260px; flex:none; border-right:1px solid var(--line); overflow-y:auto; }
+  .sidebar-item{ padding:.6rem 1rem; border-bottom:1px solid #1a1a1a; cursor:pointer; }
+  .sidebar-item:hover{ background:#111; }
+  .sidebar-item.active{ background:#141414; color:var(--accent); }
+  .sidebar-item .sub{ display:block; font-size:.7rem; color:var(--muted); }
+  .sidebar-add{ padding:.7rem 1rem; border-bottom:1px solid var(--line); }
+  .editor{ flex:1; overflow-y:auto; padding:1.2rem 1.6rem 4rem; }
+  .editor-empty{ color:var(--muted); padding:2rem; }
+  .editor-actions{ display:flex; gap:.6rem; margin-top:1.4rem; padding-top:1rem; border-top:1px solid var(--line); }
+  .checkbox-row{ display:flex; align-items:center; gap:.5rem; margin:.9rem 0 .3rem; }
+  .checkbox-row input{ width:auto; }
+  .checkbox-row label{ margin:0; color:var(--text); font-size:.85rem; }
+
+  .list-editor{ border:1px solid var(--line); padding:.8rem; margin-top:.3rem; }
+  .list-editor-row{ display:flex; gap:.5rem; align-items:flex-start; margin-bottom:.6rem; padding-bottom:.6rem; border-bottom:1px solid #1a1a1a; }
+  .list-editor-row:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .list-editor-row .fields{ flex:1; display:flex; flex-direction:column; gap:.4rem; }
+  .list-editor-row img.thumb{ width:60px; height:60px; object-fit:cover; border:1px solid var(--line); flex:none; }
+  .toolbar{ display:flex; gap:.4rem; flex-wrap:wrap; margin:.3rem 0; }
+  .toolbar button{ padding:.25rem .55rem; font-size:.72rem; }
+  .preview{
+    border:1px solid var(--line); padding:1rem; margin-top:.5rem; background:#fff; color:#000;
+    font-family:"Apple SD Gothic Neo", -apple-system, sans-serif; font-size:14px; line-height:1.6;
+    max-height:340px; overflow-y:auto;
+  }
+  .preview p{ margin:0 0 1em; white-space:pre-wrap; }
+  .preview .mail-label{ display:block; font-weight:700; font-style:italic; text-decoration:underline; color:#03c75a; font-size:.8rem; margin-bottom:.2em; }
+  .toast{
+    position:fixed; left:50%; bottom:1.6rem; transform:translateX(-50%);
+    background:#fff; color:#000; padding:.6rem 1rem; font-size:.85rem;
+    opacity:0; pointer-events:none; transition:opacity .2s;
+  }
+  .toast.show{ opacity:1; }
+  small.hint{ display:block; color:var(--muted); font-size:.72rem; margin-top:.2rem; }
+</style>
 </head>
 <body>
-<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+<div id="login">
+  <h1 style="font-size:1.1rem">선진 — admin 로그인</h1>
+  <p>
+    GitHub Personal Access Token(PAT)이 필요해요. 아래 순서대로 발급해주세요:<br/><br/>
+    1. <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">github.com/settings/tokens</a> 접속 → "Generate new token" (Fine-grained)<br/>
+    2. Repository access → "Only select repositories" → <b>abby-abby-jin/notes-portfolio</b> 선택<br/>
+    3. Permissions → "Contents" → <b>Read and write</b> 로 설정<br/>
+    4. 생성된 토큰을 아래에 붙여넣기 (이 브라우저에만 저장되고, 어디로도 전송되지 않아요)
+  </p>
+  <label>GitHub Token</label>
+  <input type="password" id="pat-input" placeholder="github_pat_..." />
+  <div class="editor-actions">
+    <button class="primary" id="login-btn">로그인</button>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <header>
+    <h1>선진 — admin</h1>
+    <div style="display:flex; align-items:center; gap:1rem;">
+      <span class="status" id="status-text"></span>
+      <button id="logout-btn">로그아웃</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="mail">메일함</button>
+    <button class="tab-btn" data-tab="notes">메모</button>
+  </div>
+
+  <main id="mail-tab" class="active">
+    <div class="workspace">
+      <div class="sidebar">
+        <div class="sidebar-add"><button id="mail-add-btn" style="width:100%">+ 새 메일</button></div>
+        <div id="mail-list"></div>
+      </div>
+      <div class="editor" id="mail-editor">
+        <div class="editor-empty">왼쪽에서 메일을 선택하세요.</div>
+      </div>
+    </div>
+  </main>
+
+  <main id="notes-tab">
+    <div class="workspace">
+      <div class="sidebar">
+        <div class="sidebar-add"><button id="note-add-btn" style="width:100%">+ 새 메모</button></div>
+        <div id="note-list"></div>
+      </div>
+      <div class="editor" id="note-editor">
+        <div class="editor-empty">왼쪽에서 메모를 선택하세요.</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const OWNER = "abby-abby-jin";
+const REPO = "notes-portfolio";
+const $ = (s, el) => (el || document).querySelector(s);
+const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+
+function toast(msg){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+function b64EncodeUtf8(str){
+  return btoa(unescape(encodeURIComponent(str)));
+}
+function b64DecodeUtf8(b64){
+  return decodeURIComponent(escape(atob(b64)));
+}
+
+function getToken(){ return localStorage.getItem("gh_pat") || ""; }
+
+async function ghGetFile(path){
+  const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+    headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github+json" },
+  });
+  if (!res.ok) throw new Error(`GET ${path} 실패: ${res.status}`);
+  const data = await res.json();
+  return { content: b64DecodeUtf8(data.content), sha: data.sha };
+}
+
+async function ghPutFile(path, content, sha, message){
+  const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
+    body: JSON.stringify({ message, content: b64EncodeUtf8(content), sha: sha || undefined }),
+  });
+  if (!res.ok){
+    const err = await res.json().catch(() => ({}));
+    throw new Error(`저장 실패: ${res.status} ${err.message || ""}`);
+  }
+  return res.json();
+}
+
+async function ghPutBinaryFile(path, base64Content, message){
+  let sha;
+  try {
+    const existing = await ghGetFileRaw(path);
+    sha = existing.sha;
+  } catch (e) { /* file doesn't exist yet */ }
+  const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+    method: "PUT",
+    headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github+json", "Content-Type": "application/json" },
+    body: JSON.stringify({ message, content: base64Content, sha: sha || undefined }),
+  });
+  if (!res.ok){
+    const err = await res.json().catch(() => ({}));
+    throw new Error(`이미지 업로드 실패: ${res.status} ${err.message || ""}`);
+  }
+  return res.json();
+}
+
+async function ghGetFileRaw(path){
+  const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+    headers: { Authorization: `Bearer ${getToken()}`, Accept: "application/vnd.github+json" },
+  });
+  if (!res.ok) throw new Error("not found");
+  return res.json();
+}
+
+function fileToBase64(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+// ===========================================================
+// 상태
+// ===========================================================
+let mailsData = null, mailsSha = null;
+let notesData = null, notesSha = null;
+let activeMailId = null, activeNoteId = null;
+
+async function loadAll(){
+  const [m, n] = await Promise.all([
+    ghGetFile("content/mails.json"),
+    ghGetFile("content/notes.json"),
+  ]);
+  mailsData = JSON.parse(m.content);
+  mailsSha = m.sha;
+  notesData = JSON.parse(n.content);
+  notesSha = n.sha;
+}
+
+// ===========================================================
+// 메일 목록/편집
+// ===========================================================
+function renderMailList(){
+  const list = $("#mail-list");
+  list.innerHTML = "";
+  mailsData.items.forEach((m) => {
+    const div = document.createElement("div");
+    div.className = "sidebar-item" + (m.id === activeMailId ? " active" : "");
+    div.innerHTML = `${m.subject || "(제목 없음)"}<span class="sub">${m.id} · ${m.to || m.sender}</span>`;
+    div.addEventListener("click", () => { activeMailId = m.id; renderMailList(); renderMailEditor(); });
+    list.appendChild(div);
+  });
+}
+
+function mailLabelToolbar(textareaId){
+  const labels = ["CLIENT", "IDEA", "ROLE", "RESULT", "AWARD", "BEHIND", "WEBSITE"];
+  return `<div class="toolbar">${labels.map((l) =>
+    `<button type="button" data-insert-label="${l}" data-target="${textareaId}">+ ${l}</button>`
+  ).join("")}<button type="button" data-insert-posts="1" data-target="${textareaId}">+ [[POSTS]]</button></div>`;
+}
+
+function paragraphsPreview(text){
+  return (text || "")
+    .split(/\n\s*\n/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => `<p>${p}</p>`)
+    .join("");
+}
+
+function renderMailEditor(){
+  const root = $("#mail-editor");
+  if (!activeMailId){ root.innerHTML = `<div class="editor-empty">왼쪽에서 메일을 선택하세요.</div>`; return; }
+  const m = mailsData.items.find((x) => x.id === activeMailId);
+  if (!m){ root.innerHTML = `<div class="editor-empty">항목을 찾을 수 없어요.</div>`; return; }
+
+  root.innerHTML = `
+    <label>ID</label>
+    <input id="f-id" value="${m.id}" />
+    <div class="row">
+      <div><label>제목 (subject)</label><input id="f-subject" value="${m.subject || ""}" /></div>
+      <div><label>날짜 (date)</label><input id="f-date" value="${m.date || ""}" /></div>
+    </div>
+    <div class="row">
+      <div><label>받는 사람 (to)</label><input id="f-to" value="${m.to || ""}" /></div>
+      <div><label>보낸 사람 (sender)</label><input id="f-sender" value="${m.sender || "선진"}" /></div>
+    </div>
+    <div class="row">
+      <div>
+        <label>폴더</label>
+        <select id="f-folder">
+          <option value="sent" ${m.folder === "sent" ? "selected" : ""}>보낸메일함</option>
+          <option value="draft" ${m.folder === "draft" ? "selected" : ""}>보낼메일함</option>
+        </select>
+      </div>
+      <div></div>
+    </div>
+    <div class="checkbox-row"><input type="checkbox" id="f-starred" ${m.starred ? "checked" : ""} /><label for="f-starred">별표 (starred)</label></div>
+    <div class="checkbox-row"><input type="checkbox" id="f-unread" ${m.unread ? "checked" : ""} /><label for="f-unread">안읽음 (unread)</label></div>
+
+    <label>미리보기 텍스트 (preview)</label>
+    <input id="f-preview" value="${(m.preview || "").replace(/"/g, "&quot;")}" />
+
+    <label>본문 (body)</label>
+    ${mailLabelToolbar("f-body")}
+    <textarea id="f-body" rows="14">${m.body || ""}</textarea>
+    <small class="hint">선택한 텍스트에 라벨을 씌우려면 텍스트를 드래그하고 버튼을 누르세요. 문단 사이는 빈 줄 하나로 구분됩니다.</small>
+    <div class="preview" id="f-preview-render"></div>
+
+    <label>첨부 이미지 (images)</label>
+    <div class="list-editor" id="f-images"></div>
+    <div style="margin-top:.5rem"><input type="file" id="f-image-upload" accept="image/*" /> <small class="hint">업로드하면 uploads/ 폴더에 저장되고 목록에 자동 추가돼요.</small></div>
+
+    <label>임베드 (embeds — 유튜브/인스타그램 링크)</label>
+    <div class="list-editor" id="f-embeds"></div>
+    <button type="button" id="f-embed-add" style="margin-top:.4rem">+ 임베드 추가</button>
+
+    <label>SNS 게시물 카드 (posts)</label>
+    <div class="list-editor" id="f-posts"></div>
+    <button type="button" id="f-post-add" style="margin-top:.4rem">+ 게시물 추가</button>
+
+    <div class="editor-actions">
+      <button class="primary" id="f-save">저장 (GitHub에 커밋)</button>
+      <button class="danger" id="f-delete">이 메일 삭제</button>
+    </div>
+  `;
+
+  // preview render
+  const updatePreview = () => {
+    $("#f-preview-render").innerHTML = paragraphsPreview($("#f-body").value);
+  };
+  $("#f-body").addEventListener("input", updatePreview);
+  updatePreview();
+
+  // label insert buttons
+  $$('[data-insert-label]').forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const label = btn.dataset.insertLabel;
+      const ta = $("#" + btn.dataset.target);
+      const start = ta.selectionStart, end = ta.selectionEnd;
+      const selected = ta.value.slice(start, end);
+      const insertion = `<span class="mail-label">${label}</span>${selected}`;
+      ta.value = ta.value.slice(0, start) + insertion + ta.value.slice(end);
+      ta.focus();
+      updatePreview();
+    });
+  });
+  $$('[data-insert-posts]').forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const ta = $("#" + btn.dataset.target);
+      const start = ta.selectionStart;
+      ta.value = ta.value.slice(0, start) + "[[POSTS]]" + ta.value.slice(start);
+      ta.focus();
+      updatePreview();
+    });
+  });
+
+  renderImageList(m);
+  renderEmbedList(m);
+  renderPostList(m);
+
+  $("#f-image-upload").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    toast("이미지 업로드 중...");
+    try {
+      const b64 = await fileToBase64(file);
+      const safeName = `${m.id}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-]/g, "_")}`;
+      const path = `uploads/${safeName}`;
+      await ghPutBinaryFile(path, b64, `이미지 업로드: ${safeName}`);
+      m.images = m.images || [];
+      m.images.push(path);
+      renderImageList(m);
+      toast("이미지 업로드 완료. 저장을 눌러 반영하세요.");
+    } catch (err) {
+      toast(err.message);
+    }
+    e.target.value = "";
+  });
+
+  $("#f-embed-add").addEventListener("click", () => {
+    m.embeds = m.embeds || [];
+    m.embeds.push({ type: "youtube", url: "" });
+    renderEmbedList(m);
+  });
+  $("#f-post-add").addEventListener("click", () => {
+    m.posts = m.posts || [];
+    m.posts.push({ image: "", handle: "@binggraekorea", caption: "", url: "" });
+    renderPostList(m);
+  });
+
+  $("#f-save").addEventListener("click", () => saveMail(m));
+  $("#f-delete").addEventListener("click", () => deleteMail(m));
+}
+
+function renderImageList(m){
+  const box = $("#f-images");
+  const imgs = m.images || [];
+  if (!imgs.length){ box.innerHTML = `<small class="hint">이미지 없음</small>`; return; }
+  box.innerHTML = imgs.map((src, i) => `
+    <div class="list-editor-row">
+      <img class="thumb" src="https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${src}" onerror="this.style.display='none'" />
+      <div class="fields">
+        <input data-img-idx="${i}" value="${src}" />
+      </div>
+      <button type="button" data-img-remove="${i}">삭제</button>
+    </div>
+  `).join("");
+  $$('[data-img-idx]', box).forEach((inp) => {
+    inp.addEventListener("input", () => { m.images[Number(inp.dataset.imgIdx)] = inp.value; });
+  });
+  $$('[data-img-remove]', box).forEach((btn) => {
+    btn.addEventListener("click", () => { m.images.splice(Number(btn.dataset.imgRemove), 1); renderImageList(m); });
+  });
+}
+
+function renderEmbedList(m){
+  const box = $("#f-embeds");
+  const embeds = m.embeds || [];
+  if (!embeds.length){ box.innerHTML = `<small class="hint">임베드 없음</small>`; return; }
+  box.innerHTML = embeds.map((em, i) => `
+    <div class="list-editor-row">
+      <div class="fields">
+        <select data-em-type="${i}">
+          <option value="youtube" ${em.type === "youtube" ? "selected" : ""}>youtube</option>
+          <option value="instagram" ${em.type === "instagram" ? "selected" : ""}>instagram</option>
+        </select>
+        <input data-em-url="${i}" value="${em.url || ""}" placeholder="https://..." />
+      </div>
+      <button type="button" data-em-remove="${i}">삭제</button>
+    </div>
+  `).join("");
+  $$('[data-em-type]', box).forEach((el) => el.addEventListener("change", () => { embeds[Number(el.dataset.emType)].type = el.value; }));
+  $$('[data-em-url]', box).forEach((el) => el.addEventListener("input", () => { embeds[Number(el.dataset.emUrl)].url = el.value; }));
+  $$('[data-em-remove]', box).forEach((btn) => btn.addEventListener("click", () => { embeds.splice(Number(btn.dataset.emRemove), 1); renderEmbedList(m); }));
+}
+
+function renderPostList(m){
+  const box = $("#f-posts");
+  const posts = m.posts || [];
+  if (!posts.length){ box.innerHTML = `<small class="hint">게시물 없음</small>`; return; }
+  box.innerHTML = posts.map((p, i) => `
+    <div class="list-editor-row">
+      <img class="thumb" src="https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${p.image || ""}" onerror="this.style.display='none'" />
+      <div class="fields">
+        <input data-post-image="${i}" value="${p.image || ""}" placeholder="uploads/..." />
+        <input data-post-handle="${i}" value="${p.handle || ""}" placeholder="@handle" />
+        <textarea data-post-caption="${i}" rows="3" placeholder="캡션">${p.caption || ""}</textarea>
+        <input data-post-url="${i}" value="${p.url || ""}" placeholder="원본 링크 (선택)" />
+      </div>
+      <button type="button" data-post-remove="${i}">삭제</button>
+    </div>
+  `).join("");
+  $$('[data-post-image]', box).forEach((el) => el.addEventListener("input", () => { posts[Number(el.dataset.postImage)].image = el.value; }));
+  $$('[data-post-handle]', box).forEach((el) => el.addEventListener("input", () => { posts[Number(el.dataset.postHandle)].handle = el.value; }));
+  $$('[data-post-caption]', box).forEach((el) => el.addEventListener("input", () => { posts[Number(el.dataset.postCaption)].caption = el.value; }));
+  $$('[data-post-url]', box).forEach((el) => el.addEventListener("input", () => { posts[Number(el.dataset.postUrl)].url = el.value; }));
+  $$('[data-post-remove]', box).forEach((btn) => btn.addEventListener("click", () => { posts.splice(Number(btn.dataset.postRemove), 1); renderPostList(m); }));
+}
+
+function collectMailForm(m){
+  m.subject = $("#f-subject").value;
+  m.date = $("#f-date").value;
+  m.to = $("#f-to").value;
+  m.sender = $("#f-sender").value;
+  m.folder = $("#f-folder").value;
+  m.starred = $("#f-starred").checked;
+  m.unread = $("#f-unread").checked;
+  m.preview = $("#f-preview").value;
+  m.body = $("#f-body").value;
+}
+
+async function saveMail(m){
+  collectMailForm(m);
+  toast("저장 중...");
+  try {
+    const fresh = await ghGetFile("content/mails.json");
+    const freshData = JSON.parse(fresh.content);
+    const idx = freshData.items.findIndex((x) => x.id === m.id);
+    if (idx >= 0) freshData.items[idx] = m; else freshData.items.push(m);
+    const content = JSON.stringify(freshData, null, 2);
+    const result = await ghPutFile("content/mails.json", content, fresh.sha, `admin: ${m.subject} 수정`);
+    mailsData = freshData;
+    mailsSha = result.content.sha;
+    toast("저장 완료! 1~2분 후 사이트에 반영돼요.");
+    renderMailList();
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+async function deleteMail(m){
+  if (!confirm(`"${m.subject}" 메일을 정말 삭제할까요?`)) return;
+  toast("삭제 중...");
+  try {
+    const fresh = await ghGetFile("content/mails.json");
+    const freshData = JSON.parse(fresh.content);
+    freshData.items = freshData.items.filter((x) => x.id !== m.id);
+    const content = JSON.stringify(freshData, null, 2);
+    const result = await ghPutFile("content/mails.json", content, fresh.sha, `admin: ${m.subject} 삭제`);
+    mailsData = freshData;
+    mailsSha = result.content.sha;
+    activeMailId = null;
+    renderMailList();
+    renderMailEditor();
+    toast("삭제 완료!");
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+$("#mail-add-btn").addEventListener("click", () => {
+  const id = "p" + Date.now();
+  const newMail = {
+    id, folder: "sent", unread: false, starred: false,
+    sender: "선진", to: "", subject: "새 메일", date: "2026",
+    preview: "", images: [],
+    body: '<span class="mail-label">CLIENT</span>\n\n<span class="mail-label">ROLE</span>',
+  };
+  mailsData.items.unshift(newMail);
+  activeMailId = id;
+  renderMailList();
+  renderMailEditor();
+});
+
+// ===========================================================
+// 메모 목록/편집
+// ===========================================================
+function renderNoteList(){
+  const list = $("#note-list");
+  list.innerHTML = "";
+  notesData.items.forEach((n) => {
+    const div = document.createElement("div");
+    div.className = "sidebar-item" + (n.id === activeNoteId ? " active" : "");
+    div.innerHTML = `${n.title || "(제목 없음)"}<span class="sub">${n.id}</span>`;
+    div.addEventListener("click", () => { activeNoteId = n.id; renderNoteList(); renderNoteEditor(); });
+    list.appendChild(div);
+  });
+}
+
+function renderNoteEditor(){
+  const root = $("#note-editor");
+  if (!activeNoteId){ root.innerHTML = `<div class="editor-empty">왼쪽에서 메모를 선택하세요.</div>`; return; }
+  const n = notesData.items.find((x) => x.id === activeNoteId);
+  if (!n){ root.innerHTML = `<div class="editor-empty">항목을 찾을 수 없어요.</div>`; return; }
+
+  const kind = n.checklist ? "checklist" : (n.groups ? "groups" : (n.entries ? "entries" : "body"));
+
+  root.innerHTML = `
+    <label>ID</label>
+    <input id="n-id" value="${n.id}" />
+    <div class="row">
+      <div><label>제목 (title)</label><input id="n-title" value="${n.title || ""}" /></div>
+      <div><label>날짜 (date)</label><input id="n-date" value="${n.date || ""}" /></div>
+    </div>
+    <label>폴더</label>
+    <select id="n-folder">
+      <option value="intro" ${n.folder === "intro" ? "selected" : ""}>소개</option>
+      <option value="writing" ${n.folder === "writing" ? "selected" : ""}>글</option>
+    </select>
+    <label>미리보기 텍스트 (preview)</label>
+    <input id="n-preview" value="${(n.preview || "").replace(/"/g, "&quot;")}" />
+    <div class="checkbox-row"><input type="checkbox" id="n-hide-title" ${n.hideTitle ? "checked" : ""} /><label for="n-hide-title">상세 화면에서 제목 숨기기 (hideTitle)</label></div>
+
+    <label>임베드 URL (embed — 외부 사이트, 선택)</label>
+    <input id="n-embed" value="${n.embed || ""}" placeholder="https://..." />
+
+    <label>유형</label>
+    <select id="n-kind">
+      <option value="body" ${kind === "body" ? "selected" : ""}>일반 본문 (body)</option>
+      <option value="checklist" ${kind === "checklist" ? "selected" : ""}>체크리스트</option>
+      <option value="entries" ${kind === "entries" ? "selected" : ""}>목록형 (제목+메타+본문 반복)</option>
+    </select>
+
+    <div id="n-kind-fields"></div>
+
+    <div class="editor-actions">
+      <button class="primary" id="n-save">저장 (GitHub에 커밋)</button>
+      <button class="danger" id="n-delete">이 메모 삭제</button>
+    </div>
+  `;
+
+  const kindFields = $("#n-kind-fields");
+  function renderKindFields(selectedKind){
+    if (selectedKind === "body"){
+      kindFields.innerHTML = `<label>본문 (body)</label><textarea id="n-body" rows="10">${n.body || ""}</textarea><small class="hint">문단 사이는 빈 줄 하나로 구분됩니다.</small>`;
+    } else if (selectedKind === "checklist"){
+      kindFields.innerHTML = `<label>체크리스트</label><div class="list-editor" id="n-checklist"></div><button type="button" id="n-checklist-add" style="margin-top:.4rem">+ 항목 추가</button>`;
+      renderChecklistEditor(n);
+      $("#n-checklist-add").addEventListener("click", () => {
+        n.checklist = n.checklist || [];
+        n.checklist.push({ text: "", done: false });
+        renderChecklistEditor(n);
+      });
+    } else if (selectedKind === "entries"){
+      kindFields.innerHTML = `<label>목록 항목</label><div class="list-editor" id="n-entries"></div><button type="button" id="n-entries-add" style="margin-top:.4rem">+ 항목 추가</button>`;
+      renderEntriesEditor(n);
+      $("#n-entries-add").addEventListener("click", () => {
+        n.entries = n.entries || [];
+        n.entries.push({ title: "", meta: "", text: "" });
+        renderEntriesEditor(n);
+      });
+    }
+  }
+  renderKindFields(kind);
+  $("#n-kind").addEventListener("change", (e) => renderKindFields(e.target.value));
+
+  $("#n-save").addEventListener("click", () => saveNote(n));
+  $("#n-delete").addEventListener("click", () => deleteNote(n));
+}
+
+function renderChecklistEditor(n){
+  const box = $("#n-checklist");
+  const items = n.checklist || [];
+  if (!items.length){ box.innerHTML = `<small class="hint">항목 없음</small>`; return; }
+  box.innerHTML = items.map((c, i) => `
+    <div class="list-editor-row">
+      <input type="checkbox" data-cl-done="${i}" ${c.done ? "checked" : ""} style="width:auto" />
+      <div class="fields"><input data-cl-text="${i}" value="${(c.text || "").replace(/"/g, "&quot;")}" /></div>
+      <button type="button" data-cl-remove="${i}">삭제</button>
+    </div>
+  `).join("");
+  $$('[data-cl-done]', box).forEach((el) => el.addEventListener("change", () => { items[Number(el.dataset.clDone)].done = el.checked; }));
+  $$('[data-cl-text]', box).forEach((el) => el.addEventListener("input", () => { items[Number(el.dataset.clText)].text = el.value; }));
+  $$('[data-cl-remove]', box).forEach((btn) => btn.addEventListener("click", () => { items.splice(Number(btn.dataset.clRemove), 1); renderChecklistEditor(n); }));
+}
+
+function renderEntriesEditor(n){
+  const box = $("#n-entries");
+  const items = n.entries || [];
+  if (!items.length){ box.innerHTML = `<small class="hint">항목 없음</small>`; return; }
+  box.innerHTML = items.map((e, i) => `
+    <div class="list-editor-row">
+      <div class="fields">
+        <input data-en-title="${i}" value="${(e.title || "").replace(/"/g, "&quot;")}" placeholder="제목 (예: 책 제목)" />
+        <input data-en-meta="${i}" value="${(e.meta || "").replace(/"/g, "&quot;")}" placeholder="부제 (예: 저자 / 출판사)" />
+        <textarea data-en-text="${i}" rows="3" placeholder="본문">${e.text || ""}</textarea>
+      </div>
+      <button type="button" data-en-remove="${i}">삭제</button>
+    </div>
+  `).join("");
+  $$('[data-en-title]', box).forEach((el) => el.addEventListener("input", () => { items[Number(el.dataset.enTitle)].title = el.value; }));
+  $$('[data-en-meta]', box).forEach((el) => el.addEventListener("input", () => { items[Number(el.dataset.enMeta)].meta = el.value; }));
+  $$('[data-en-text]', box).forEach((el) => el.addEventListener("input", () => { items[Number(el.dataset.enText)].text = el.value; }));
+  $$('[data-en-remove]', box).forEach((btn) => btn.addEventListener("click", () => { items.splice(Number(btn.dataset.enRemove), 1); renderEntriesEditor(n); }));
+}
+
+function collectNoteForm(n){
+  n.title = $("#n-title").value;
+  n.date = $("#n-date").value;
+  n.folder = $("#n-folder").value;
+  n.preview = $("#n-preview").value;
+  n.hideTitle = $("#n-hide-title").checked;
+  const embedVal = $("#n-embed").value.trim();
+  if (embedVal) n.embed = embedVal; else delete n.embed;
+
+  const kind = $("#n-kind").value;
+  if (kind === "body"){
+    n.body = $("#n-body").value;
+    delete n.checklist; delete n.groups; delete n.entries;
+  } else if (kind === "checklist"){
+    delete n.body; delete n.groups; delete n.entries;
+    n.checklist = n.checklist || [];
+  } else if (kind === "entries"){
+    delete n.body; delete n.groups; delete n.checklist;
+    n.entries = n.entries || [];
+  }
+}
+
+async function saveNote(n){
+  collectNoteForm(n);
+  toast("저장 중...");
+  try {
+    const fresh = await ghGetFile("content/notes.json");
+    const freshData = JSON.parse(fresh.content);
+    const idx = freshData.items.findIndex((x) => x.id === n.id);
+    if (idx >= 0) freshData.items[idx] = n; else freshData.items.push(n);
+    const content = JSON.stringify(freshData, null, 2);
+    const result = await ghPutFile("content/notes.json", content, fresh.sha, `admin: ${n.title} 수정`);
+    notesData = freshData;
+    notesSha = result.content.sha;
+    toast("저장 완료! 1~2분 후 사이트에 반영돼요.");
+    renderNoteList();
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+async function deleteNote(n){
+  if (!confirm(`"${n.title}" 메모를 정말 삭제할까요?`)) return;
+  toast("삭제 중...");
+  try {
+    const fresh = await ghGetFile("content/notes.json");
+    const freshData = JSON.parse(fresh.content);
+    freshData.items = freshData.items.filter((x) => x.id !== n.id);
+    const content = JSON.stringify(freshData, null, 2);
+    const result = await ghPutFile("content/notes.json", content, fresh.sha, `admin: ${n.title} 삭제`);
+    notesData = freshData;
+    notesSha = result.content.sha;
+    activeNoteId = null;
+    renderNoteList();
+    renderNoteEditor();
+    toast("삭제 완료!");
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+$("#note-add-btn").addEventListener("click", () => {
+  const id = "note" + Date.now();
+  const newNote = { id, folder: "writing", title: "새 메모", date: "2026", preview: "", body: "" };
+  notesData.items.unshift(newNote);
+  activeNoteId = id;
+  renderNoteList();
+  renderNoteEditor();
+});
+
+// ===========================================================
+// 탭 전환 / 로그인
+// ===========================================================
+$$(".tab-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    $$(".tab-btn").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    $$("main").forEach((m) => m.classList.remove("active"));
+    $(`#${btn.dataset.tab}-tab`).classList.add("active");
+  });
+});
+
+$("#login-btn").addEventListener("click", async () => {
+  const token = $("#pat-input").value.trim();
+  if (!token) return;
+  localStorage.setItem("gh_pat", token);
+  await boot();
+});
+
+$("#logout-btn").addEventListener("click", () => {
+  localStorage.removeItem("gh_pat");
+  location.reload();
+});
+
+async function boot(){
+  const token = getToken();
+  if (!token){ $("#login").style.display = "block"; $("#app").style.display = "none"; return; }
+  $("#status-text").textContent = "불러오는 중...";
+  $("#login").style.display = "none";
+  $("#app").style.display = "block";
+  try {
+    await loadAll();
+    $("#status-text").textContent = `연결됨 · 메일 ${mailsData.items.length}개 · 메모 ${notesData.items.length}개`;
+    renderMailList();
+    renderNoteList();
+  } catch (err) {
+    $("#status-text").textContent = "";
+    toast(err.message);
+    if (String(err.message).includes("401") || String(err.message).includes("403")) {
+      localStorage.removeItem("gh_pat");
+      $("#login").style.display = "block";
+      $("#app").style.display = "none";
+    }
+  }
+}
+
+boot();
+</script>
 </body>
 </html>
