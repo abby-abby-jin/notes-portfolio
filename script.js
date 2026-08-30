@@ -811,6 +811,12 @@ function initMusicWidget(musicUrl) {
         },
         onStateChange: (e) => {
           icon.classList.toggle("playing", e.data === YT.PlayerState.PLAYING);
+          if (playlistId && e.data === YT.PlayerState.ENDED) {
+            const list = e.target.getPlaylist();
+            if (list && list.length) {
+              e.target.playVideoAt(Math.floor(Math.random() * list.length));
+            }
+          }
         },
       },
     });
