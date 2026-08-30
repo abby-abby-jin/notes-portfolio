@@ -48,6 +48,10 @@ html,body{
   color:#f2f2f7;
   text-shadow:0 0 5px rgba(255,255,255,.6), 0 0 14px rgba(255,255,255,.3);
 }
+#music-icon .ascii-icon{
+  font-size:52px;
+  text-shadow:0 0 6px rgba(255,255,255,.8), 0 0 18px rgba(255,255,255,.45), 0 0 30px rgba(255,255,255,.25);
+}
 .app-icon span{
   color:#d1d1d6; font-size:.8rem; font-weight:500;
   letter-spacing:.01em;
