@@ -480,23 +480,20 @@ html,body{
   background-size:cover; background-position:center; background-color:var(--bg-row-hover);
   margin-bottom:1.6rem; flex:none;
 }
-.profile-namestack{ margin-bottom:1.6rem; transform:rotate(-2deg); }
-.ns-line{
-  margin:0 0 .5rem;
+.stamp-stack{
+  margin:0 0 2rem;
+  transform:rotate(-9deg);
+  display:flex; flex-direction:column; align-items:flex-start;
+}
+.stamp-line{
+  margin:0 0 .4rem;
+  padding-left:0;
   color:var(--text-primary);
   font-family:"SF Mono","Menlo","Courier New",monospace;
-  font-weight:400;
-  font-size:1.05rem;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-}
-.ns-ember-group{ margin-top:.9rem; margin-bottom:.2rem; }
-.ns-meaning-group{ margin-bottom:0; color:var(--text-secondary); }
-.profile-roles{
-  list-style:none; margin:0 0 1.4rem; padding:0;
-  font-family:"SF Mono","Menlo","Courier New",monospace; font-weight:400;
-  font-size:.78rem; line-height:1.8; letter-spacing:.02em;
-  color:var(--text-primary);
+  font-weight:700;
+  font-size:.82rem;
+  letter-spacing:.05em;
+  white-space:nowrap;
 }
 .profile-contact-btn{
   padding:.5rem 1.2rem; border-radius:0; border:none; cursor:pointer;

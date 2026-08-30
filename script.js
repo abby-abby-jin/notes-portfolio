@@ -738,13 +738,10 @@ async function loadContent() {
 function renderProfile(me) {
   const photoEl = $("#profile-photo");
   photoEl.style.backgroundImage = me.photo ? `url('${me.photo}')` : "none";
-  $("#ns-ember").textContent = me.englishName || "";
-  $("#ns-meaning").textContent = me.meaningPhrase || "";
-  $("#ns-kr").textContent = me.nameKr || "";
-  $("#ns-hanja").textContent = me.nameHanja || "";
-  $("#ns-roman").textContent = me.nameRoman || "";
-  const roles = me.roles || [];
-  $("#profile-roles").innerHTML = roles.map((r) => `<li>${r}</li>`).join("");
+  const lines = me.stampLines || [];
+  $("#stamp-stack").innerHTML = lines
+    .map((line, i) => `<p class="stamp-line" style="margin-left:${i * 9}px">${line}</p>`)
+    .join("");
 }
 
 function renderMemoryGrid(items) {

@@ -151,22 +151,9 @@
       <input type="file" id="me-photo-upload" accept="image/*" />
       <small class="hint">업로드하면 uploads/ 폴더에 저장되고 자동으로 프로필 사진에 반영돼요.</small>
 
-      <div class="row">
-        <div><label>영어 이름</label><input id="me-english-name" placeholder="ember" /></div>
-        <div><label>의미 문구 (한자 등)</label><input id="me-meaning" placeholder="不滅之火" /></div>
-      </div>
-
-      <label>이름 (한글)</label>
-      <input id="me-name-kr" />
-
-      <div class="row">
-        <div><label>이름 (한자)</label><input id="me-name-hanja" /></div>
-        <div><label>이름 (로마자)</label><input id="me-name-roman" /></div>
-      </div>
-
-      <label>커리어 / 직함</label>
-      <div class="list-editor" id="me-roles"></div>
-      <button type="button" id="me-role-add" style="margin-top:.4rem">+ 항목 추가</button>
+      <label>스탬프 텍스트 줄 (순서대로 표시됩니다)</label>
+      <div class="list-editor" id="me-lines"></div>
+      <button type="button" id="me-line-add" style="margin-top:.4rem">+ 줄 추가</button>
 
       <div class="editor-actions">
         <button class="primary" id="me-save">저장 (GitHub에 커밋)</button>
@@ -349,44 +336,46 @@ async function saveSite(){
 // me (프로필)
 // ===========================================================
 function renderMeEditor(){
-  $("#me-english-name").value = meData.englishName || "";
-  $("#me-meaning").value = meData.meaningPhrase || "";
-  $("#me-name-kr").value = meData.nameKr || "";
-  $("#me-name-hanja").value = meData.nameHanja || "";
-  $("#me-name-roman").value = meData.nameRoman || "";
   const preview = $("#me-photo-preview");
   preview.innerHTML = meData.photo
     ? `<img class="thumb" style="width:90px;height:90px;border-radius:50%" src="https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${meData.photo}" onerror="this.style.display='none'" />`
     : `<small class="hint">사진 없음</small>`;
-  renderRolesEditor();
+  renderStampLinesEditor();
 }
 
-function renderRolesEditor(){
-  const box = $("#me-roles");
-  const roles = meData.roles || [];
-  if (!roles.length){ box.innerHTML = `<small class="hint">항목 없음</small>`; return; }
-  box.innerHTML = roles.map((r, i) => `
+function renderStampLinesEditor(){
+  const box = $("#me-lines");
+  const lines = meData.stampLines || [];
+  if (!lines.length){ box.innerHTML = `<small class="hint">항목 없음</small>`; return; }
+  box.innerHTML = lines.map((l, i) => `
     <div class="list-editor-row">
-      <div class="fields"><input data-role-text="${i}" value="${(r || "").replace(/"/g, "&quot;")}" /></div>
-      <button type="button" data-role-remove="${i}">삭제</button>
+      <div class="fields"><input data-line-text="${i}" value="${(l || "").replace(/"/g, "&quot;")}" /></div>
+      <button type="button" data-line-up="${i}" ${i === 0 ? "disabled" : ""}>↑</button>
+      <button type="button" data-line-down="${i}" ${i === lines.length - 1 ? "disabled" : ""}>↓</button>
+      <button type="button" data-line-remove="${i}">삭제</button>
     </div>
   `).join("");
-  $$('[data-role-text]', box).forEach((el) => el.addEventListener("input", () => { roles[Number(el.dataset.roleText)] = el.value; }));
-  $$('[data-role-remove]', box).forEach((btn) => btn.addEventListener("click", () => { roles.splice(Number(btn.dataset.roleRemove), 1); renderRolesEditor(); }));
+  $$('[data-line-text]', box).forEach((el) => el.addEventListener("input", () => { lines[Number(el.dataset.lineText)] = el.value; }));
+  $$('[data-line-up]', box).forEach((btn) => btn.addEventListener("click", () => {
+    const i = Number(btn.dataset.lineUp);
+    [lines[i - 1], lines[i]] = [lines[i], lines[i - 1]];
+    renderStampLinesEditor();
+  }));
+  $$('[data-line-down]', box).forEach((btn) => btn.addEventListener("click", () => {
+    const i = Number(btn.dataset.lineDown);
+    [lines[i + 1], lines[i]] = [lines[i], lines[i + 1]];
+    renderStampLinesEditor();
+  }));
+  $$('[data-line-remove]', box).forEach((btn) => btn.addEventListener("click", () => { lines.splice(Number(btn.dataset.lineRemove), 1); renderStampLinesEditor(); }));
 }
 
-$("#me-role-add").addEventListener("click", () => {
-  meData.roles = meData.roles || [];
-  meData.roles.push("");
-  renderRolesEditor();
+$("#me-line-add").addEventListener("click", () => {
+  meData.stampLines = meData.stampLines || [];
+  meData.stampLines.push("");
+  renderStampLinesEditor();
 });
 
 async function saveMe(){
-  meData.englishName = $("#me-english-name").value;
-  meData.meaningPhrase = $("#me-meaning").value;
-  meData.nameKr = $("#me-name-kr").value;
-  meData.nameHanja = $("#me-name-hanja").value;
-  meData.nameRoman = $("#me-name-roman").value;
   toast("저장 중...");
   try {
     const content = JSON.stringify(meData, null, 2);
