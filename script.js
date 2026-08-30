@@ -170,12 +170,14 @@ function setupAppAndIcon(icon, win) {
 
 const notesApp = setupAppAndIcon($("#notes-icon"), $("#notes-window"));
 const mailApp = setupAppAndIcon($("#mail-icon"), $("#mail-window"));
+const meApp = setupAppAndIcon($("#me-icon"), $("#me-window"));
+const memoryApp = setupAppAndIcon($("#memory-icon"), $("#memory-window"));
 
 // 바탕화면(창 바깥) 클릭 시 열려있는 창 닫기
 const desktopEl = $("#desktop");
 desktopEl.addEventListener("click", (e) => {
   if (e.target !== desktopEl) return;
-  [notesApp, mailApp].forEach((a) => {
+  [notesApp, mailApp, meApp, memoryApp].forEach((a) => {
     if (a.win.classList.contains("open")) a.close();
   });
 });
@@ -653,6 +655,7 @@ function closeContactModal() {
 }
 
 $("#compose-btn").addEventListener("click", openContactModal);
+$("#profile-contact-btn").addEventListener("click", openContactModal);
 $("#contact-close").addEventListener("click", closeContactModal);
 contactOverlay.addEventListener("click", (e) => {
   if (e.target === contactOverlay) closeContactModal();
@@ -693,10 +696,12 @@ document.addEventListener("keydown", (e) => {
 // CMS(관리자 페이지)에서 수정한 내용이 이 파일들에 반영됩니다.
 // ---------------------------------------------------------
 async function loadContent() {
-  const [notesData, mailsData, siteData] = await Promise.all([
+  const [notesData, mailsData, siteData, meData, memoriesData] = await Promise.all([
     fetch("content/notes.json").then((r) => r.json()),
     fetch("content/mails.json").then((r) => r.json()),
     fetch("content/site.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
+    fetch("content/me.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
+    fetch("content/memories.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
   ]);
 
   folders = [{ id: "all", label: "모든 메모" }, ...(notesData.folders || [])];
@@ -719,7 +724,29 @@ async function loadContent() {
   renderMailFolders();
   renderMailList();
 
+  renderProfile(meData);
+  renderMemoryGrid(memoriesData.items || []);
+
   initMusicWidget(siteData.musicUrl);
+}
+
+function renderProfile(me) {
+  const photoEl = $("#profile-photo");
+  photoEl.style.backgroundImage = me.photo ? `url('${me.photo}')` : "none";
+  $("#profile-name").textContent = me.name || "";
+  $("#profile-bio").textContent = me.bio || "";
+}
+
+function renderMemoryGrid(items) {
+  const grid = $("#memory-grid");
+  if (!items.length) {
+    grid.innerHTML = `<p class="memory-empty">아직 추가된 사진이 없어요.</p>`;
+    return;
+  }
+  grid.innerHTML = items
+    .map((it) => `<button type="button" class="memory-item" style="background-image:url('${it.image}')" data-src="${it.image}" aria-label="${(it.caption || "사진").replace(/"/g, "&quot;")}"></button>`)
+    .join("");
+  grid.querySelectorAll(".memory-item").forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
 }
 
 loadContent();

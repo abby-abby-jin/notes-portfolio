@@ -29,18 +29,20 @@ html,body{
   background:#000000;
   overflow:hidden;
 }
-.app-icon{
+.icon-row{
   position:absolute;
-  background:none; border:none; cursor:grab;
+  top:50%; left:50%; transform:translate(-50%,-50%);
+  display:flex; align-items:flex-start; justify-content:center;
+  gap:28px; flex-wrap:wrap; max-width:92vw;
+}
+.app-icon{
+  position:static;
+  background:none; border:none; cursor:pointer;
   display:flex; flex-direction:column; align-items:center; gap:.45rem;
   width:88px; padding:.6rem .5rem; border-radius:12px;
   touch-action:none;
 }
-.app-icon:active{ cursor:grabbing; opacity:.6; }
-#music-icon:active{ cursor:pointer; opacity:.6; }
-#mail-icon{ top:50%; left:calc(50% - 60px); transform:translate(-50%,-50%); }
-#notes-icon{ top:50%; left:calc(50% + 60px); transform:translate(-50%,-50%); }
-#music-icon{ top:50%; left:calc(50% + 180px); transform:translate(-50%,-50%); cursor:pointer; }
+.app-icon:active{ opacity:.6; }
 .ascii-icon{
   margin:0;
   font-family:"Press Start 2P", "SF Mono", "Menlo", monospace;
@@ -466,6 +468,43 @@ html,body{
 }
 .contact-btn-send{ background:var(--mail-accent); color:#fff; }
 .contact-btn-send:hover{ filter:brightness(1.3); }
+
+/* ================= me (프로필) ================= */
+.profile-body{
+  width:100%; height:100%; overflow-y:auto;
+  display:flex; flex-direction:column; align-items:center; text-align:center;
+  padding:3.2rem 2rem 3rem;
+}
+.profile-photo{
+  width:120px; height:120px; border-radius:50%;
+  border:1px solid var(--divider);
+  background-size:cover; background-position:center; background-color:var(--bg-row-hover);
+  margin-bottom:1.2rem; flex:none;
+}
+.profile-body h2{ margin:0 0 1rem; font-size:1.3rem; font-weight:700; letter-spacing:0; color:var(--text-primary); }
+#profile-bio{ max-width:440px; font-size:.95rem; line-height:1.7; color:var(--text-primary); white-space:pre-wrap; margin-bottom:1.6rem; }
+.profile-contact-btn{
+  padding:.6rem 1.4rem; border-radius:0; border:none; cursor:pointer;
+  font-size:.88rem; font-weight:600; letter-spacing:0; font-family:inherit;
+  background:var(--mail-accent); color:#fff;
+}
+.profile-contact-btn:hover{ filter:brightness(1.3); }
+
+/* ================= memory (갤러리) ================= */
+.memory-body{ width:100%; height:100%; overflow-y:auto; padding:1.6rem; }
+.memory-grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
+  gap:.6rem;
+}
+.memory-item{
+  aspect-ratio:4/3; width:100%;
+  background-size:cover; background-position:center; background-color:var(--bg-row-hover);
+  border:1px solid var(--divider); border-radius:0;
+  cursor:pointer; padding:0;
+  transition:transform .15s ease;
+}
+.memory-item:hover{ transform:scale(1.02); }
+.memory-empty{ color:var(--text-secondary); font-size:.9rem; padding:2rem 0; text-align:center; }
 
 /* ================= 임베드 (유튜브/인스타그램) ================= */
 .mail-embeds{

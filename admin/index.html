@@ -115,6 +115,8 @@
   <div class="tabs">
     <button class="tab-btn active" data-tab="mail">메일함</button>
     <button class="tab-btn" data-tab="notes">메모</button>
+    <button class="tab-btn" data-tab="me">me</button>
+    <button class="tab-btn" data-tab="memory">memory</button>
     <button class="tab-btn" data-tab="site">설정</button>
   </div>
 
@@ -138,6 +140,37 @@
       </div>
       <div class="editor" id="note-editor">
         <div class="editor-empty">왼쪽에서 메모를 선택하세요.</div>
+      </div>
+    </div>
+  </main>
+
+  <main id="me-tab">
+    <div class="editor" style="max-width:560px">
+      <label>프로필 사진</label>
+      <div id="me-photo-preview" style="margin:.3rem 0"></div>
+      <input type="file" id="me-photo-upload" accept="image/*" />
+      <small class="hint">업로드하면 uploads/ 폴더에 저장되고 자동으로 프로필 사진에 반영돼요.</small>
+
+      <label>이름</label>
+      <input id="me-name" />
+
+      <label>소개글</label>
+      <textarea id="me-bio" rows="6"></textarea>
+
+      <div class="editor-actions">
+        <button class="primary" id="me-save">저장 (GitHub에 커밋)</button>
+      </div>
+    </div>
+  </main>
+
+  <main id="memory-tab">
+    <div class="workspace">
+      <div class="sidebar">
+        <div class="sidebar-add"><button id="memory-add-btn" style="width:100%">+ 새 사진</button></div>
+        <div id="memory-list"></div>
+      </div>
+      <div class="editor" id="memory-editor">
+        <div class="editor-empty">왼쪽에서 사진을 선택하거나 새로 추가하세요.</div>
       </div>
     </div>
   </main>
@@ -242,7 +275,9 @@ function fileToBase64(file){
 let mailsData = null, mailsSha = null;
 let notesData = null, notesSha = null;
 let siteData = null, siteSha = null;
-let activeMailId = null, activeNoteId = null;
+let meData = null, meSha = null;
+let memoriesData = null, memoriesSha = null;
+let activeMailId = null, activeNoteId = null, activeMemoryIdx = null;
 
 async function loadAll(){
   const [m, n] = await Promise.all([
@@ -262,6 +297,24 @@ async function loadAll(){
     siteData = {};
     siteSha = null;
   }
+
+  try {
+    const me = await ghGetFile("content/me.json");
+    meData = JSON.parse(me.content);
+    meSha = me.sha;
+  } catch (e) {
+    meData = { photo: "", name: "", bio: "" };
+    meSha = null;
+  }
+
+  try {
+    const mem = await ghGetFile("content/memories.json");
+    memoriesData = JSON.parse(mem.content);
+    memoriesSha = mem.sha;
+  } catch (e) {
+    memoriesData = { items: [] };
+    memoriesSha = null;
+  }
 }
 
 function renderSiteEditor(){
@@ -280,6 +333,168 @@ async function saveSite(){
     toast(err.message);
   }
 }
+
+// ===========================================================
+// me (프로필)
+// ===========================================================
+function renderMeEditor(){
+  $("#me-name").value = meData.name || "";
+  $("#me-bio").value = meData.bio || "";
+  const preview = $("#me-photo-preview");
+  preview.innerHTML = meData.photo
+    ? `<img class="thumb" style="width:90px;height:90px;border-radius:50%" src="https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${meData.photo}" onerror="this.style.display='none'" />`
+    : `<small class="hint">사진 없음</small>`;
+}
+
+async function saveMe(){
+  meData.name = $("#me-name").value;
+  meData.bio = $("#me-bio").value;
+  toast("저장 중...");
+  try {
+    const content = JSON.stringify(meData, null, 2);
+    const result = await ghPutFile("content/me.json", content, meSha, "admin: 프로필 수정");
+    meSha = result.content.sha;
+    toast("저장 완료! 1~2분 후 사이트에 반영돼요.");
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+$("#me-photo-upload").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  toast("사진 업로드 중...");
+  try {
+    const b64 = await fileToBase64(file);
+    const safeName = `me-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-]/g, "_")}`;
+    const path = `uploads/${safeName}`;
+    await ghPutBinaryFile(path, b64, `프로필 사진 업로드: ${safeName}`);
+    meData.photo = path;
+    renderMeEditor();
+    toast("업로드 완료. 저장을 눌러 반영하세요.");
+  } catch (err) {
+    toast(err.message);
+  }
+  e.target.value = "";
+});
+
+$("#me-save").addEventListener("click", saveMe);
+
+// ===========================================================
+// memory (갤러리)
+// ===========================================================
+function renderMemoryList(){
+  const list = $("#memory-list");
+  list.innerHTML = "";
+  memoriesData.items.forEach((it, i) => {
+    const div = document.createElement("div");
+    div.className = "sidebar-item" + (i === activeMemoryIdx ? " active" : "");
+    div.innerHTML = `${it.caption || "(캡션 없음)"}<span class="sub">${it.date || ""}</span>`;
+    div.addEventListener("click", () => { activeMemoryIdx = i; renderMemoryList(); renderMemoryEditor(); });
+    list.appendChild(div);
+  });
+}
+
+function renderMemoryEditor(){
+  const root = $("#memory-editor");
+  if (activeMemoryIdx === null || !memoriesData.items[activeMemoryIdx]){
+    root.innerHTML = `<div class="editor-empty">왼쪽에서 사진을 선택하거나 새로 추가하세요.</div>`;
+    return;
+  }
+  const it = memoriesData.items[activeMemoryIdx];
+  root.innerHTML = `
+    <label>사진</label>
+    <div id="memory-photo-preview" style="margin:.3rem 0"></div>
+    <input type="file" id="memory-photo-upload" accept="image/*" />
+    <small class="hint">업로드하면 uploads/ 폴더에 저장돼요.</small>
+
+    <label>캡션</label>
+    <input id="memory-caption" value="${(it.caption || "").replace(/"/g, "&quot;")}" />
+
+    <label>날짜</label>
+    <input id="memory-date" value="${(it.date || "").replace(/"/g, "&quot;")}" />
+
+    <div class="editor-actions">
+      <button class="primary" id="memory-save">저장 (GitHub에 커밋)</button>
+      <button class="danger" id="memory-delete">이 사진 삭제</button>
+    </div>
+  `;
+
+  const renderPhotoPreview = () => {
+    $("#memory-photo-preview").innerHTML = it.image
+      ? `<img class="thumb" style="width:120px;height:90px;object-fit:cover" src="https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${it.image}" onerror="this.style.display='none'" />`
+      : `<small class="hint">사진 없음</small>`;
+  };
+  renderPhotoPreview();
+
+  $("#memory-photo-upload").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    toast("사진 업로드 중...");
+    try {
+      const b64 = await fileToBase64(file);
+      const safeName = `memory-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-]/g, "_")}`;
+      const path = `uploads/${safeName}`;
+      await ghPutBinaryFile(path, b64, `메모리 사진 업로드: ${safeName}`);
+      it.image = path;
+      renderPhotoPreview();
+      toast("업로드 완료. 저장을 눌러 반영하세요.");
+    } catch (err) {
+      toast(err.message);
+    }
+    e.target.value = "";
+  });
+
+  $("#memory-save").addEventListener("click", () => saveMemory(it));
+  $("#memory-delete").addEventListener("click", () => deleteMemory());
+}
+
+async function saveMemory(it){
+  it.caption = $("#memory-caption").value;
+  it.date = $("#memory-date").value;
+  toast("저장 중...");
+  try {
+    const fresh = await ghGetFile("content/memories.json");
+    const freshData = JSON.parse(fresh.content);
+    if (activeMemoryIdx < freshData.items.length) freshData.items[activeMemoryIdx] = it;
+    else freshData.items.push(it);
+    const content = JSON.stringify(freshData, null, 2);
+    const result = await ghPutFile("content/memories.json", content, fresh.sha, "admin: 메모리 사진 수정");
+    memoriesData = freshData;
+    memoriesSha = result.content.sha;
+    toast("저장 완료! 1~2분 후 사이트에 반영돼요.");
+    renderMemoryList();
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+async function deleteMemory(){
+  if (!confirm("이 사진을 정말 삭제할까요?")) return;
+  toast("삭제 중...");
+  try {
+    const fresh = await ghGetFile("content/memories.json");
+    const freshData = JSON.parse(fresh.content);
+    freshData.items.splice(activeMemoryIdx, 1);
+    const content = JSON.stringify(freshData, null, 2);
+    const result = await ghPutFile("content/memories.json", content, fresh.sha, "admin: 메모리 사진 삭제");
+    memoriesData = freshData;
+    memoriesSha = result.content.sha;
+    activeMemoryIdx = null;
+    renderMemoryList();
+    renderMemoryEditor();
+    toast("삭제 완료!");
+  } catch (err) {
+    toast(err.message);
+  }
+}
+
+$("#memory-add-btn").addEventListener("click", () => {
+  memoriesData.items.unshift({ image: "", caption: "", date: "" });
+  activeMemoryIdx = 0;
+  renderMemoryList();
+  renderMemoryEditor();
+});
 
 // ===========================================================
 // 메일 목록/편집
@@ -796,6 +1011,9 @@ async function boot(){
     renderNoteList();
     renderSiteEditor();
     $("#s-save").addEventListener("click", saveSite);
+    renderMeEditor();
+    renderMemoryList();
+    renderMemoryEditor();
   } catch (err) {
     $("#status-text").textContent = "";
     toast(err.message);

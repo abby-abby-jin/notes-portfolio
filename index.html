@@ -13,20 +13,32 @@
 
   <!-- ================= 배경화면 ================= -->
   <div id="desktop">
-    <button id="mail-icon" class="app-icon">
-      <span class="ascii-icon">@</span>
-      <span>Mail</span>
-    </button>
+    <div id="icon-row" class="icon-row">
+      <button id="mail-icon" class="app-icon">
+        <span class="ascii-icon">@</span>
+        <span>Mail</span>
+      </button>
 
-    <button id="notes-icon" class="app-icon">
-      <span class="ascii-icon">#</span>
-      <span>Notes</span>
-    </button>
+      <button id="notes-icon" class="app-icon">
+        <span class="ascii-icon">#</span>
+        <span>Notes</span>
+      </button>
 
-    <button id="music-icon" class="app-icon" type="button">
-      <span class="ascii-icon">♬</span>
-      <span>Music</span>
-    </button>
+      <button id="music-icon" class="app-icon" type="button">
+        <span class="ascii-icon">♬</span>
+        <span>Music</span>
+      </button>
+
+      <button id="me-icon" class="app-icon">
+        <span class="ascii-icon">*</span>
+        <span>me</span>
+      </button>
+
+      <button id="memory-icon" class="app-icon">
+        <span class="ascii-icon">%</span>
+        <span>memory</span>
+      </button>
+    </div>
     <div id="yt-player-container" class="yt-player-hidden"></div>
   </div>
 
@@ -137,6 +149,45 @@
           </div>
         </div>
       </section>
+    </div>
+  </div>
+
+  <!-- ================= me 앱 윈도우 ================= -->
+  <div id="me-window" class="app-window" role="dialog" aria-label="me">
+    <div class="titlebar">
+      <div class="traffic-lights">
+        <button class="tl-btn tl-close" aria-label="닫기"></button>
+        <button class="tl-btn tl-min" aria-label="최소화"></button>
+        <button class="tl-btn tl-zoom" aria-label="전체화면"></button>
+      </div>
+      <div class="titlebar-label">me</div>
+    </div>
+
+    <div class="app-body">
+      <div class="profile-body">
+        <div class="profile-photo" id="profile-photo"></div>
+        <h2 id="profile-name"></h2>
+        <div id="profile-bio"></div>
+        <button type="button" id="profile-contact-btn" class="profile-contact-btn">Email</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= memory 앱 윈도우 ================= -->
+  <div id="memory-window" class="app-window" role="dialog" aria-label="memory">
+    <div class="titlebar">
+      <div class="traffic-lights">
+        <button class="tl-btn tl-close" aria-label="닫기"></button>
+        <button class="tl-btn tl-min" aria-label="최소화"></button>
+        <button class="tl-btn tl-zoom" aria-label="전체화면"></button>
+      </div>
+      <div class="titlebar-label">memory</div>
+    </div>
+
+    <div class="app-body">
+      <div class="memory-body">
+        <div id="memory-grid" class="memory-grid"></div>
+      </div>
     </div>
   </div>
 
