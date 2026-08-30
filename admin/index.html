@@ -869,6 +869,10 @@ function renderNoteEditor(){
     <label>임베드 URL (embed — 외부 사이트, 선택)</label>
     <input id="n-embed" value="${n.embed || ""}" placeholder="https://..." />
 
+    <label>첨부 이미지 (images)</label>
+    <div class="list-editor" id="n-images"></div>
+    <div style="margin-top:.5rem"><input type="file" id="n-image-upload" accept="image/*" /> <small class="hint">업로드하면 uploads/ 폴더에 저장되고 목록에 자동 추가돼요.</small></div>
+
     <label>유형</label>
     <select id="n-kind">
       <option value="body" ${kind === "body" ? "selected" : ""}>일반 본문 (body)</option>
@@ -909,8 +913,49 @@ function renderNoteEditor(){
   renderKindFields(kind);
   $("#n-kind").addEventListener("change", (e) => renderKindFields(e.target.value));
 
+  renderNoteImageList(n);
+  $("#n-image-upload").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    toast("이미지 업로드 중...");
+    try {
+      const b64 = await fileToBase64(file);
+      const safeName = `${n.id}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-]/g, "_")}`;
+      const path = `uploads/${safeName}`;
+      await ghPutBinaryFile(path, b64, `이미지 업로드: ${safeName}`);
+      n.images = n.images || [];
+      n.images.push(path);
+      renderNoteImageList(n);
+      toast("이미지 업로드 완료. 저장을 눌러 반영하세요.");
+    } catch (err) {
+      toast(err.message);
+    }
+    e.target.value = "";
+  });
+
   $("#n-save").addEventListener("click", () => saveNote(n));
   $("#n-delete").addEventListener("click", () => deleteNote(n));
+}
+
+function renderNoteImageList(n){
+  const box = $("#n-images");
+  const imgs = n.images || [];
+  if (!imgs.length){ box.innerHTML = `<small class="hint">이미지 없음</small>`; return; }
+  box.innerHTML = imgs.map((src, i) => `
+    <div class="list-editor-row">
+      <img class="thumb" src="https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${src}" onerror="this.style.display='none'" />
+      <div class="fields">
+        <input data-nimg-idx="${i}" value="${src}" />
+      </div>
+      <button type="button" data-nimg-remove="${i}">삭제</button>
+    </div>
+  `).join("");
+  $$('[data-nimg-idx]', box).forEach((inp) => {
+    inp.addEventListener("input", () => { n.images[Number(inp.dataset.nimgIdx)] = inp.value; });
+  });
+  $$('[data-nimg-remove]', box).forEach((btn) => {
+    btn.addEventListener("click", () => { n.images.splice(Number(btn.dataset.nimgRemove), 1); renderNoteImageList(n); });
+  });
 }
 
 function renderChecklistEditor(n){
