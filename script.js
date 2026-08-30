@@ -720,3 +720,60 @@ async function loadContent() {
 }
 
 loadContent();
+
+/* ================= 배경음악 위젯 ================= */
+const MUSIC_VIDEO_ID = "mFA1P8ZzoLw";
+let ytPlayer = null;
+let ytPendingPlay = false;
+
+function initMusicWidget() {
+  const toggleBtn = document.getElementById("music-toggle");
+  if (!toggleBtn) return;
+
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+
+  window.onYouTubeIframeAPIReady = () => {
+    ytPlayer = new YT.Player("yt-player-container", {
+      videoId: MUSIC_VIDEO_ID,
+      playerVars: {
+        loop: 1,
+        playlist: MUSIC_VIDEO_ID,
+        controls: 0,
+        disablekb: 1,
+        modestbranding: 1,
+        rel: 0,
+        fs: 0,
+        iv_load_policy: 3,
+      },
+      events: {
+        onReady: (e) => {
+          if (ytPendingPlay) {
+            ytPendingPlay = false;
+            e.target.playVideo();
+          }
+        },
+        onStateChange: (e) => {
+          toggleBtn.textContent = e.data === YT.PlayerState.PLAYING ? "❚❚" : "▶";
+        },
+      },
+    });
+  };
+
+  toggleBtn.addEventListener("click", () => {
+    if (!ytPlayer || typeof ytPlayer.getPlayerState !== "function") {
+      ytPendingPlay = true;
+      toggleBtn.textContent = "❚❚";
+      return;
+    }
+    const state = ytPlayer.getPlayerState();
+    if (state === YT.PlayerState.PLAYING) {
+      ytPlayer.pauseVideo();
+    } else {
+      ytPlayer.playVideo();
+    }
+  });
+}
+
+initMusicWidget();
