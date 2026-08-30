@@ -362,7 +362,7 @@ html,body{
 #mail-detail-content .placeholder{ color:var(--text-secondary); font-style:italic; }
 #mail-detail-content .mail-label{
   display:block;
-  color:var(--mail-accent);
+  color:var(--text-secondary);
   font-size:.78rem;
   font-weight:700;
   font-style:italic;
