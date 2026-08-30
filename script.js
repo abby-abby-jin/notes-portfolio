@@ -660,7 +660,6 @@ function closeContactModal() {
 }
 
 $("#compose-btn").addEventListener("click", openContactModal);
-$("#profile-contact-btn").addEventListener("click", openContactModal);
 $("#contact-close").addEventListener("click", closeContactModal);
 contactOverlay.addEventListener("click", (e) => {
   if (e.target === contactOverlay) closeContactModal();
