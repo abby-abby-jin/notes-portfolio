@@ -779,6 +779,14 @@ function initMusicWidget(musicUrl) {
       playerVars,
       events: {
         onReady: (e) => {
+          if (playlistId) {
+            e.target.setShuffle(true);
+            const list = e.target.getPlaylist();
+            if (list && list.length > 1) {
+              const randomIndex = Math.floor(Math.random() * list.length);
+              e.target.cuePlaylist({ listType: "playlist", list: playlistId, index: randomIndex });
+            }
+          }
           if (ytPendingPlay) {
             ytPendingPlay = false;
             e.target.playVideo();
