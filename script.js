@@ -525,6 +525,11 @@ function youtubeIdFromUrl(url) {
   return m ? m[1] : null;
 }
 
+function youtubePlaylistIdFromUrl(url) {
+  const m = url.match(/[?&]list=([\w-]+)/);
+  return m ? m[1] : null;
+}
+
 function embedHtml(embed) {
   if (embed.type === "youtube") {
     const id = youtubeIdFromUrl(embed.url);
@@ -758,25 +763,20 @@ let ytPendingPlay = false;
 function initMusicWidget(musicUrl) {
   const icon = document.getElementById("music-icon");
   const videoId = musicUrl && youtubeIdFromUrl(musicUrl);
-  if (!icon || !videoId) return;
+  const playlistId = musicUrl && !videoId && youtubePlaylistIdFromUrl(musicUrl);
+  if (!icon || (!videoId && !playlistId)) return;
 
   const tag = document.createElement("script");
   tag.src = "https://www.youtube.com/iframe_api";
   document.head.appendChild(tag);
 
   window.onYouTubeIframeAPIReady = () => {
+    const playerVars = videoId
+      ? { loop: 1, playlist: videoId, controls: 0, disablekb: 1, modestbranding: 1, rel: 0, fs: 0, iv_load_policy: 3 }
+      : { listType: "playlist", list: playlistId, loop: 1, controls: 0, disablekb: 1, modestbranding: 1, rel: 0, fs: 0, iv_load_policy: 3 };
     ytPlayer = new YT.Player("yt-player-container", {
-      videoId,
-      playerVars: {
-        loop: 1,
-        playlist: videoId,
-        controls: 0,
-        disablekb: 1,
-        modestbranding: 1,
-        rel: 0,
-        fs: 0,
-        iv_load_policy: 3,
-      },
+      ...(videoId ? { videoId } : {}),
+      playerVars,
       events: {
         onReady: (e) => {
           if (ytPendingPlay) {
