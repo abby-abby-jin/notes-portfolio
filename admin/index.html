@@ -703,6 +703,7 @@ function renderPostList(m){
       <img class="thumb" src="https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${p.image || ""}" onerror="this.style.display='none'" />
       <div class="fields">
         <input data-post-image="${i}" value="${p.image || ""}" placeholder="uploads/..." />
+        <input type="file" data-post-upload="${i}" accept="image/*" />
         <input data-post-handle="${i}" value="${p.handle || ""}" placeholder="@handle" />
         <textarea data-post-caption="${i}" rows="3" placeholder="캡션">${p.caption || ""}</textarea>
         <input data-post-url="${i}" value="${p.url || ""}" placeholder="원본 링크 (선택)" />
@@ -711,6 +712,23 @@ function renderPostList(m){
     </div>
   `).join("");
   $$('[data-post-image]', box).forEach((el) => el.addEventListener("input", () => { posts[Number(el.dataset.postImage)].image = el.value; }));
+  $$('[data-post-upload]', box).forEach((el) => el.addEventListener("change", async (e) => {
+    const idx = Number(el.dataset.postUpload);
+    const file = e.target.files[0];
+    if (!file) return;
+    toast("이미지 업로드 중...");
+    try {
+      const b64 = await fileToBase64(file);
+      const safeName = `${m.id}-post${idx}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-]/g, "_")}`;
+      const path = `uploads/${safeName}`;
+      await ghPutBinaryFile(path, b64, `게시물 이미지 업로드: ${safeName}`);
+      posts[idx].image = path;
+      renderPostList(m);
+      toast("업로드 완료. 저장을 눌러 반영하세요.");
+    } catch (err) {
+      toast(err.message);
+    }
+  }));
   $$('[data-post-handle]', box).forEach((el) => el.addEventListener("input", () => { posts[Number(el.dataset.postHandle)].handle = el.value; }));
   $$('[data-post-caption]', box).forEach((el) => el.addEventListener("input", () => { posts[Number(el.dataset.postCaption)].caption = el.value; }));
   $$('[data-post-url]', box).forEach((el) => el.addEventListener("input", () => { posts[Number(el.dataset.postUrl)].url = el.value; }));
