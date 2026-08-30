@@ -389,7 +389,7 @@ function openNote(id) {
   const images = note.images || [];
   if (images.length) {
     const imagesHtml = `<div class="mail-images">${images
-      .map((src) => `<button type="button" class="mail-image-thumb" style="background-image:url('${src}')" data-src="${src}" aria-label="첨부 이미지 크게 보기"></button>`)
+      .map((src) => `<button type="button" class="mail-image-thumb note-image-thumb" style="background-image:url('${src}')" data-src="${src}" aria-label="첨부 이미지 크게 보기"></button>`)
       .join("")}</div>`;
     content.insertAdjacentHTML("beforeend", imagesHtml);
     content

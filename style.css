@@ -577,6 +577,7 @@ html,body{
   transition:transform .15s ease;
 }
 .mail-image-thumb:hover{ transform:scale(1.02); }
+.mail-image-thumb.note-image-thumb{ background-size:contain; }
 
 .mail-images.sns-grid{
   grid-template-columns:repeat(3, 1fr);
