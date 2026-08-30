@@ -693,9 +693,10 @@ document.addEventListener("keydown", (e) => {
 // CMS(관리자 페이지)에서 수정한 내용이 이 파일들에 반영됩니다.
 // ---------------------------------------------------------
 async function loadContent() {
-  const [notesData, mailsData] = await Promise.all([
+  const [notesData, mailsData, siteData] = await Promise.all([
     fetch("content/notes.json").then((r) => r.json()),
     fetch("content/mails.json").then((r) => r.json()),
+    fetch("content/site.json").then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
   ]);
 
   folders = [{ id: "all", label: "모든 메모" }, ...(notesData.folders || [])];
@@ -717,18 +718,20 @@ async function loadContent() {
 
   renderMailFolders();
   renderMailList();
+
+  initMusicWidget(siteData.musicUrl);
 }
 
 loadContent();
 
 /* ================= 배경음악 위젯 ================= */
-const MUSIC_VIDEO_ID = "mFA1P8ZzoLw";
 let ytPlayer = null;
 let ytPendingPlay = false;
 
-function initMusicWidget() {
-  const toggleBtn = document.getElementById("music-toggle");
-  if (!toggleBtn) return;
+function initMusicWidget(musicUrl) {
+  const icon = document.getElementById("music-icon");
+  const videoId = musicUrl && youtubeIdFromUrl(musicUrl);
+  if (!icon || !videoId) return;
 
   const tag = document.createElement("script");
   tag.src = "https://www.youtube.com/iframe_api";
@@ -736,10 +739,10 @@ function initMusicWidget() {
 
   window.onYouTubeIframeAPIReady = () => {
     ytPlayer = new YT.Player("yt-player-container", {
-      videoId: MUSIC_VIDEO_ID,
+      videoId,
       playerVars: {
         loop: 1,
-        playlist: MUSIC_VIDEO_ID,
+        playlist: videoId,
         controls: 0,
         disablekb: 1,
         modestbranding: 1,
@@ -755,16 +758,16 @@ function initMusicWidget() {
           }
         },
         onStateChange: (e) => {
-          toggleBtn.textContent = e.data === YT.PlayerState.PLAYING ? "❚❚" : "▶";
+          icon.classList.toggle("playing", e.data === YT.PlayerState.PLAYING);
         },
       },
     });
   };
 
-  toggleBtn.addEventListener("click", () => {
+  icon.addEventListener("click", () => {
     if (!ytPlayer || typeof ytPlayer.getPlayerState !== "function") {
       ytPendingPlay = true;
-      toggleBtn.textContent = "❚❚";
+      icon.classList.add("playing");
       return;
     }
     const state = ytPlayer.getPlayerState();
@@ -775,5 +778,3 @@ function initMusicWidget() {
     }
   });
 }
-
-initMusicWidget();

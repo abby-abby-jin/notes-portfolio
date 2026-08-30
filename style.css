@@ -37,8 +37,10 @@ html,body{
   touch-action:none;
 }
 .app-icon:active{ cursor:grabbing; opacity:.6; }
+#music-icon:active{ cursor:pointer; opacity:.6; }
 #mail-icon{ top:50%; left:calc(50% - 60px); transform:translate(-50%,-50%); }
 #notes-icon{ top:50%; left:calc(50% + 60px); transform:translate(-50%,-50%); }
+#music-icon{ top:50%; left:calc(50% + 180px); transform:translate(-50%,-50%); cursor:pointer; }
 .ascii-icon{
   margin:0;
   font-family:"Press Start 2P", "SF Mono", "Menlo", monospace;
@@ -51,27 +53,14 @@ html,body{
   letter-spacing:.01em;
 }
 
-.music-widget{
-  position:absolute;
-  top:20px; right:20px;
-  display:flex; align-items:center; gap:.55rem;
-  padding:.5rem .8rem;
-  border:1px solid #ffffff;
-  background:#000000;
-  font-family:"SF Mono","Menlo","Courier New",monospace;
-  z-index:2;
+#music-icon.playing .ascii-icon{
+  animation: music-pulse 1.2s ease-in-out infinite;
 }
-.music-toggle{
-  background:none; border:1px solid #ffffff; color:#ffffff;
-  width:26px; height:26px; flex:none;
-  display:flex; align-items:center; justify-content:center;
-  font-size:.68rem; cursor:pointer; padding:0;
+@keyframes music-pulse{
+  0%, 100%{ opacity:1; }
+  50%{ opacity:.5; }
 }
-.music-toggle:hover{ background:#ffffff; color:#000000; }
-.music-title{
-  color:#d1d1d6; font-size:.72rem; letter-spacing:.02em;
-  max-width:180px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-}
+
 .yt-player-hidden{
   position:absolute; width:1px; height:1px; overflow:hidden;
   opacity:0; pointer-events:none; top:0; left:0;

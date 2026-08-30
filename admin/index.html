@@ -115,6 +115,7 @@
   <div class="tabs">
     <button class="tab-btn active" data-tab="mail">메일함</button>
     <button class="tab-btn" data-tab="notes">메모</button>
+    <button class="tab-btn" data-tab="site">설정</button>
   </div>
 
   <main id="mail-tab" class="active">
@@ -137,6 +138,17 @@
       </div>
       <div class="editor" id="note-editor">
         <div class="editor-empty">왼쪽에서 메모를 선택하세요.</div>
+      </div>
+    </div>
+  </main>
+
+  <main id="site-tab">
+    <div class="editor" style="max-width:560px">
+      <label>배경음악 링크 (YouTube 영상 또는 향후 Spotify 링크)</label>
+      <input id="s-music-url" placeholder="https://www.youtube.com/watch?v=..." />
+      <small class="hint">배경화면 우측 '뮤직(♬)' 아이콘이 재생할 링크예요. 유튜브 영상 링크를 붙여넣으면 그 영상이 반복 재생돼요.</small>
+      <div class="editor-actions">
+        <button class="primary" id="s-save">저장 (GitHub에 커밋)</button>
       </div>
     </div>
   </main>
@@ -229,6 +241,7 @@ function fileToBase64(file){
 // ===========================================================
 let mailsData = null, mailsSha = null;
 let notesData = null, notesSha = null;
+let siteData = null, siteSha = null;
 let activeMailId = null, activeNoteId = null;
 
 async function loadAll(){
@@ -240,6 +253,32 @@ async function loadAll(){
   mailsSha = m.sha;
   notesData = JSON.parse(n.content);
   notesSha = n.sha;
+
+  try {
+    const s = await ghGetFile("content/site.json");
+    siteData = JSON.parse(s.content);
+    siteSha = s.sha;
+  } catch (e) {
+    siteData = {};
+    siteSha = null;
+  }
+}
+
+function renderSiteEditor(){
+  $("#s-music-url").value = siteData.musicUrl || "";
+}
+
+async function saveSite(){
+  siteData.musicUrl = $("#s-music-url").value.trim();
+  toast("저장 중...");
+  try {
+    const content = JSON.stringify(siteData, null, 2);
+    const result = await ghPutFile("content/site.json", content, siteSha, "admin: 배경음악 링크 수정");
+    siteSha = result.content.sha;
+    toast("저장 완료! 1~2분 후 사이트에 반영돼요.");
+  } catch (err) {
+    toast(err.message);
+  }
 }
 
 // ===========================================================
@@ -755,6 +794,8 @@ async function boot(){
     $("#status-text").textContent = `연결됨 · 메일 ${mailsData.items.length}개 · 메모 ${notesData.items.length}개`;
     renderMailList();
     renderNoteList();
+    renderSiteEditor();
+    $("#s-save").addEventListener("click", saveSite);
   } catch (err) {
     $("#status-text").textContent = "";
     toast(err.message);
