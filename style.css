@@ -472,19 +472,51 @@ html,body{
 .profile-body{
   width:100%; height:100%; overflow-y:auto;
   display:flex; flex-direction:column; align-items:center; text-align:center;
-  padding:3.2rem 2rem 3rem;
+  padding:4rem 2rem 4rem;
 }
 .profile-photo{
-  width:120px; height:120px; border-radius:50%;
+  width:220px; height:220px; border-radius:50%;
   border:1px solid var(--divider);
   background-size:cover; background-position:center; background-color:var(--bg-row-hover);
-  margin-bottom:1.2rem; flex:none;
+  margin-bottom:3.4rem; flex:none;
 }
-.profile-body h2{ margin:0 0 1rem; font-size:1.3rem; font-weight:700; letter-spacing:0; color:var(--text-primary); }
-#profile-bio{ max-width:440px; font-size:.95rem; line-height:1.7; color:var(--text-primary); white-space:pre-wrap; margin-bottom:1.6rem; }
+.profile-namestack{ margin-bottom:3rem; }
+.profile-namestack p{ margin:0; color:var(--text-primary); }
+.ns-ember{
+  font-family:"Playfair Display", "Noto Serif KR", serif;
+  font-style:italic; font-weight:500;
+  font-size:2.1rem; letter-spacing:.02em;
+  margin-bottom:.5rem !important;
+}
+.ns-meaning{
+  font-family:"Noto Serif KR", serif; font-weight:300;
+  font-size:1.05rem; letter-spacing:.28em;
+  color:var(--text-secondary);
+  margin-bottom:2.2rem !important;
+}
+.ns-kr{
+  font-family:"Noto Serif KR", serif; font-weight:500;
+  font-size:1.9rem; letter-spacing:.04em;
+  margin-bottom:.9rem !important;
+}
+.ns-hanja{
+  font-family:"Noto Serif KR", serif; font-weight:300;
+  font-size:1.7rem; letter-spacing:.1em;
+  margin-bottom:.9rem !important;
+}
+.ns-roman{
+  font-family:"Playfair Display", serif; font-style:italic;
+  font-size:1.3rem; letter-spacing:.06em;
+}
+.profile-roles{
+  list-style:none; margin:0 0 2.4rem; padding:0;
+  font-family:"Noto Serif KR", serif; font-weight:300;
+  font-size:.92rem; line-height:2; letter-spacing:.02em;
+  color:var(--text-primary);
+}
 .profile-contact-btn{
   padding:.6rem 1.4rem; border-radius:0; border:none; cursor:pointer;
-  font-size:.88rem; font-weight:600; letter-spacing:0; font-family:inherit;
+  font-size:.88rem; font-weight:600; letter-spacing:0; font-family:"SF Mono","Menlo","Courier New",monospace;
   background:var(--mail-accent); color:#fff;
 }
 .profile-contact-btn:hover{ filter:brightness(1.3); }

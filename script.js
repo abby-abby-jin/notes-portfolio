@@ -738,14 +738,19 @@ async function loadContent() {
 function renderProfile(me) {
   const photoEl = $("#profile-photo");
   photoEl.style.backgroundImage = me.photo ? `url('${me.photo}')` : "none";
-  $("#profile-name").textContent = me.name || "";
-  $("#profile-bio").textContent = me.bio || "";
+  $("#ns-ember").textContent = me.englishName || "";
+  $("#ns-meaning").textContent = me.meaningPhrase || "";
+  $("#ns-kr").textContent = me.nameKr || "";
+  $("#ns-hanja").textContent = me.nameHanja || "";
+  $("#ns-roman").textContent = me.nameRoman || "";
+  const roles = me.roles || [];
+  $("#profile-roles").innerHTML = roles.map((r) => `<li>${r}</li>`).join("");
 }
 
 function renderMemoryGrid(items) {
   const grid = $("#memory-grid");
   if (!items.length) {
-    grid.innerHTML = `<p class="memory-empty">아직 추가된 사진이 없어요.</p>`;
+    grid.innerHTML = `<p class="memory-empty">아직 추가된 기억이 없습니다.</p>`;
     return;
   }
   grid.innerHTML = items
