@@ -577,11 +577,19 @@ html,body{
   transition:transform .15s ease;
 }
 .mail-image-thumb:hover{ transform:scale(1.02); }
-.mail-image-thumb.note-image-thumb{
-  aspect-ratio:3/4;
-  background-size:contain;
-  background-repeat:no-repeat;
+
+/* 메모 첨부 사진: 크롭/여백 없이 원본 비율 그대로 */
+.note-images{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));
+  gap:.6rem; margin-top:.4rem;
 }
+.note-photo{
+  display:block; width:100%; padding:0; margin:0; line-height:0;
+  border:1px solid var(--divider); background:none; cursor:pointer;
+  transition:transform .15s ease;
+}
+.note-photo:hover{ transform:scale(1.02); }
+.note-photo img{ display:block; width:100%; height:auto; }
 
 .mail-images.sns-grid{
   grid-template-columns:repeat(3, 1fr);

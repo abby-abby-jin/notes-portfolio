@@ -6,6 +6,11 @@
 
 const $ = (sel) => document.querySelector(sel);
 
+// 목록 등 innerHTML로 삽입되는 텍스트 안의 <, >, & 를 이스케이프
+function escapeHtml(str) {
+  return String(str ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+}
+
 // 빈 줄로 구분된 본문 텍스트를 문단(<p>) 목록으로 변환
 function paragraphsToHtml(text) {
   return (text || "")
@@ -297,10 +302,10 @@ function renderList() {
       <li>
         <div class="note-row ${n.id === activeNoteId ? "active" : ""}" data-id="${n.id}">
           <div class="row-top">
-            <span class="row-title">${n.title}</span>
-            <span class="row-date">${n.date}</span>
+            <span class="row-title">${escapeHtml(n.title)}</span>
+            <span class="row-date">${escapeHtml(n.date)}</span>
           </div>
-          <span class="row-preview">${formatPreview(n)}</span>
+          <span class="row-preview">${escapeHtml(formatPreview(n))}</span>
         </div>
       </li>`
     )
@@ -388,12 +393,12 @@ function openNote(id) {
 
   const images = note.images || [];
   if (images.length) {
-    const imagesHtml = `<div class="mail-images">${images
-      .map((src) => `<button type="button" class="mail-image-thumb note-image-thumb" style="background-image:url('${src}')" data-src="${src}" aria-label="첨부 이미지 크게 보기"></button>`)
+    const imagesHtml = `<div class="note-images">${images
+      .map((src) => `<button type="button" class="note-photo" data-src="${src}" aria-label="첨부 이미지 크게 보기"><img src="${src}" alt="" loading="lazy" /></button>`)
       .join("")}</div>`;
     content.insertAdjacentHTML("beforeend", imagesHtml);
     content
-      .querySelectorAll(".mail-image-thumb")
+      .querySelectorAll(".note-photo")
       .forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
   }
 
@@ -508,11 +513,11 @@ function renderMailList() {
         <button class="mail-star" aria-label="중요 표시" data-id="${m.id}">
           <svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.6 6 .7-4.5 4.1 1.2 6-5.3-3-5.3 3 1.2-6-4.5-4.1 6-.7z"/></svg>
         </button>
-        <span class="mail-sender">${m.to || m.sender}</span>
+        <span class="mail-sender">${escapeHtml(m.to || m.sender)}</span>
         <span class="mail-subject-wrap">
-          <span class="mail-subject">${m.subject}</span>
+          <span class="mail-subject">${escapeHtml(m.subject)}</span>
         </span>
-        <span class="mail-date">${m.date}</span>
+        <span class="mail-date">${escapeHtml(m.date)}</span>
       </li>`
     )
     .join("");
