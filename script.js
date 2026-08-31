@@ -619,10 +619,12 @@ function openMail(id) {
       </div>
       <button type="button" class="browser-hero-image" style="background-image:url('${hero}')" data-src="${hero}" aria-label="크게 보기"></button>
     </div>`;
+    const filmItems = rest.map((src, i) => {
+      const noZoomAttr = i === rest.length - 1 ? ' data-nozoom="1"' : "";
+      return `<button type="button" class="filmstrip-thumb" style="background-image:url('${src}')" data-src="${src}"${noZoomAttr} aria-label="첨부 이미지 크게 보기"></button>`;
+    });
     const filmHtml = rest.length
-      ? `<div class="browser-filmstrip">${rest
-          .map((src) => `<button type="button" class="filmstrip-thumb" style="background-image:url('${src}')" data-src="${src}" aria-label="첨부 이미지 크게 보기"></button>`)
-          .join("")}</div>`
+      ? `<div class="browser-filmstrip">${filmItems.join('<span class="filmstrip-arrow">›</span>')}</div>`
       : "";
     imagesHtml = heroHtml + filmHtml;
   } else {
@@ -654,7 +656,10 @@ function openMail(id) {
   $("#mail-detail-content").innerHTML = bodyHtml + imagesHtml;
   $("#mail-detail-content")
     .querySelectorAll(".mail-image-thumb, .browser-hero-image, .filmstrip-thumb")
-    .forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
+    .forEach((btn) => {
+      if (btn.dataset.nozoom) return;
+      btn.addEventListener("click", () => openLightbox(btn.dataset.src));
+    });
 
   if (embeds.some((e) => e.type === "instagram")) {
     loadInstagramEmbedScript();

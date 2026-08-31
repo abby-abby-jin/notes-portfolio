@@ -474,14 +474,13 @@ html,body{
   display:flex; flex-direction:column; align-items:center; text-align:center;
   padding:2.6rem 2rem 2.6rem;
   background-color:#f7f4ed;
-  background-image:url("uploads/paper-texture-1788190055.jpg");
+  background-image:url("uploads/white-paper-texture-1788190513.jpg");
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
 }
 .profile-photo{
   width:120px; height:120px; border-radius:50%;
-  border:1px solid var(--divider);
   background-size:cover; background-position:center; background-color:var(--bg-row-hover);
   margin-bottom:1.6rem; flex:none;
 }
@@ -626,7 +625,7 @@ html,body{
   border:none; padding:0; margin:0; cursor:pointer;
 }
 .browser-filmstrip{
-  display:flex; gap:1px;
+  display:flex; align-items:center; gap:0;
   margin-top:.6rem;
   overflow-x:auto;
   background:var(--divider);
@@ -634,8 +633,17 @@ html,body{
 .filmstrip-thumb{
   flex:1 0 140px;
   aspect-ratio:4/3;
-  background-size:cover; background-position:center; background-color:var(--bg-row-hover);
+  background-size:contain; background-repeat:no-repeat; background-position:center; background-color:var(--bg-row-hover);
   border:none; padding:0; margin:0; cursor:pointer;
+}
+.filmstrip-thumb[data-nozoom]{ cursor:default; }
+.filmstrip-arrow{
+  flex:none;
+  display:flex; align-items:center; justify-content:center;
+  width:22px; align-self:stretch;
+  background:var(--bg-detail);
+  color:var(--text-secondary);
+  font-size:1.1rem;
 }
 
 .image-lightbox{
