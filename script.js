@@ -599,17 +599,40 @@ function openMail(id) {
     renderMailList();
   }
 
+  if (mail.labelColor) {
+    $("#mail-detail-content").style.setProperty("--mail-label-accent", mail.labelColor);
+  } else {
+    $("#mail-detail-content").style.removeProperty("--mail-label-accent");
+  }
+
   $("#mail-detail-subject").textContent = mail.subject;
   $("#mail-detail-sender").textContent = mail.to ? `${mail.sender} → ${mail.to}` : mail.sender;
   $("#mail-detail-date").textContent = mail.date;
 
   const images = mail.images || [];
-  const galleryClass = mail.gallery === "sns" ? " sns-grid" : "";
-  const imagesHtml = images.length
-    ? `<div class="mail-images${galleryClass}">${images
-        .map((src) => `<button type="button" class="mail-image-thumb" style="background-image:url('${src}')" data-src="${src}" aria-label="첨부 이미지 크게 보기"></button>`)
-        .join("")}</div>`
-    : "";
+  let imagesHtml = "";
+  if (mail.gallery === "browser" && images.length) {
+    const [hero, ...rest] = images;
+    const heroHtml = `<div class="browser-hero">
+      <div class="browser-hero-bar">
+        <span class="browser-hero-dot"></span><span class="browser-hero-dot"></span><span class="browser-hero-dot"></span>
+      </div>
+      <button type="button" class="browser-hero-image" style="background-image:url('${hero}')" data-src="${hero}" aria-label="크게 보기"></button>
+    </div>`;
+    const filmHtml = rest.length
+      ? `<div class="browser-filmstrip">${rest
+          .map((src) => `<button type="button" class="filmstrip-thumb" style="background-image:url('${src}')" data-src="${src}" aria-label="첨부 이미지 크게 보기"></button>`)
+          .join("")}</div>`
+      : "";
+    imagesHtml = heroHtml + filmHtml;
+  } else {
+    const galleryClass = mail.gallery === "sns" ? " sns-grid" : "";
+    imagesHtml = images.length
+      ? `<div class="mail-images${galleryClass}">${images
+          .map((src) => `<button type="button" class="mail-image-thumb" style="background-image:url('${src}')" data-src="${src}" aria-label="첨부 이미지 크게 보기"></button>`)
+          .join("")}</div>`
+      : "";
+  }
 
   const embeds = mail.embeds || [];
   const embedsHtml = embeds.length
@@ -630,7 +653,7 @@ function openMail(id) {
 
   $("#mail-detail-content").innerHTML = bodyHtml + imagesHtml;
   $("#mail-detail-content")
-    .querySelectorAll(".mail-image-thumb")
+    .querySelectorAll(".mail-image-thumb, .browser-hero-image, .filmstrip-thumb")
     .forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
 
   if (embeds.some((e) => e.type === "instagram")) {

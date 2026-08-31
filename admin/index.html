@@ -593,9 +593,24 @@ function renderMailEditor(){
     <small class="hint">선택한 텍스트에 라벨을 씌우려면 텍스트를 드래그하고 버튼을 누르세요. 문단 사이는 빈 줄 하나로 구분됩니다.</small>
     <div class="preview" id="f-preview-render"></div>
 
+    <div class="row">
+      <div>
+        <label>라벨 강조색 (labelColor — CLIENT/IDEA/ROLE 등 색상, 브랜드별)</label>
+        <input id="f-label-color" value="${m.labelColor || ""}" placeholder="#c96b6b (비우면 기본 회색)" />
+      </div>
+      <div>
+        <label>이미지 배치 방식 (gallery)</label>
+        <select id="f-gallery">
+          <option value="" ${!m.gallery ? "selected" : ""}>기본 (그리드)</option>
+          <option value="sns" ${m.gallery === "sns" ? "selected" : ""}>SNS 3열</option>
+          <option value="browser" ${m.gallery === "browser" ? "selected" : ""}>브라우저 목업 + 필름스트립</option>
+        </select>
+      </div>
+    </div>
+
     <label>첨부 이미지 (images)</label>
     <div class="list-editor" id="f-images"></div>
-    <div style="margin-top:.5rem"><input type="file" id="f-image-upload" accept="image/*" /> <small class="hint">업로드하면 uploads/ 폴더에 저장되고 목록에 자동 추가돼요.</small></div>
+    <div style="margin-top:.5rem"><input type="file" id="f-image-upload" accept="image/*" /> <small class="hint">업로드하면 uploads/ 폴더에 저장되고 목록에 자동 추가돼요. '브라우저 목업' 방식은 첫 번째 이미지가 큰 화면, 나머지가 아래 필름스트립으로 표시돼요.</small></div>
 
     <label>임베드 (embeds — 유튜브/인스타그램 링크)</label>
     <div class="list-editor" id="f-embeds"></div>
@@ -793,6 +808,10 @@ function collectMailForm(m){
   m.unread = $("#f-unread").checked;
   m.preview = $("#f-preview").value;
   m.body = $("#f-body").value;
+  const labelColor = $("#f-label-color").value.trim();
+  if (labelColor) m.labelColor = labelColor; else delete m.labelColor;
+  const gallery = $("#f-gallery").value;
+  if (gallery) m.gallery = gallery; else delete m.gallery;
 }
 
 async function saveMail(m){

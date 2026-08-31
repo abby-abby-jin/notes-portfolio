@@ -362,7 +362,7 @@ html,body{
 #mail-detail-content .placeholder{ color:var(--text-secondary); font-style:italic; }
 #mail-detail-content .mail-label{
   display:block;
-  color:var(--text-secondary);
+  color:var(--mail-label-accent, var(--text-secondary));
   font-size:.78rem;
   font-weight:700;
   font-style:italic;
@@ -601,6 +601,40 @@ html,body{
 }
 .mail-images.sns-grid .mail-image-thumb{
   aspect-ratio:1/1; border-radius:0; border:none;
+}
+
+/* 브라우저 목업 히어로 + 필름스트립 갤러리 */
+.browser-hero{
+  border:1px solid var(--divider);
+  overflow:hidden;
+  margin-top:1.4rem;
+}
+.browser-hero-bar{
+  display:flex; align-items:center; gap:.4rem;
+  padding:.55rem .7rem;
+  background:var(--bg-row-hover);
+  border-bottom:1px solid var(--divider);
+}
+.browser-hero-dot{
+  width:9px; height:9px; border-radius:50%;
+  background:var(--divider);
+}
+.browser-hero-image{
+  display:block; width:100%; aspect-ratio:16/10;
+  background-size:cover; background-position:top center; background-color:var(--bg-row-hover);
+  border:none; padding:0; margin:0; cursor:pointer;
+}
+.browser-filmstrip{
+  display:flex; gap:1px;
+  margin-top:.6rem;
+  overflow-x:auto;
+  background:var(--divider);
+}
+.filmstrip-thumb{
+  flex:1 0 140px;
+  aspect-ratio:4/3;
+  background-size:cover; background-position:center; background-color:var(--bg-row-hover);
+  border:none; padding:0; margin:0; cursor:pointer;
 }
 
 .image-lightbox{
