@@ -481,7 +481,7 @@ html,body{
 }
 .profile-photo{
   width:120px; height:120px; border-radius:50%;
-  background-size:cover; background-position:center; background-color:var(--bg-row-hover);
+  background-size:cover; background-position:center 25%; background-color:var(--bg-row-hover);
   margin-bottom:1.6rem; flex:none;
 }
 .stamp-stack{
@@ -627,16 +627,11 @@ html,body{
 .browser-filmstrip{
   display:flex; align-items:center; gap:0;
   margin-top:.6rem;
-  overflow-x:auto;
-  background:var(--divider);
 }
 .filmstrip-thumb{
-  flex:1 0 140px;
-  aspect-ratio:4/3;
-  background-size:contain; background-repeat:no-repeat; background-position:center; background-color:var(--bg-row-hover);
-  border:none; padding:0; margin:0; cursor:pointer;
+  flex:1 1 0; min-width:0;
+  display:block; width:100%; height:auto;
 }
-.filmstrip-thumb[data-nozoom]{ cursor:default; }
 .filmstrip-arrow{
   flex:none;
   display:flex; align-items:center; justify-content:center;
