@@ -553,6 +553,10 @@ html,body{
   width:100%; aspect-ratio:1/1;
   background-size:cover; background-position:center; background-color:var(--bg-row-hover);
 }
+.mail-post-video{
+  width:100%; aspect-ratio:9/16;
+  object-fit:cover; background:#000; display:block;
+}
 .mail-post-body{ padding:.9rem 1rem 1rem; flex:1; display:flex; flex-direction:column; }
 .mail-post-handle{ font-size:.78rem; color:var(--text-secondary); margin:0 0 .5rem; letter-spacing:.02em; }
 .mail-post-caption{

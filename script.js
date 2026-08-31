@@ -576,11 +576,14 @@ function postCardHtml(post) {
   const link = post.url
     ? `<a class="mail-post-link" href="${post.url}" target="_blank" rel="noopener">원본 게시물 보기 →</a>`
     : "";
+  const mediaHtml = post.video
+    ? `<video class="mail-post-video" src="${post.video}" ${post.image ? `poster="${post.image}"` : ""} controls playsinline preload="metadata"></video>`
+    : `<div class="mail-post-image" style="background-image:url('${post.image}')"></div>`;
   return `<div class="mail-post-card">
-    <div class="mail-post-image" style="background-image:url('${post.image}')"></div>
+    ${mediaHtml}
     <div class="mail-post-body">
-      <p class="mail-post-handle">${post.handle || ""}</p>
-      <p class="mail-post-caption">${post.caption || ""}</p>
+      <p class="mail-post-handle">${escapeHtml(post.handle)}</p>
+      <p class="mail-post-caption">${escapeHtml(post.caption)}</p>
       ${link}
     </div>
   </div>`;

@@ -729,8 +729,11 @@ function renderPostList(m){
     <div class="list-editor-row">
       <img class="thumb" src="https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${p.image || ""}" onerror="this.style.display='none'" />
       <div class="fields">
-        <input data-post-image="${i}" value="${p.image || ""}" placeholder="uploads/..." />
+        <input data-post-image="${i}" value="${p.image || ""}" placeholder="uploads/... (썸네일 이미지, 동영상 카드는 미리보기용)" />
         <input type="file" data-post-upload="${i}" accept="image/*" />
+        <input data-post-video="${i}" value="${p.video || ""}" placeholder="uploads/... (릴스 등 동영상 — 넣으면 이미지 대신 동영상 카드로 표시)" />
+        <input type="file" data-post-video-upload="${i}" accept="video/*" />
+        <small class="hint">동영상을 넣으면 카드가 세로(9:16) 영상 재생 카드로 바뀌어요. 이미지는 동영상 로딩 전 썸네일로 쓰여요.</small>
         <input data-post-handle="${i}" value="${p.handle || ""}" placeholder="@handle" />
         <textarea data-post-caption="${i}" rows="3" placeholder="캡션">${p.caption || ""}</textarea>
         <input data-post-url="${i}" value="${p.url || ""}" placeholder="원본 링크 (선택)" />
@@ -750,6 +753,24 @@ function renderPostList(m){
       const path = `uploads/${safeName}`;
       await ghPutBinaryFile(path, b64, `게시물 이미지 업로드: ${safeName}`);
       posts[idx].image = path;
+      renderPostList(m);
+      toast("업로드 완료. 저장을 눌러 반영하세요.");
+    } catch (err) {
+      toast(err.message);
+    }
+  }));
+  $$('[data-post-video]', box).forEach((el) => el.addEventListener("input", () => { posts[Number(el.dataset.postVideo)].video = el.value; }));
+  $$('[data-post-video-upload]', box).forEach((el) => el.addEventListener("change", async (e) => {
+    const idx = Number(el.dataset.postVideoUpload);
+    const file = e.target.files[0];
+    if (!file) return;
+    toast("동영상 업로드 중... (용량에 따라 시간이 걸릴 수 있어요)");
+    try {
+      const b64 = await fileToBase64(file);
+      const safeName = `${m.id}-post${idx}-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.\-]/g, "_")}`;
+      const path = `uploads/${safeName}`;
+      await ghPutBinaryFile(path, b64, `게시물 동영상 업로드: ${safeName}`);
+      posts[idx].video = path;
       renderPostList(m);
       toast("업로드 완료. 저장을 눌러 반영하세요.");
     } catch (err) {
