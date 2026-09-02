@@ -300,21 +300,10 @@ function bookshelfBarcode(seed) {
   return bars;
 }
 
-const SPINE_GLYPH_MOTIFS = [
-  [" @", " |", "/|", " |", " ˇ"],
-  [" o", " |", "=|="],
-  [" *", "-*-", " * "],
-  ["~  ", " ~ ", "  ~", " ~ "],
-  ["^ ^", " V "],
-  [" _", "/=\\", " | ", " | "],
-  [" T", " |", "(+)"],
-  [")", " )", ")"],
-  ["+", "/|\\", " | "],
-  [" x ", "/ \\", "\\ /", " x "],
-];
+const SPINE_CAP_CHARS = ["*", "#", "/", ":", "@", "=", "~", "%", "+", "."];
 
-function bookshelfSymbols(motif) {
-  return motif.map((line) => `<span>${escapeHtml(line)}</span>`).join("");
+function bookshelfCapBand(ch) {
+  return escapeHtml(ch.repeat(24));
 }
 
 function bookshelfMarkup(note) {
@@ -322,9 +311,10 @@ function bookshelfMarkup(note) {
     .map((it, i) => {
       const width = 42 + ((i * 13) % 20);
       const height = 160 + ((i * 17) % 40);
-      const motif = SPINE_GLYPH_MOTIFS[i % SPINE_GLYPH_MOTIFS.length];
-      return `<button type="button" class="book-spine" data-idx="${i}" style="width:${width}px; height:${height}px;" aria-label="${escapeHtml(it.title)}">
-        <span class="book-spine-symbols" aria-hidden="true">${bookshelfSymbols(motif)}</span>
+      const ch = SPINE_CAP_CHARS[i % SPINE_CAP_CHARS.length];
+      return `<button type="button" class="book-spine" data-idx="${i}" style="width:${width}px; height:${height}px;">
+        <span class="book-spine-cap" aria-hidden="true">${bookshelfCapBand(ch)}</span>
+        <span class="book-spine-title">${escapeHtml(it.title)}</span>
         <span class="book-spine-barcode">${bookshelfBarcode(i + 1)}</span>
       </button>`;
     })
