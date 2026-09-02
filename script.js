@@ -300,13 +300,25 @@ function bookshelfBarcode(seed) {
   return bars;
 }
 
+const SPINE_GLYPH_SETS = ["|||", "===", "~~~", ":::", "^^^", "...", "---", ":|:", "==", "°°°", "///", "\\\\\\", "+++", "<>", "()", "‖‖‖", "¤¤", "..:", "~=~"];
+
+function bookshelfSymbols(seed, rows) {
+  let out = "";
+  for (let r = 0; r < rows; r++) {
+    const idx = Math.abs((seed * 31 + r * 17 + r * r * 7)) % SPINE_GLYPH_SETS.length;
+    out += `<span>${SPINE_GLYPH_SETS[idx]}</span>`;
+  }
+  return out;
+}
+
 function bookshelfMarkup(note) {
   const spines = note.entries
     .map((it, i) => {
-      const width = Math.max(30, Math.min(50, 30 + it.title.length * 1.1));
+      const width = 42 + ((i * 13) % 20);
       const height = 160 + ((i * 17) % 40);
-      return `<button type="button" class="book-spine" data-idx="${i}" style="width:${width}px; height:${height}px;">
-        <span class="book-spine-title">${it.title}</span>
+      const rows = Math.round(height / 15);
+      return `<button type="button" class="book-spine" data-idx="${i}" style="width:${width}px; height:${height}px;" aria-label="${escapeHtml(it.title)}">
+        <span class="book-spine-symbols" aria-hidden="true">${bookshelfSymbols(i + 3, rows)}</span>
         <span class="book-spine-barcode">${bookshelfBarcode(i + 1)}</span>
       </button>`;
     })
@@ -329,9 +341,9 @@ function bindBookshelf(note, root) {
       btn.classList.add("active");
       const it = note.entries[Number(btn.dataset.idx)];
       detail.innerHTML = `
-        <div class="bookshelf-detail-title">${it.title}</div>
-        <div class="bookshelf-detail-meta">${it.meta || ""}</div>
-        <div class="bookshelf-detail-text">${it.text}</div>
+        <div class="bookshelf-detail-title">${escapeHtml(it.title)}</div>
+        <div class="bookshelf-detail-meta">${escapeHtml(it.meta || "")}</div>
+        <div class="bookshelf-detail-text">${escapeHtml(it.text)}</div>
       `;
       detail.classList.add("open");
     });
