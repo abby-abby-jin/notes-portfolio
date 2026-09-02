@@ -941,7 +941,12 @@ function renderNoteEditor(){
         renderChecklistEditor(n);
       });
     } else if (selectedKind === "entries"){
-      kindFields.innerHTML = `<label>목록 항목</label><div class="list-editor" id="n-entries"></div><button type="button" id="n-entries-add" style="margin-top:.4rem">+ 항목 추가</button>`;
+      kindFields.innerHTML = `
+        <div class="checkbox-row"><input type="checkbox" id="n-bookshelf" ${n.layout === "bookshelf" ? "checked" : ""} /><label for="n-bookshelf">책장(북셀프) 형태로 표시 — 항목이 책등처럼 나오고 클릭하면 문장이 펼쳐져요</label></div>
+        <label>목록 항목 (제목 = 책 제목/책등 글자)</label>
+        <div class="list-editor" id="n-entries"></div>
+        <button type="button" id="n-entries-add" style="margin-top:.4rem">+ 항목 추가</button>
+      `;
       renderEntriesEditor(n);
       $("#n-entries-add").addEventListener("click", () => {
         n.entries = n.entries || [];
@@ -1046,13 +1051,14 @@ function collectNoteForm(n){
   const kind = $("#n-kind").value;
   if (kind === "body"){
     n.body = $("#n-body").value;
-    delete n.checklist; delete n.groups; delete n.entries;
+    delete n.checklist; delete n.groups; delete n.entries; delete n.layout;
   } else if (kind === "checklist"){
-    delete n.body; delete n.groups; delete n.entries;
+    delete n.body; delete n.groups; delete n.entries; delete n.layout;
     n.checklist = n.checklist || [];
   } else if (kind === "entries"){
     delete n.body; delete n.groups; delete n.checklist;
     n.entries = n.entries || [];
+    if ($("#n-bookshelf").checked) n.layout = "bookshelf"; else delete n.layout;
   }
 }
 

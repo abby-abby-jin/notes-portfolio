@@ -285,6 +285,53 @@ html,body{
 .note-entry-meta{ font-size:.78rem; color:var(--text-secondary); margin:0 0 .4em; }
 .note-entry-text{ font-size:.94rem; color:var(--text-primary); white-space:pre-wrap; line-height:1.6; }
 
+/* ================= 북셀프 (내가 훔치고 싶은 문장들 전용) ================= */
+.bookshelf{ padding-top:.4rem; }
+.bookshelf-row{
+  display:flex; align-items:flex-end; gap:3px;
+  overflow-x:auto; overflow-y:hidden;
+  padding:1.6rem .4rem 0;
+}
+.book-spine{
+  flex:none; width:32px;
+  border:none; border-radius:2px 2px 0 0;
+  cursor:pointer; padding:0 0 .6rem;
+  display:flex; align-items:flex-end; justify-content:center;
+  box-shadow:inset -4px 0 8px rgba(0,0,0,.28), inset 2px 0 0 rgba(255,255,255,.08);
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.book-spine:hover{ transform:translateY(-10px) !important; }
+.book-spine.active{ transform:translateY(-14px) !important; box-shadow:inset -4px 0 8px rgba(0,0,0,.28), 0 6px 10px rgba(0,0,0,.18); }
+.book-spine span{
+  writing-mode:vertical-rl; text-orientation:mixed;
+  color:#f3ede1;
+  font-family:"Georgia","Noto Serif KR",serif;
+  font-style:italic;
+  font-size:.7rem; letter-spacing:.02em;
+  white-space:nowrap; max-height:100%;
+  overflow:hidden; text-overflow:ellipsis;
+}
+.bookshelf-ledge{
+  height:9px; margin:0 .4rem;
+  background:linear-gradient(to bottom, #6b4a35, #46301f);
+  border-radius:0 0 2px 2px;
+}
+.bookshelf-hint{
+  font-size:.74rem; color:var(--text-secondary); text-align:center;
+  margin:.9rem 0 0;
+}
+.bookshelf-detail{
+  margin-top:1.4rem; padding:0 1.4rem;
+  border:1px solid var(--divider);
+  background:var(--bg-detail);
+  opacity:0; max-height:0; overflow:hidden;
+  transition:opacity .25s ease, max-height .3s ease, padding .3s ease;
+}
+.bookshelf-detail.open{ opacity:1; max-height:640px; padding:1.2rem 1.4rem; }
+.bookshelf-detail-title{ font-weight:700; font-style:italic; font-size:1.05rem; margin-bottom:.3em; }
+.bookshelf-detail-meta{ font-size:.78rem; color:var(--text-secondary); margin-bottom:.8em; }
+.bookshelf-detail-text{ font-size:.94rem; line-height:1.7; white-space:pre-wrap; color:var(--text-primary); }
+
 /* ================= 메일 ================= */
 .mail-folders, .mail-main{
   font-family:"SF Mono", "Menlo", "Courier New", monospace;

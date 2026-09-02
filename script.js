@@ -290,6 +290,47 @@ function entriesMarkup(note) {
     .join("")}</ul>`;
 }
 
+// 책등 색상 팔레트 (북셀프 레이아웃 전용)
+const BOOK_SPINE_COLORS = ["#8a3a2a", "#2c241d", "#5b3a63", "#22201c", "#7c4a2f", "#9fc7b8", "#3a3566", "#8f8a72", "#1f4a3d", "#5f7aa8"];
+
+function bookshelfMarkup(note) {
+  const spines = note.entries
+    .map((it, i) => {
+      const color = BOOK_SPINE_COLORS[i % BOOK_SPINE_COLORS.length];
+      const tilt = (i % 2 === 0 ? -1 : 1) * (1 + (i % 3));
+      const height = 145 + ((i * 13) % 35);
+      return `<button type="button" class="book-spine" data-idx="${i}" style="background:${color}; height:${height}px; transform:rotate(${tilt}deg);">
+        <span>${it.title}</span>
+      </button>`;
+    })
+    .join("");
+  return `
+    <div class="bookshelf">
+      <div class="bookshelf-row">${spines}</div>
+      <div class="bookshelf-ledge"></div>
+      <p class="bookshelf-hint">책등을 눌러 문장을 확인하세요</p>
+      <div class="bookshelf-detail" id="bookshelf-detail"></div>
+    </div>
+  `;
+}
+
+function bindBookshelf(note, root) {
+  const detail = root.querySelector("#bookshelf-detail");
+  root.querySelectorAll(".book-spine").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      root.querySelectorAll(".book-spine").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      const it = note.entries[Number(btn.dataset.idx)];
+      detail.innerHTML = `
+        <div class="bookshelf-detail-title">${it.title}</div>
+        <div class="bookshelf-detail-meta">${it.meta || ""}</div>
+        <div class="bookshelf-detail-text">${it.text}</div>
+      `;
+      detail.classList.add("open");
+    });
+  });
+}
+
 function renderList() {
   const filtered = visibleNotes();
   const folderLabel = folders.find((f) => f.id === activeFolder)?.label || "모든 메모";
@@ -383,7 +424,12 @@ function openNote(id) {
     ul.innerHTML = checklistMarkup(note);
     bindChecklist(note, ul);
   } else if (note.entries && note.entries.length) {
-    content.innerHTML = entriesMarkup(note);
+    if (note.layout === "bookshelf") {
+      content.innerHTML = bookshelfMarkup(note);
+      bindBookshelf(note, content);
+    } else {
+      content.innerHTML = entriesMarkup(note);
+    }
   } else {
     const embedHtml = note.embed
       ? `<div class="site-embed-wrap"><iframe src="${note.embed}" title="${note.title}" loading="lazy"></iframe></div>`
