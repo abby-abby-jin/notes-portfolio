@@ -331,6 +331,54 @@ function bindBookshelf(note, root) {
   });
 }
 
+const TYPEWRITER_MACHINE_SVG = `
+<svg viewBox="0 0 640 260" class="tw-machine-svg" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+  <ellipse cx="150" cy="70" rx="26" ry="26" fill="#8b9070"/>
+  <ellipse cx="150" cy="70" rx="10" ry="10" fill="#5f6448"/>
+  <ellipse cx="490" cy="70" rx="26" ry="26" fill="#8b9070"/>
+  <ellipse cx="490" cy="70" rx="10" ry="10" fill="#5f6448"/>
+  <rect x="70" y="55" width="500" height="34" rx="6" fill="#3a3a36"/>
+  <path d="M40 100 Q40 78 66 78 H574 Q600 78 600 100 V150 Q600 168 582 168 H58 Q40 168 40 150 Z" fill="#a9ad85"/>
+  <path d="M40 100 Q40 78 66 78 H574 Q600 78 600 100 V112 H40 Z" fill="#bcc09c"/>
+  <rect x="20" y="160" width="600" height="90" rx="14" fill="#9ba178"/>
+  <rect x="20" y="160" width="600" height="18" rx="9" fill="#aeb38c"/>
+  <rect x="252" y="176" width="136" height="30" rx="6" fill="#7d8262"/>
+  <g fill="#2f2f2c">
+    ${Array.from({ length: 13 })
+      .map((_, i) => `<circle cx="${72 + i * 40}" cy="238" r="12"/>`)
+      .join("")}
+  </g>
+  <g fill="#e9e6d8">
+    ${Array.from({ length: 13 })
+      .map((_, i) => `<circle cx="${72 + i * 40}" cy="238" r="8"/>`)
+      .join("")}
+  </g>
+</svg>`;
+
+function typewriterMarkup(note) {
+  const entries = note.entries
+    .map(
+      (it) => `
+      <div class="tw-entry">
+        <div class="tw-entry-head">
+          <span class="tw-entry-title">${it.title}</span>
+          <span class="tw-entry-meta">${it.meta || ""}</span>
+        </div>
+        <div class="tw-entry-rule"></div>
+        <p class="tw-entry-text">${it.text}</p>
+      </div>`
+    )
+    .join("");
+  return `
+    <div class="typewriter-scroll">
+      <div class="typewriter-paper">${entries}</div>
+      <div class="typewriter-machine-wrap">
+        <div class="typewriter-machine">${TYPEWRITER_MACHINE_SVG}</div>
+      </div>
+    </div>
+  `;
+}
+
 function renderList() {
   const filtered = visibleNotes();
   const folderLabel = folders.find((f) => f.id === activeFolder)?.label || "모든 메모";
@@ -427,6 +475,8 @@ function openNote(id) {
     if (note.layout === "bookshelf") {
       content.innerHTML = bookshelfMarkup(note);
       bindBookshelf(note, content);
+    } else if (note.layout === "typewriter") {
+      content.innerHTML = typewriterMarkup(note);
     } else {
       content.innerHTML = entriesMarkup(note);
     }

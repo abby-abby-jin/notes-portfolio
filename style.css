@@ -332,6 +332,32 @@ html,body{
 .bookshelf-detail-meta{ font-size:.78rem; color:var(--text-secondary); margin-bottom:.8em; }
 .bookshelf-detail-text{ font-size:.94rem; line-height:1.7; white-space:pre-wrap; color:var(--text-primary); }
 
+/* ================= 타자기 스크롤 (내가 훔치고 싶은 문장들 전용) ================= */
+.typewriter-scroll{ position:relative; margin:0 -1.6rem; }
+.typewriter-paper{
+  position:relative; z-index:1;
+  width:86%; margin:0 auto; max-width:520px;
+  background:#f4efe2;
+  border:1px solid #ded5c0;
+  box-shadow:0 2px 14px rgba(0,0,0,.06);
+  padding:2.2rem 1.6rem 260px;
+  font-family:"SF Mono","Menlo","Courier New",monospace;
+}
+.tw-entry{ margin-bottom:2.6rem; }
+.tw-entry-head{
+  display:flex; justify-content:space-between; align-items:baseline; gap:.6rem;
+  font-size:.72rem; letter-spacing:.02em; color:#57503f;
+}
+.tw-entry-rule{ border-top:1px dashed #b8ac8f; margin:.35rem 0 1.1rem; }
+.tw-entry-text{ font-size:.88rem; line-height:1.85; white-space:pre-wrap; color:#2c2820; }
+.typewriter-machine-wrap{
+  position:sticky; bottom:0; left:0; right:0;
+  height:0; overflow:visible;
+  z-index:2; pointer-events:none;
+}
+.typewriter-machine{ margin-top:-232px; width:100%; }
+.tw-machine-svg{ display:block; width:100%; height:auto; }
+
 /* ================= 메일 ================= */
 .mail-folders, .mail-main{
   font-family:"SF Mono", "Menlo", "Courier New", monospace;
