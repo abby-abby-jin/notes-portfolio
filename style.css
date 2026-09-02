@@ -211,8 +211,6 @@ html,body{
 }
 .search-bar input::placeholder{ color:var(--text-secondary); }
 
-#notes-window{ font-family:"Poor Story","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,sans-serif; }
-
 #notes-list{ list-style:none; margin:0; padding:0; flex:1; }
 .note-row{
   display:flex; flex-direction:column; gap:.15em;
