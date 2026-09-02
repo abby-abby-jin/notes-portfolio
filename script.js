@@ -290,17 +290,24 @@ function entriesMarkup(note) {
     .join("")}</ul>`;
 }
 
-// 책등 색상 팔레트 (북셀프 레이아웃 전용)
-const BOOK_SPINE_COLORS = ["#8a3a2a", "#2c241d", "#5b3a63", "#22201c", "#7c4a2f", "#9fc7b8", "#3a3566", "#8f8a72", "#1f4a3d", "#5f7aa8"];
+
+function bookshelfBarcode(seed) {
+  let bars = "";
+  for (let i = 0; i < 14; i++) {
+    const w = 1 + ((seed * (i + 3)) % 3);
+    bars += `<span style="width:${w}px"></span>`;
+  }
+  return bars;
+}
 
 function bookshelfMarkup(note) {
   const spines = note.entries
     .map((it, i) => {
-      const color = BOOK_SPINE_COLORS[i % BOOK_SPINE_COLORS.length];
-      const tilt = (i % 2 === 0 ? -1 : 1) * (1 + (i % 3));
-      const height = 145 + ((i * 13) % 35);
-      return `<button type="button" class="book-spine" data-idx="${i}" style="background:${color}; height:${height}px; transform:rotate(${tilt}deg);">
-        <span>${it.title}</span>
+      const width = Math.max(30, Math.min(50, 30 + it.title.length * 1.1));
+      const height = 160 + ((i * 17) % 40);
+      return `<button type="button" class="book-spine" data-idx="${i}" style="width:${width}px; height:${height}px;">
+        <span class="book-spine-title">${it.title}</span>
+        <span class="book-spine-barcode">${bookshelfBarcode(i + 1)}</span>
       </button>`;
     })
     .join("");
