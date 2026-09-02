@@ -893,10 +893,18 @@ function renderMemoryGrid(items) {
     grid.innerHTML = `<p class="memory-empty">아직 추가된 기억이 없습니다.</p>`;
     return;
   }
-  grid.innerHTML = items
-    .map((it) => `<button type="button" class="memory-item" style="background-image:url('${it.image}')" data-src="${it.image}" aria-label="${(it.caption || "사진").replace(/"/g, "&quot;")}"></button>`)
+  const cards = items
+    .map((it, i) => {
+      const x = i * 34;
+      const y = i * 5;
+      return `<button type="button" class="iso-card" data-src="${it.image}" style="--x:${x}px; --y:${y}px; z-index:${i}; background-image:url('${it.image}')" aria-label="${(it.caption || "사진").replace(/"/g, "&quot;")}"></button>`;
+    })
     .join("");
-  grid.querySelectorAll(".memory-item").forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
+  grid.innerHTML = `
+    <div class="iso-shelf"><div class="iso-track">${cards}</div></div>
+    <p class="memory-hint">사진을 눌러 크게 보기</p>
+  `;
+  grid.querySelectorAll(".iso-card").forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
 }
 
 loadContent();

@@ -580,19 +580,40 @@ html,body{
 }
 /* ================= memory (갤러리) ================= */
 .memory-body{ width:100%; height:100%; overflow-y:auto; padding:1.6rem; }
-.memory-grid{
-  display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr));
-  gap:.6rem;
-}
-.memory-item{
-  aspect-ratio:4/3; width:100%;
-  background-size:cover; background-position:center; background-color:var(--bg-row-hover);
-  border:1px solid var(--divider); border-radius:0;
-  cursor:pointer; padding:0;
-  transition:transform .15s ease;
-}
-.memory-item:hover{ transform:scale(1.02); }
 .memory-empty{ color:var(--text-secondary); font-size:.9rem; padding:2rem 0; text-align:center; }
+
+/* ================= 아이소메트릭 사진 카드 (memory 갤러리) ================= */
+.iso-shelf{
+  perspective:1400px;
+  min-height:300px;
+  display:flex; align-items:center; justify-content:center;
+  padding:2.4rem 0 1rem;
+}
+.iso-track{
+  position:relative; width:1px; height:1px;
+  transform-style:preserve-3d;
+  transform:rotateX(52deg) rotateZ(-38deg);
+}
+.iso-card{
+  position:absolute; top:0; left:0;
+  width:86px; height:114px;
+  transform-style:preserve-3d;
+  transform:translate3d(var(--x), var(--y), 0);
+  transition:transform .3s ease, box-shadow .3s ease;
+  border:1.5px solid var(--text-primary);
+  background-size:cover; background-position:center; background-color:var(--bg-row-hover);
+  cursor:pointer; padding:0;
+  box-shadow:-3px 3px 0 rgba(0,0,0,.15);
+}
+.iso-card:hover, .iso-card:focus-visible{
+  transform:translate3d(var(--x), var(--y), 0) rotateZ(38deg) rotateX(-52deg) translateZ(160px) scale(1.5);
+  z-index:999 !important;
+  box-shadow:0 14px 26px rgba(0,0,0,.35);
+}
+.memory-hint{
+  font-size:.74rem; color:var(--text-secondary); text-align:center;
+  margin:0 0 1rem;
+}
 
 /* ================= 임베드 (유튜브/인스타그램) ================= */
 .mail-embeds{
