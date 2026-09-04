@@ -613,7 +613,7 @@ html,body{
 /* ================= 임베드 (유튜브/인스타그램) ================= */
 .mail-embeds{
   display:flex; flex-wrap:wrap; gap:1rem;
-  margin-bottom:1.4rem;
+  margin:1rem 0 1.4rem;
 }
 .video-embed-wrap{
   position:relative; width:100%; max-width:640px;
