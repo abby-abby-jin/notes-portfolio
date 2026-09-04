@@ -384,18 +384,18 @@
       "subject": "패션접음",
       "date": "2022",
       "preview": "다양한 화자가 옷을 개면서 하루를 정리하는 제품 이미지와 에세이가 연재되는 캠페인 (메인 카피라이터, 기여도 80%)",
-      "gallery": "sns",
-      "images": [
-        "uploads/p7-1-1788537901000.jpg",
-        "uploads/p7-2-1788537901000.jpg",
-        "uploads/p7-3-1788537901000.jpg",
-        "uploads/p7-4-1788537901000.jpg",
-        "uploads/p7-5-1788537901000.jpg",
-        "uploads/p7-6-1788537901000.jpg",
-        "uploads/p7-7-1788537901000.jpg",
-        "uploads/p7-8-1788537901000.jpg"
+      "images": [],
+      "posts": [
+        { "image": "uploads/p7-1-1788537901000.jpg", "handle": "", "caption": "", "url": "" },
+        { "image": "uploads/p7-2-1788537901000.jpg", "handle": "", "caption": "", "url": "" },
+        { "image": "uploads/p7-3-1788537901000.jpg", "handle": "", "caption": "", "url": "" },
+        { "image": "uploads/p7-4-1788537901000.jpg", "handle": "", "caption": "", "url": "" },
+        { "image": "uploads/p7-5-1788537901000.jpg", "handle": "", "caption": "", "url": "" },
+        { "image": "uploads/p7-6-1788537901000.jpg", "handle": "", "caption": "", "url": "" },
+        { "image": "uploads/p7-7-1788537901000.jpg", "handle": "", "caption": "", "url": "" },
+        { "image": "uploads/p7-8-1788537901000.jpg", "handle": "", "caption": "", "url": "" }
       ],
-      "body": "<span class=\"mail-label\">CLIENT</span>코오롱FnC\n\n코오롱 그룹 전사의 디지털 커뮤니케이션을 위한 SNS 캠페인입니다. \n다양한 화자가 옷을 개면서 하루를 정리하는 제품 이미지와 에세이가 연재되는 크리에이티브입니다\n\n<span class=\"mail-label\">ROLE</span><strong>캠페인 기간 동안 전체 콘텐츠 카피의 90%를 작성</strong>했습니다. \n매주 2회 수령 받은 제품의 특징 또는 광고주의 니즈와 연계시켜\n제품에 걸맞은 스토리텔링 및 에세이 형식의 카피라이팅을 진행했습니다."
+      "body": "<span class=\"mail-label\">CLIENT</span>코오롱FnC\n\n코오롱 그룹 전사의 디지털 커뮤니케이션을 위한 SNS 캠페인입니다. \n다양한 화자가 옷을 개면서 하루를 정리하는 제품 이미지와 에세이가 연재되는 크리에이티브입니다\n\n<span class=\"mail-label\">ROLE</span><strong>캠페인 기간 동안 전체 콘텐츠 카피의 90%를 작성</strong>했습니다. \n매주 2회 수령 받은 제품의 특징 또는 광고주의 니즈와 연계시켜\n제품에 걸맞은 스토리텔링 및 에세이 형식의 카피라이팅을 진행했습니다.\n\n[[POSTS]]"
     },
     {
       "id": "p6",
