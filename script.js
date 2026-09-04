@@ -300,12 +300,29 @@ function bookshelfBarcode(seed) {
   return bars;
 }
 
+const SPINE_ASCII_MOTIFS = [
+  ["@", "|"],
+  ["o", "=|"],
+  ["*", "-*-"],
+  [" ~", "~ "],
+  ["^ ^", "V"],
+  ["_", "/=\\"],
+  ["T", "(+)"],
+  [")", ")"],
+];
+
+function bookshelfAscii(motif) {
+  return motif.map((line) => `<span>${escapeHtml(line)}</span>`).join("");
+}
+
 function bookshelfMarkup(note) {
   const spines = note.entries
     .map((it, i) => {
       const width = 42 + ((i * 13) % 20);
       const height = 160 + ((i * 17) % 40);
+      const motif = SPINE_ASCII_MOTIFS[i % SPINE_ASCII_MOTIFS.length];
       return `<button type="button" class="book-spine" data-idx="${i}" style="width:${width}px; height:${height}px;">
+        <span class="book-spine-ascii" aria-hidden="true">${bookshelfAscii(motif)}</span>
         <span class="book-spine-title">${escapeHtml(it.title)}</span>
         <span class="book-spine-barcode">${bookshelfBarcode(i + 1)}</span>
       </button>`;

@@ -305,6 +305,22 @@ html,body{
 .book-spine.active{ transform:translateY(-12px); background:#000; }
 .book-spine.active .book-spine-title{ color:#fff; }
 .book-spine.active .book-spine-barcode span{ background:#fff; }
+.book-spine.active .book-spine-ascii{ border-bottom-color:#444; }
+.book-spine.active .book-spine-ascii span{ color:#bbb; }
+.book-spine-ascii{
+  flex:none; width:100%;
+  display:flex; flex-direction:column; align-items:center;
+  gap:1px; margin-bottom:.55rem; padding-bottom:.4rem;
+  border-bottom:1px dashed var(--divider);
+  transition:border-color .18s ease;
+}
+.book-spine-ascii span{
+  display:block; color:var(--text-secondary);
+  font-family:"SF Mono","Menlo","Courier New",monospace;
+  font-weight:700; font-size:.66rem; line-height:1;
+  white-space:pre;
+  transition:color .18s ease;
+}
 .book-spine-title{
   flex:1; display:flex; align-items:center; justify-content:center;
   writing-mode:vertical-rl; text-orientation:mixed;
