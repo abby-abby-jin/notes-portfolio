@@ -297,7 +297,6 @@ function bookshelfMarkup(note) {
       const width = 42 + ((i * 13) % 20);
       return `<button type="button" class="book-spine" data-idx="${i}" style="width:${width}px;">
         <span class="book-spine-title">${escapeHtml(it.title)}</span>
-        ${it.meta ? `<span class="book-spine-meta">${escapeHtml(it.meta)}</span>` : ""}
       </button>`;
     })
     .join("");
