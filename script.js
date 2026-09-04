@@ -676,7 +676,7 @@ function postCardHtml(post) {
   const mediaHtml = post.video
     ? `<video class="mail-post-video" src="${post.video}" ${post.image ? `poster="${post.image}"` : ""} controls playsinline preload="metadata"></video>`
     : `<div class="mail-post-image" style="background-image:url('${post.image}')"></div>`;
-  return `<div class="mail-post-card">
+  return `<div class="mail-post-card${post.url ? "" : " no-link"}">
     ${mediaHtml}
     <div class="mail-post-body">
       <p class="mail-post-handle">${escapeHtml(post.handle)}</p>

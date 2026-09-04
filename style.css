@@ -659,6 +659,9 @@ html,body{
   display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:4;
   overflow:hidden;
 }
+.mail-post-card.no-link .mail-post-caption{
+  -webkit-line-clamp:unset; overflow:visible;
+}
 .mail-post-link{ font-size:.78rem; color:var(--text-secondary); text-decoration:underline; margin-top:auto; }
 .mail-post-link:hover{ color:var(--text-primary); }
 
