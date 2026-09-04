@@ -300,29 +300,12 @@ function bookshelfBarcode(seed) {
   return bars;
 }
 
-const SPINE_CAP_CHARS = ["*", "#", "/", ":", "@", "=", "~", "%", "+", "."];
-
-function bookshelfCapBand(ch) {
-  return escapeHtml(ch.repeat(24));
-}
-
-function bookshelfEdgeDashes(count) {
-  return Array.from({ length: count }).map(() => `<span>|</span>`).join("");
-}
-
 function bookshelfMarkup(note) {
   const spines = note.entries
     .map((it, i) => {
       const width = 42 + ((i * 13) % 20);
       const height = 160 + ((i * 17) % 40);
-      const ch = SPINE_CAP_CHARS[i % SPINE_CAP_CHARS.length];
-      const dashCount = Math.max(4, Math.round(height / 28));
       return `<button type="button" class="book-spine" data-idx="${i}" style="width:${width}px; height:${height}px;">
-        <span class="book-spine-edge h top" aria-hidden="true">${"_".repeat(24)}</span>
-        <span class="book-spine-edge h bottom" aria-hidden="true">${"_".repeat(24)}</span>
-        <span class="book-spine-edge v left" aria-hidden="true">${bookshelfEdgeDashes(dashCount)}</span>
-        <span class="book-spine-edge v right" aria-hidden="true">${bookshelfEdgeDashes(dashCount)}</span>
-        <span class="book-spine-cap" aria-hidden="true">${bookshelfCapBand(ch)}</span>
         <span class="book-spine-title">${escapeHtml(it.title)}</span>
         <span class="book-spine-barcode">${bookshelfBarcode(i + 1)}</span>
       </button>`;
