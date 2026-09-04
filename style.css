@@ -428,6 +428,7 @@ html,body{
   font-family:"Apple SD Gothic Neo", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif;
 }
 #mail-detail-subject{ font-size:1.4rem; font-weight:700; letter-spacing:0; margin:0 0 .7rem; }
+.mail-subject strong, #mail-detail-subject strong{ font-weight:900; }
 .mail-meta{ display:flex; flex-direction:column; gap:.2rem; padding-bottom:1rem; margin-bottom:3.35rem; border-bottom:1px solid var(--divider); font-size:.85rem; color:var(--text-secondary); }
 #mail-detail-content{ font-size:1rem; line-height:1.5; letter-spacing:0; color:var(--text-primary); }
 #mail-detail-content p{ margin:0 0 2rem; white-space:pre-wrap; }

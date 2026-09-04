@@ -11,6 +11,11 @@ function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 }
 
+// 제목처럼 원래는 순수 텍스트로 다루는 필드에서 <strong>/<em> 강조만 허용하고 나머지는 이스케이프
+function escapeHtmlAllowEmphasis(str) {
+  return escapeHtml(str).replace(/&lt;(\/?(?:strong|em))&gt;/g, "<$1>");
+}
+
 // 빈 줄로 구분된 본문 텍스트를 문단(<p>) 목록으로 변환
 function paragraphsToHtml(text) {
   return (text || "")
@@ -607,7 +612,7 @@ function renderMailList() {
         </button>
         <span class="mail-sender">${escapeHtml(m.to || m.sender)}</span>
         <span class="mail-subject-wrap">
-          <span class="mail-subject">${escapeHtml(m.subject)}</span>
+          <span class="mail-subject">${escapeHtmlAllowEmphasis(m.subject)}</span>
         </span>
         <span class="mail-date">${escapeHtml(m.date)}</span>
       </li>`
@@ -697,7 +702,7 @@ function openMail(id) {
     $("#mail-detail-content").style.removeProperty("--mail-label-accent");
   }
 
-  $("#mail-detail-subject").textContent = mail.subject;
+  $("#mail-detail-subject").innerHTML = escapeHtmlAllowEmphasis(mail.subject);
   $("#mail-detail-sender").textContent = mail.to ? `${mail.sender} → ${mail.to}` : mail.sender;
   $("#mail-detail-date").textContent = mail.date;
 
