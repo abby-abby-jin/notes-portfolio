@@ -90,7 +90,7 @@ html,body{
   width:min(1120px, 94vw);
   height:min(700px, 88vh);
   background:var(--bg-detail);
-  border:1px solid var(--divider);
+  border:1px solid #fff;
   border-radius:0;
   box-shadow:none;
   overflow:hidden;
