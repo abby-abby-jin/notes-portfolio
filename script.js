@@ -453,6 +453,17 @@ function toggleChecklistItem(note, ul, li) {
   if (row) row.textContent = formatPreview(note);
 }
 
+function poemsMarkup(poems) {
+  return `<div class="poem-columns">${poems
+    .map(
+      (p) => `<div class="poem-col">
+        <p class="poem-title">${escapeHtml(p.title)}</p>
+        <p class="poem-text">${escapeHtml(p.text)}</p>
+      </div>`
+    )
+    .join("")}</div>`;
+}
+
 function openNote(id) {
   const note = notes.find((n) => n.id === id);
   if (!note) return;
@@ -498,6 +509,11 @@ function openNote(id) {
     content
       .querySelectorAll(".note-photo")
       .forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
+  }
+
+  const poems = note.poems || [];
+  if (poems.length) {
+    content.insertAdjacentHTML("beforeend", poemsMarkup(poems));
   }
 
   detailPane.classList.add("open");

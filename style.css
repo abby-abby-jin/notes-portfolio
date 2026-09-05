@@ -688,6 +688,16 @@ html,body{
 .note-photo img{ display:block; width:100%; height:auto; }
 .note-images.uniform{ grid-template-columns:repeat(3, 1fr); }
 .note-images.uniform .note-photo{ aspect-ratio:1/1; }
+
+.poem-columns{
+  display:grid; grid-template-columns:1fr 1fr; gap:2.2rem;
+  margin-top:1.8rem;
+}
+@media (max-width:520px){
+  .poem-columns{ grid-template-columns:1fr; }
+}
+.poem-title{ font-weight:700; font-size:1.02rem; margin:0 0 .6em; }
+.poem-text{ white-space:pre-wrap; line-height:1.75; font-size:.94rem; color:var(--text-primary); margin:0; }
 .note-images.uniform .note-photo img{ width:100%; height:100%; object-fit:cover; }
 
 .mail-images.sns-grid{
