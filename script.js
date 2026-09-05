@@ -779,8 +779,9 @@ function openMail(id) {
 
   const posts = mail.posts || [];
   const captionClampStyle = mail.captionLines ? ` style="--caption-clamp:${mail.captionLines}"` : "";
+  const postsGridClass = mail.tightPosts ? "mail-posts tight" : "mail-posts";
   const postsHtml = posts.length
-    ? `<div class="mail-posts"${captionClampStyle}>${posts.map(postCardHtml).join("")}</div>`
+    ? `<div class="${postsGridClass}"${captionClampStyle}>${posts.map(postCardHtml).join("")}</div>`
     : "";
 
   let bodyHtml;

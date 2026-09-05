@@ -657,12 +657,15 @@ html,body{
 /* ================= SNS 게시물 카드 ================= */
 .mail-posts{
   display:grid; grid-template-columns:repeat(3, 1fr);
-  align-items:start;
   gap:1rem;
   padding-top:2.25rem;
   margin-bottom:5rem;
   width:100%;
 }
+.mail-posts.tight{ align-items:start; }
+.mail-posts.tight .mail-post-body{ padding:.55rem .6rem .6rem; }
+.mail-posts.tight .mail-post-handle{ font-size:.7rem; margin-bottom:.3rem; }
+.mail-posts.tight .mail-post-caption{ font-size:.8rem; line-height:1.4; }
 @media (max-width:700px){
   .mail-posts{ grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); }
 }
