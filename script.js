@@ -925,14 +925,6 @@ function initMusicWidget(musicUrl) {
       playerVars,
       events: {
         onReady: (e) => {
-          if (playlistId) {
-            e.target.setShuffle(true);
-            const list = e.target.getPlaylist();
-            if (list && list.length > 1) {
-              const randomIndex = Math.floor(Math.random() * list.length);
-              e.target.cuePlaylist({ listType: "playlist", list: playlistId, index: randomIndex });
-            }
-          }
           if (ytPendingPlay) {
             ytPendingPlay = false;
             e.target.playVideo();
@@ -943,7 +935,8 @@ function initMusicWidget(musicUrl) {
           if (playlistId && e.data === YT.PlayerState.ENDED) {
             const list = e.target.getPlaylist();
             if (list && list.length) {
-              e.target.playVideoAt(Math.floor(Math.random() * list.length));
+              const next = (e.target.getPlaylistIndex() + 1) % list.length;
+              e.target.playVideoAt(next);
             }
           }
         },
