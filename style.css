@@ -590,7 +590,7 @@ html,body{
 /* ================= memory (갤러리) ================= */
 .memory-body{
   width:100%; height:100%; overflow-y:auto; padding:1.6rem;
-  background:#f2ece0;
+  background:#fff;
 }
 .memory-empty{ color:var(--text-secondary); font-size:.9rem; padding:2rem 0; text-align:center; }
 
@@ -610,7 +610,7 @@ html,body{
   display:block; aspect-ratio:1/1;
   border:1.5px dashed #000;
   padding:7px;
-  background:#faf7f0;
+  background:#fff;
   transition:background .18s ease, transform .18s ease;
 }
 .stamp-frame::before{
@@ -627,12 +627,12 @@ html,body{
   margin-top:.5rem;
   font-size:.62rem; letter-spacing:.03em;
   text-align:center; color:#000;
-  background:#e6dfd0;
+  background:var(--bg-row-hover);
   padding:.3rem .3rem;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .stamp-card:hover .stamp-frame{ background:#000; transform:translateY(-3px); }
-.stamp-card:hover .stamp-label{ background:#000; color:#f2ece0; }
+.stamp-card:hover .stamp-label{ background:#000; color:#fff; }
 .memory-hint{
   font-size:.74rem; color:var(--text-secondary); text-align:center;
   margin:0 0 1rem;
