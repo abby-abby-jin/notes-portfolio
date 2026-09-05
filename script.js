@@ -944,16 +944,19 @@ function renderMemoryGrid(items) {
   }
   const cards = items
     .map((it, i) => {
-      const x = i * 34;
-      const y = i * 5;
-      return `<button type="button" class="iso-card" data-src="${it.image}" style="--x:${x}px; --y:${y}px; z-index:${i}; background-image:url('${it.image}')" aria-label="${(it.caption || "사진").replace(/"/g, "&quot;")}"></button>`;
+      const code = `M · ${String(i + 1).padStart(2, "0")}`;
+      const label = it.caption ? `${code} — ${escapeHtml(it.caption)}` : code;
+      return `<button type="button" class="stamp-card" data-src="${it.image}" aria-label="${escapeHtml(it.caption || "사진")} 크게 보기">
+        <span class="stamp-frame"><img src="${it.image}" alt="" loading="lazy" /></span>
+        <span class="stamp-label">${label}</span>
+      </button>`;
     })
     .join("");
   grid.innerHTML = `
-    <div class="iso-shelf"><div class="iso-track">${cards}</div></div>
+    <div class="stamp-grid">${cards}</div>
     <p class="memory-hint">사진을 눌러 크게 보기</p>
   `;
-  grid.querySelectorAll(".iso-card").forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
+  grid.querySelectorAll(".stamp-card").forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
 }
 
 loadContent();
