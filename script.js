@@ -183,6 +183,18 @@ const mailApp = setupAppAndIcon($("#mail-icon"), $("#mail-window"));
 const meApp = setupAppAndIcon($("#me-icon"), $("#me-window"));
 const memoryApp = setupAppAndIcon($("#memory-icon"), $("#memory-window"));
 
+// mmm... 아이콘: 아직 만들어지지 않은 공간 안내 툴팁
+const mIcon = $("#m-icon");
+if (mIcon) {
+  mIcon.dataset.definition = "새로운 탑 설계 중...";
+  let mIconTooltipTimer = null;
+  mIcon.addEventListener("click", () => {
+    showWordTooltip(mIcon);
+    clearTimeout(mIconTooltipTimer);
+    mIconTooltipTimer = setTimeout(hideWordTooltip, 2200);
+  });
+}
+
 // 바탕화면(창 바깥) 클릭 시 열려있는 창 닫기
 const desktopEl = $("#desktop");
 desktopEl.addEventListener("click", (e) => {
@@ -954,7 +966,7 @@ function renderMemoryGrid(items) {
     .join("");
   grid.innerHTML = `
     <div class="stamp-grid">${cards}</div>
-    <p class="memory-hint">사진을 눌러 크게 보기</p>
+    <p class="memory-hint">내일 한 장 더 추가됩니다</p>
   `;
   grid.querySelectorAll(".stamp-card").forEach((btn) => btn.addEventListener("click", () => openLightbox(btn.dataset.src)));
 }
