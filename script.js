@@ -899,11 +899,41 @@ async function loadContent() {
   initMusicWidget(siteData.musicUrl);
 }
 
+let wordTooltipEl = null;
+function showWordTooltip(target) {
+  if (!wordTooltipEl) {
+    wordTooltipEl = document.createElement("div");
+    wordTooltipEl.className = "word-tooltip";
+    document.body.appendChild(wordTooltipEl);
+  }
+  wordTooltipEl.textContent = target.dataset.definition;
+  const rect = target.getBoundingClientRect();
+  wordTooltipEl.style.left = `${rect.left + rect.width / 2}px`;
+  wordTooltipEl.style.top = `${rect.top}px`;
+  wordTooltipEl.classList.add("visible");
+}
+function hideWordTooltip() {
+  if (wordTooltipEl) wordTooltipEl.classList.remove("visible");
+}
+
 function renderProfile(me) {
   const lines = me.stampLines || [];
+  const defs = me.definitions || {};
   $("#stamp-stack").innerHTML = lines
-    .map((line, i) => `<p class="stamp-line" style="margin-left:${i * 9}px">${line}</p>`)
+    .map((line, i) => {
+      const indent = `margin-left:${i * 9}px`;
+      if (defs[line]) {
+        return `<p class="stamp-line stamp-line-defined" style="${indent}" data-definition="${escapeHtml(defs[line])}">${escapeHtml(line)}</p>`;
+      }
+      return `<p class="stamp-line" style="${indent}">${escapeHtml(line)}</p>`;
+    })
     .join("");
+  $("#stamp-stack")
+    .querySelectorAll(".stamp-line-defined")
+    .forEach((el) => {
+      el.addEventListener("mouseenter", () => showWordTooltip(el));
+      el.addEventListener("mouseleave", hideWordTooltip);
+    });
 }
 
 function renderMemoryGrid(items) {
