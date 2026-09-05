@@ -779,12 +779,24 @@ function openMail(id) {
     ? `<div class="mail-posts"${captionClampStyle}>${posts.map(postCardHtml).join("")}</div>`
     : "";
 
-  const bodyHtml = mail.body.includes("[[POSTS]]")
-    ? mail.body
-        .split("[[POSTS]]")
-        .map((part) => paragraphsToHtml(part))
-        .join(embedsHtml + postsHtml)
-    : embedsHtml + postsHtml + paragraphsToHtml(mail.body);
+  let bodyHtml;
+  if (mail.body.includes("[[EMBEDS]]")) {
+    bodyHtml = mail.body
+      .split(/(\[\[POSTS\]\]|\[\[EMBEDS\]\])/)
+      .map((part) => {
+        if (part === "[[POSTS]]") return postsHtml;
+        if (part === "[[EMBEDS]]") return embedsHtml;
+        return paragraphsToHtml(part);
+      })
+      .join("");
+  } else if (mail.body.includes("[[POSTS]]")) {
+    bodyHtml = mail.body
+      .split("[[POSTS]]")
+      .map((part) => paragraphsToHtml(part))
+      .join(embedsHtml + postsHtml);
+  } else {
+    bodyHtml = embedsHtml + postsHtml + paragraphsToHtml(mail.body);
+  }
 
   $("#mail-detail-content").innerHTML = bodyHtml + imagesHtml;
   $("#mail-detail-content")
