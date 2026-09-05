@@ -686,6 +686,8 @@ html,body{
 }
 .note-photo:hover{ transform:scale(1.02); }
 .note-photo img{ display:block; width:100%; height:auto; }
+.note-images.uniform .note-photo{ aspect-ratio:1/1; }
+.note-images.uniform .note-photo img{ width:100%; height:100%; object-fit:cover; }
 
 .mail-images.sns-grid{
   grid-template-columns:repeat(3, 1fr);

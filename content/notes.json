@@ -87,6 +87,7 @@
       "preview": "짧은 소개나 발췌를 이 자리에 채워주세요.",
       "body": "[여기에 글의 도입부나 발췌를 적어주세요]\n\n[본문 내용을 자유롭게 작성해주세요.]",
       "hideTitle": false,
+      "uniformPhotos": true,
       "images": [
         "uploads/writing1-1788572989000-1.jpg",
         "uploads/writing1-1788572989000-2.jpg",

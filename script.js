@@ -490,7 +490,8 @@ function openNote(id) {
 
   const images = note.images || [];
   if (images.length) {
-    const imagesHtml = `<div class="note-images">${images
+    const gridClass = note.uniformPhotos ? "note-images uniform" : "note-images";
+    const imagesHtml = `<div class="${gridClass}">${images
       .map((src) => `<button type="button" class="note-photo" data-src="${src}" aria-label="첨부 이미지 크게 보기"><img src="${src}" alt="" loading="lazy" /></button>`)
       .join("")}</div>`;
     content.insertAdjacentHTML("beforeend", imagesHtml);
