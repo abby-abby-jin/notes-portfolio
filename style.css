@@ -660,7 +660,7 @@ html,body{
   overflow:hidden;
 }
 .mail-post-card.no-link .mail-post-caption{
-  -webkit-line-clamp:8;
+  -webkit-line-clamp:var(--caption-clamp, 8);
 }
 .mail-post-link{ font-size:.78rem; color:var(--text-secondary); text-decoration:underline; margin-top:auto; }
 .mail-post-link:hover{ color:var(--text-primary); }
@@ -705,7 +705,7 @@ html,body{
   border:1px solid var(--divider);
   overflow:hidden;
   margin:1.4rem auto 0;
-  max-width:640px;
+  max-width:460px;
 }
 .browser-hero-bar{
   display:flex; align-items:center; gap:.4rem;
