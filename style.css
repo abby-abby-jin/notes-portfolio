@@ -690,7 +690,7 @@ html,body{
 .note-images.uniform .note-photo{ aspect-ratio:1/1; }
 
 .note-photo-feature{
-  display:flex; align-items:stretch; gap:.6rem; margin-top:1.6rem;
+  display:flex; align-items:stretch; gap:.6rem; margin-top:3.4rem;
 }
 .note-photo-grid{
   flex:2; display:grid; grid-template-columns:repeat(2, 1fr); grid-template-rows:repeat(2, 1fr);
@@ -703,7 +703,7 @@ html,body{
 
 .poem-columns{
   display:grid; grid-template-columns:1fr 1fr; gap:2.2rem;
-  margin-top:1.8rem;
+  margin-top:3.4rem;
 }
 @media (max-width:520px){
   .poem-columns{ grid-template-columns:1fr; }
