@@ -874,8 +874,6 @@ async function loadContent() {
 }
 
 function renderProfile(me) {
-  const photoEl = $("#profile-photo");
-  photoEl.style.backgroundImage = me.photo ? `url('${me.photo}')` : "none";
   const lines = me.stampLines || [];
   $("#stamp-stack").innerHTML = lines
     .map((line, i) => `<p class="stamp-line" style="margin-left:${i * 9}px">${line}</p>`)
