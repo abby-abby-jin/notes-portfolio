@@ -657,6 +657,7 @@ html,body{
 /* ================= SNS 게시물 카드 ================= */
 .mail-posts{
   display:grid; grid-template-columns:repeat(3, 1fr);
+  align-items:start;
   gap:1rem;
   padding-top:2.25rem;
   margin-bottom:5rem;
