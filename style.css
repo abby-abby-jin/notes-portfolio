@@ -662,7 +662,7 @@ html,body{
   margin-bottom:5rem;
   width:100%;
 }
-.mail-posts.tight{ align-items:start; }
+.mail-posts.tight{ align-items:start; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); }
 .mail-posts.tight .mail-post-body{ padding:.55rem .6rem .6rem; }
 .mail-posts.tight .mail-post-handle{ font-size:.7rem; margin-bottom:.3rem; }
 .mail-posts.tight .mail-post-caption{ font-size:.8rem; line-height:1.4; }
