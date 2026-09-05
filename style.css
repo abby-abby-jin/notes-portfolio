@@ -403,7 +403,7 @@ html,body{
 .mail-star{ flex:none; width:17px; height:17px; cursor:pointer; padding:0; background:none; border:none; }
 .mail-star svg{ width:100%; height:100%; fill:none; stroke:var(--text-secondary); stroke-width:1.5; }
 .mail-row.starred .mail-star svg{ fill:#000; stroke:#000; }
-.mail-sender{ flex:none; width:auto; min-width:130px; white-space:nowrap; font-size:.9rem; color:var(--text-primary); }
+.mail-sender{ flex:none; width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:.9rem; color:var(--text-primary); }
 .mail-subject-wrap{ flex:1; min-width:0; display:flex; gap:.5em; overflow:hidden; }
 .mail-subject{ font-size:.9rem; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .mail-date{ flex:none; font-size:.8rem; color:var(--text-secondary); width:88px; text-align:right; white-space:nowrap; }
