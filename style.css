@@ -677,7 +677,7 @@ html,body{
 /* 메모 첨부 사진: 크롭/여백 없이 원본 비율 그대로 */
 .note-images{
   display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));
-  gap:.6rem; margin-top:.4rem;
+  gap:.6rem; margin-top:1.6rem;
 }
 .note-photo{
   display:block; width:100%; padding:0; margin:0; line-height:0;
@@ -688,6 +688,18 @@ html,body{
 .note-photo img{ display:block; width:100%; height:auto; }
 .note-images.uniform{ grid-template-columns:repeat(3, 1fr); }
 .note-images.uniform .note-photo{ aspect-ratio:1/1; }
+
+.note-photo-feature{
+  display:flex; align-items:stretch; gap:.6rem; margin-top:1.6rem;
+}
+.note-photo-grid{
+  flex:2; display:grid; grid-template-columns:repeat(2, 1fr); grid-template-rows:repeat(2, 1fr);
+  gap:.6rem;
+}
+.note-photo-grid .note-photo{ aspect-ratio:1/1; }
+.note-photo-grid .note-photo img{ width:100%; height:100%; object-fit:cover; }
+.note-photo-tall{ flex:1; }
+.note-photo-tall img{ width:100%; height:100%; object-fit:cover; }
 
 .poem-columns{
   display:grid; grid-template-columns:1fr 1fr; gap:2.2rem;

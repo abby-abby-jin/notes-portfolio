@@ -501,10 +501,19 @@ function openNote(id) {
 
   const images = note.images || [];
   if (images.length) {
-    const gridClass = note.uniformPhotos ? "note-images uniform" : "note-images";
-    const imagesHtml = `<div class="${gridClass}">${images
-      .map((src) => `<button type="button" class="note-photo" data-src="${src}" aria-label="첨부 이미지 크게 보기"><img src="${src}" alt="" loading="lazy" /></button>`)
-      .join("")}</div>`;
+    const photoBtn = (src) =>
+      `<button type="button" class="note-photo" data-src="${src}" aria-label="첨부 이미지 크게 보기"><img src="${src}" alt="" loading="lazy" /></button>`;
+    let imagesHtml;
+    if (note.photoLayout === "feature-right" && images.length > 1) {
+      const [feature, ...rest] = images;
+      imagesHtml = `<div class="note-photo-feature">
+        <div class="note-photo-grid">${rest.map(photoBtn).join("")}</div>
+        ${photoBtn(feature).replace('class="note-photo"', 'class="note-photo note-photo-tall"')}
+      </div>`;
+    } else {
+      const gridClass = note.uniformPhotos ? "note-images uniform" : "note-images";
+      imagesHtml = `<div class="${gridClass}">${images.map(photoBtn).join("")}</div>`;
+    }
     content.insertAdjacentHTML("beforeend", imagesHtml);
     content
       .querySelectorAll(".note-photo")
