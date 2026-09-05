@@ -709,8 +709,8 @@ html,body{
   .poem-columns{ grid-template-columns:1fr; }
 }
 .poem-col{ overflow-x:auto; }
-.poem-title{ font-family:"Noto Serif KR", serif; font-weight:700; font-size:1.02rem; margin:0 0 .6em; }
-#detail-content p.poem-text{ font-family:"Noto Serif KR", serif; white-space:pre; line-height:1.75; font-size:.94rem; color:var(--text-primary); margin:0; }
+.poem-title{ font-family:"Noto Serif KR", serif; font-weight:700; font-size:.86rem; margin:0 0 .5em; }
+#detail-content p.poem-text{ font-family:"Noto Serif KR", serif; white-space:pre; line-height:1.45; font-size:.72rem; color:var(--text-primary); margin:0; }
 .note-images.uniform .note-photo img{ width:100%; height:100%; object-fit:cover; }
 
 .mail-images.sns-grid{
